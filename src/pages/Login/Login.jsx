@@ -6,8 +6,8 @@ import { Controller, useForm } from 'react-hook-form';
 import { DefaultInput } from '../../components';
 import { useAuthContext } from '../../context/AuthContext';
 import axios from '../../api/axios';
-import { LazyLoadImage } from 'react-lazy-load-image-component';
-import 'react-lazy-load-image-component/src/effects/blur.css';
+//import { LazyLoadImage } from 'react-lazy-load-image-component';
+//import 'react-lazy-load-image-component/src/effects/blur.css';
 //import { useLogin } from '../../hooks/useLogin';
 //import toast from 'react-hot-toast';
 import {
@@ -117,14 +117,15 @@ const Login = () => {
 						<div className="w-[6px] h-28 bg-blue-800 rounded-full" />
 					</div>
 				</div>
-				<LazyLoadImage
+				<img
 					src={LoginImage}
 					effect="blur"
 					alt="login"
-					width={'100%'}
+					loading="lazy"
+					//width={'100%'}
 					//height={'100%'}
 
-					//className="object-cover object-left w-full h-full z-0"
+					className="object-cover object-left w-full h-full z-0"
 				/>
 			</div>
 			<div className=" w-full lg:1/2 xl:w-3/5 h-full flex flex-col justify-center  items-center">
