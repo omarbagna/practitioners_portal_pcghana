@@ -2,6 +2,8 @@
   from = “/pcghana-api/”
   to = “https://goldenministersfellowship.org/pcghana-api/"
   status = 200
+
+  
 [[redirects]]
   from = “/*”
   to = “/index.html”
