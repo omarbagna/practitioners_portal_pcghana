@@ -34,8 +34,8 @@ export const AuthContext = ({ children }) => {
 	};
 
 	const logout = () => {
-		setUser(null);
 		localStorage.clear();
+		setUser(null);
 	};
 
 	return (

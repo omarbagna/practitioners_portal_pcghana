@@ -6,9 +6,38 @@ export const DataContext = ({ children }) => {
 	const [pharmacyData, setPharmacyData] = useState(
 		JSON.parse(localStorage.getItem('pharmacyData'))
 	);
+
+	const [pharmacistData, setPharmacistData] = useState(
+		JSON.parse(localStorage.getItem('pharmacistData'))
+	);
+
+	const [cpdData, setCpdData] = useState(
+		JSON.parse(localStorage.getItem('cpdData'))
+	);
+
+	const [pharmacyRenewalData, setPharmacyRenewalData] = useState(
+		JSON.parse(localStorage.getItem('pharmacyRenewalData'))
+	);
+
 	const [relicensureData, setRelicensureData] = useState(
 		JSON.parse(localStorage.getItem('relicensureData'))
 	);
+
+	const [invoiceData, setInvoiceData] = useState(
+		JSON.parse(localStorage.getItem('invoiceData'))
+	);
+
+	//console.log({ invoiceData });
+
+	// Save invoice data to local storage
+	useEffect(() => {
+		const data = window.localStorage.getItem('invoiceData');
+		if (data !== null) setInvoiceData(JSON.parse(data));
+	}, []);
+
+	useEffect(() => {
+		window.localStorage.setItem('invoiceData', JSON.stringify(invoiceData));
+	}, [invoiceData]);
 
 	// Save pharmacy data to local storage
 	useEffect(() => {
@@ -20,7 +49,43 @@ export const DataContext = ({ children }) => {
 		window.localStorage.setItem('pharmacyData', JSON.stringify(pharmacyData));
 	}, [pharmacyData]);
 
-	// Save pharmacy data to local storage
+	// Save pharmacist data to local storage
+	useEffect(() => {
+		const data = window.localStorage.getItem('pharmacistData');
+		if (data !== null) setPharmacistData(JSON.parse(data));
+	}, []);
+
+	useEffect(() => {
+		window.localStorage.setItem(
+			'pharmacistData',
+			JSON.stringify(pharmacistData)
+		);
+	}, [pharmacistData]);
+
+	// Save cpd data to local storage
+	useEffect(() => {
+		const data = window.localStorage.getItem('cpdData');
+		if (data !== null) setCpdData(JSON.parse(data));
+	}, []);
+
+	useEffect(() => {
+		window.localStorage.setItem('cpdData', JSON.stringify(cpdData));
+	}, [cpdData]);
+
+	// Save pharmacy renewal data to local storage
+	useEffect(() => {
+		const data = window.localStorage.getItem('pharmacyRenewalData');
+		if (data !== null) setPharmacyRenewalData(JSON.parse(data));
+	}, []);
+
+	useEffect(() => {
+		window.localStorage.setItem(
+			'pharmacyRenewalData',
+			JSON.stringify(pharmacyRenewalData)
+		);
+	}, [pharmacyRenewalData]);
+
+	// Save relicensure data to local storage
 	useEffect(() => {
 		const data = window.localStorage.getItem('relicensureData');
 		if (data !== null) setRelicensureData(JSON.parse(data));
@@ -40,6 +105,14 @@ export const DataContext = ({ children }) => {
 				setPharmacyData,
 				relicensureData,
 				setRelicensureData,
+				pharmacyRenewalData,
+				setPharmacyRenewalData,
+				invoiceData,
+				setInvoiceData,
+				pharmacistData,
+				setPharmacistData,
+				cpdData,
+				setCpdData,
 			}}>
 			{children}
 		</Context.Provider>

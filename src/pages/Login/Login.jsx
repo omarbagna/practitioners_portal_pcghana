@@ -1,11 +1,11 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Card, CardBody, Typography } from '@material-tailwind/react';
 import ButtonComponent from '../../components/reusable/Button/Button';
 import { LogoDefault, LoginImage } from '../../assets';
 import { Controller, useForm } from 'react-hook-form';
 import { DefaultInput } from '../../components';
 import { useAuthContext } from '../../context/AuthContext';
-import axios from '../../api/axios';
+import { axiosPrivate } from '../../api/axios';
 //import { LazyLoadImage } from 'react-lazy-load-image-component';
 //import 'react-lazy-load-image-component/src/effects/blur.css';
 //import { useLogin } from '../../hooks/useLogin';
@@ -59,6 +59,11 @@ const Login = () => {
 		userCredentials.password
 	);
 */
+
+	useEffect(() => {
+		localStorage.clear();
+	}, []);
+
 	const handleLogin = async (user) => {
 		formData.append('username', user?.license_number.toUpperCase());
 		formData.append('password', user?.password);
@@ -67,7 +72,7 @@ const Login = () => {
 		setIsLoading(true);
 
 		try {
-			const response = await axios.post(LOGIN_URL, formData, {
+			const response = await axiosPrivate.post(LOGIN_URL, formData, {
 				headers: {
 					'Content-Type': 'multipart/form-data',
 				},
@@ -81,7 +86,6 @@ const Login = () => {
 				setIsLoading(false);
 				setLoginError(false);
 				login(response?.data?.user_data);
-				toast.success('Login Successful');
 				Navigate('/', { replace: true });
 			}
 		} catch (err) {
@@ -119,7 +123,6 @@ const Login = () => {
 				</div>
 				<img
 					src={LoginImage}
-					effect="blur"
 					alt="login"
 					loading="lazy"
 					//width={'100%'}

@@ -14,6 +14,7 @@ export { default as CPDWidget } from './reusable/DashWidgets/CPDWidget';
 export { default as PharmacySuperintendingWidget } from './reusable/DashWidgets/PharmacySuperintendingWidget';
 export { default as ElectronicPharmacyWidget } from './reusable/DashWidgets/ElectronicPharmacyWidget';
 export { default as InternshipManagerWidget } from './reusable/DashWidgets/InternshipManagerWidget';
+export { default as PharmacyRenewalWidget } from './reusable/DashWidgets/PharmacyRenewalWidget';
 
 // Input Component
 export { default as DefaultInput } from './reusable/Input/DefaultInput';

@@ -36,6 +36,7 @@ const UserModal = () => {
 
 	const handleProfile = (data) => {
 		console.log(data);
+		setViewUserModal(false);
 	};
 
 	const handleOpenLogout = (value) => {
@@ -61,7 +62,7 @@ const UserModal = () => {
 						animate={{ opacity: 1 }}
 						exit={{ opacity: 0 }}
 						onClick={() => setViewUserModal(false)}
-						className="fixed z-40 flex justify-end items-start pr-3 pt-16 md:pr-5 lg:pr-20 xl:pr-40 top-0 w-full overflow-hidden h-full bg-black/50 backdrop-blur-sm">
+						className="fixed z-40 flex justify-end items-start pr-3 pt-16 md:pr-5 lg:pr-16 xl:pr-20 top-0 w-full overflow-hidden h-full bg-black/50 backdrop-blur-sm">
 						<motion.div
 							onClick={(e) => e.stopPropagation()}
 							initial={{ y: -200 }}
@@ -289,7 +290,10 @@ const UserModal = () => {
 									<ButtonComponent
 										title="cancel"
 										reset
-										onClick={() => handleOpenProfile(size)}
+										onClick={() => {
+											handleOpenProfile(size);
+											setViewUserModal(false);
+										}}
 									/>
 									<ButtonComponent type="submit" title="update" />
 								</div>
@@ -313,13 +317,17 @@ const UserModal = () => {
 							<div className="flex w-full justify-center items-center gap-5">
 								<ButtonComponent
 									title="cancel"
-									onClick={() => handleOpenLogout(size)}
+									onClick={() => {
+										handleOpenLogout(size);
+										setViewUserModal(false);
+									}}
 								/>
 								<ButtonComponent
 									title="logout"
 									reset
 									onClick={() => {
 										handleOpenLogout(size);
+										setViewUserModal(false);
 										logout();
 									}}
 								/>

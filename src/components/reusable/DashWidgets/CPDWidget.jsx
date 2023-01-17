@@ -5,12 +5,12 @@ import { MdWorkOutline } from 'react-icons/md';
 import ButtonComponent from '../Button/Button';
 import { Link } from 'react-router-dom';
 
-const CPDWidget = () => {
+const CPDWidget = ({ cpdDATA, year }) => {
 	return (
 		<div className="group relative transition-all duration-150 ease-in rounded-lg w-full h-72 p-4 bg-blue-600 shadow-blue-500/50 shadow-lg hover:shadow-blue-500/50 hover:shadow-xl overflow-hidden">
-			{/* Render component inactive */}
+			{/* Render component inactive 
 			<div className="absolute top-0 left-0 z-30 w-full h-full bg-gray-800/70 backdrop-blur-sm cursor-not-allowed" />
-
+*/}
 			<div className="transition-all duration-150 ease-in absolute z-10 -top-10 -right-20 text-[16rem] text-white/30 group-hover:scale-105">
 				<MdWorkOutline />
 			</div>
@@ -26,13 +26,16 @@ const CPDWidget = () => {
 					<Typography
 						variant="paragraph"
 						className="font-light text-center text-base text-gray-800 bg-white/70 w-full rounded-md p-2">
-						CPD Score 2023 : 10/10
+						CPD Score {year} : {cpdDATA?.score}/{cpdDATA?.overall_cutoff}
 						<br />
-						Category 1: 0/4
+						Category 1: {cpdDATA?.category_scores[0]?.score}/
+						{cpdDATA?.category_scores[0]?.cutoff}
 						<br />
-						Category 2: 0/3
+						Category 2: {cpdDATA?.category_scores[1]?.score}/
+						{cpdDATA?.category_scores[1]?.cutoff}
 						<br />
-						Category 3: 0/3
+						Category 3: {cpdDATA?.category_scores[2]?.score}/
+						{cpdDATA?.category_scores[2]?.cutoff}
 					</Typography>
 				</div>
 

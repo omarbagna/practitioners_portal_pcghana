@@ -10,6 +10,7 @@ import {
 	Error,
 	RelicensureForm,
 	EPharmacyForm,
+	PharmacyRenewal,
 } from './pages';
 import PrivateRoutes from './utils/PrivateRoutes';
 
@@ -30,7 +31,12 @@ const App = () => {
 							/>
 
 							<Route
-								path="relicensure-application-epharmacy"
+								path="pharmacy-renewal-application"
+								element={<PharmacyRenewal />}
+							/>
+
+							<Route
+								path="pharmacy-renewal-application-continued"
 								element={<EPharmacyForm />}
 							/>
 

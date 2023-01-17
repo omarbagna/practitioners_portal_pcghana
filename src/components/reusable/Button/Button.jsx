@@ -9,10 +9,12 @@ const ButtonComponent = ({
 	color,
 	text,
 	width,
+	disabled,
 }) => {
 	return (
 		<Button
 			fullWidth={width ? true : false}
+			disabled={disabled ? true : false}
 			type={type}
 			variant={reset ? 'outlined' : text ? 'text' : 'gradient'}
 			size="md"
