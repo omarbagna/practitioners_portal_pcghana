@@ -88,8 +88,8 @@ const PharmacyRenewalWidget = ({
 							pharmacistStanding?.in_good_standing?.toLowerCase() ===
 								'pending payment' ||
 							pharmacistStanding?.in_good_standing?.toLowerCase() === 'approved'
-								? true
-								: false
+								? false
+								: true
 						}
 						title="apply"
 						color="green"
