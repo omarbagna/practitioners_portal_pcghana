@@ -2297,11 +2297,12 @@ const EPharmacyForm = () => {
 												<Controller
 													control={control}
 													name="prescriptions_processed"
-													rules={{
+													/*rules={{
 														validate: (value) =>
 															Object.values(value).includes(true) ||
 															'Please select at least one option',
 													}}
+													*/
 													render={({
 														field: { ref, onChange, ...field },
 														fieldState: { error, invalid },
@@ -2425,9 +2426,11 @@ const EPharmacyForm = () => {
 																	</Grid>
 																</Grid>
 															</FormGroup>
+															{/**
 															<FormHelperText>
 																{invalid ? error.message : null}
 															</FormHelperText>
+															 */}
 														</FormControl>
 													)}
 												/>
