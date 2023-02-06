@@ -27,6 +27,8 @@ export const DataContext = ({ children }) => {
 		JSON.parse(localStorage.getItem('invoiceData'))
 	);
 
+	const [image, setImage] = useState(null);
+
 	//console.log({ invoiceData });
 
 	// Save invoice data to local storage
@@ -98,6 +100,21 @@ export const DataContext = ({ children }) => {
 		);
 	}, [relicensureData]);
 
+	const onImageChange = (e) => {
+		const fileUploaded = e.target.files[0];
+
+		let reader = new FileReader();
+		reader.readAsDataURL(fileUploaded);
+
+		reader.onload = (e) => {
+			setImage(e.target.result);
+		};
+	};
+
+	const removeImage = () => {
+		setImage(null);
+	};
+
 	return (
 		<Context.Provider
 			value={{
@@ -113,6 +130,9 @@ export const DataContext = ({ children }) => {
 				setPharmacistData,
 				cpdData,
 				setCpdData,
+				image,
+				onImageChange,
+				removeImage,
 			}}>
 			{children}
 		</Context.Provider>

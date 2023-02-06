@@ -4,23 +4,14 @@ import * as animationData from './error-404.json';
 import { ButtonComponent, DefaultCard } from '../../components';
 import { Typography } from '@material-tailwind/react';
 import { useNavigate } from 'react-router-dom';
-import { useStateContext } from '../../context/StateContext';
-import { useEffect } from 'react';
 
 const Error = () => {
-	const { setPageViewed } = useStateContext();
 	const defaultOptions = {
 		loop: true,
 		autoplay: true,
 		animationData: animationData,
 		style: { height: 400 },
 	};
-
-	useEffect(() => {
-		return () => {
-			setPageViewed('error 404');
-		};
-	});
 
 	const { View } = useLottie(defaultOptions);
 
@@ -43,10 +34,7 @@ const Error = () => {
 						</Typography>
 
 						<div>
-							<ButtonComponent
-								title="back to dashboard"
-								onClick={goToDashboard}
-							/>
+							<ButtonComponent title="back to home" onClick={goToDashboard} />
 						</div>
 					</div>
 				}

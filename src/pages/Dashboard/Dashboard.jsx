@@ -2,9 +2,10 @@ import axios from 'axios';
 import { format } from 'date-fns';
 import React, {
 	useEffect,
+	useState,
 	//, useState
 } from 'react';
-import { toast } from 'react-hot-toast';
+import { toast } from 'react-toastify';
 import { useQuery } from 'react-query';
 import { axiosPrivate } from '../../api/axios';
 import {
@@ -26,6 +27,10 @@ const Dashboard = () => {
 	const currentYear = format(new Date(), 'yyyy');
 	const { user, logout } = useAuthContext();
 	const { setLoadingInvoice } = useStateContext();
+	const [loadingPharmacistStatus, setLoadingPharmacistStatus] = useState(false);
+	//const [pharmacistStatus, setPharmacistStatus] = useState(null);
+	const [loadingPharmacyStatus, setLoadingPharmacyStatus] = useState(false);
+	const [pharmacyStatus, setPharmacyStatus] = useState(null);
 	const {
 		setInvoiceData,
 		pharmacistData,
@@ -52,10 +57,12 @@ const Dashboard = () => {
 		);
 	};
 
-	const { data, isLoading } = useQuery(
+	const { data, isLoading, isError } = useQuery(
 		'pharmacist_details',
 		fetchPharmacistDetails
 	);
+
+	//console.log(isError);
 
 	const pharmacist_cpd_score = useQuery(
 		'pharmacist_cpd_score',
@@ -75,7 +82,7 @@ const Dashboard = () => {
 				pharmacist_cpd_score?.data?.data?.status === '1'
 			) {
 				//console.log(data?.data?.data);
-				console.log(pharmacist_cpd_score?.data?.data);
+				//console.log(pharmacist_cpd_score?.data?.data);
 				setCpdData(pharmacist_cpd_score?.data?.data);
 				setPharmacistData(data.data.data);
 			}
@@ -87,7 +94,7 @@ const Dashboard = () => {
 			setLoadingInvoice(true);
 			try {
 				const response = await axios.post(
-					'/pcghana-api/',
+					'https://goldenministersfellowship.org/pcghana-api/',
 					JSON.stringify({
 						method: 'GET_PC_INVOICES',
 						api_key: '42353d5c33b45b0a8246b9bf0cd46820e516e3e4',
@@ -95,19 +102,14 @@ const Dashboard = () => {
 					}),
 					{
 						headers: { 'Content-Type': 'application/json' },
-						withCredentials: true,
+						//withCredentials: true,
 					}
 				);
 
 				//console.log(response.data);
-				if (response.data !== null) {
-					//console.log(response.data);
-					setInvoiceData(response.data);
-					setLoadingInvoice(false);
-				} else {
-					setLoadingInvoice(false);
-					return;
-				}
+
+				setInvoiceData(response.data);
+				setLoadingInvoice(false);
 			} catch (error) {
 				console.log(error);
 				let errorMessage;
@@ -119,7 +121,83 @@ const Dashboard = () => {
 			setLoadingInvoice(false);
 		};
 
+		const getPharmacistApplicationStatus = async () => {
+			setLoadingPharmacistStatus(true);
+			try {
+				const response = await axios.post(
+					'https://goldenministersfellowship.org/pcghana-api/',
+					JSON.stringify({
+						method: 'GET_APPLICATION_STATUS',
+						api_key: '42353d5c33b45b0a8246b9bf0cd46820e516e3e4',
+						registration_number: user?.registration_number,
+						renewal_type: 'pharmacist_renewal',
+					}),
+					{
+						headers: { 'Content-Type': 'application/json' },
+						//withCredentials: true,
+					}
+				);
+
+				//console.log(response.data);
+				if (response.data !== null) {
+					//console.log(response.data);
+					//setPharmacistStatus(response.data);
+					setLoadingPharmacistStatus(false);
+				} else {
+					setLoadingPharmacistStatus(false);
+					return;
+				}
+			} catch (error) {
+				console.log(error);
+				let errorMessage;
+				if (error.response?.status === 400) {
+					errorMessage = 'Server Error';
+					console.log(errorMessage);
+				}
+			}
+			setLoadingPharmacistStatus(false);
+		};
+
+		const getPharmacyApplicationStatus = async () => {
+			setLoadingPharmacistStatus(true);
+			try {
+				const response = await axios.post(
+					'https://goldenministersfellowship.org/pcghana-api/',
+					JSON.stringify({
+						method: 'GET_APPLICATION_STATUS',
+						api_key: '42353d5c33b45b0a8246b9bf0cd46820e516e3e4',
+						registration_number: user?.registration_number,
+						renewal_type: 'pharmacy_renewal',
+					}),
+					{
+						headers: { 'Content-Type': 'application/json' },
+						//withCredentials: true,
+					}
+				);
+
+				//console.log(response.data);
+				if (response.data !== null) {
+					console.log(response.data);
+					setPharmacyStatus(response.data);
+					setLoadingPharmacyStatus(false);
+				} else {
+					setLoadingPharmacyStatus(false);
+					return;
+				}
+			} catch (error) {
+				console.log(error);
+				let errorMessage;
+				if (error.response?.status === 400) {
+					errorMessage = 'Server Error';
+					console.log(errorMessage);
+				}
+			}
+			setLoadingPharmacyStatus(false);
+		};
+
 		getInvoices();
+		getPharmacistApplicationStatus();
+		getPharmacyApplicationStatus();
 	}, [user, setInvoiceData, setLoadingInvoice]);
 
 	return (
@@ -139,7 +217,9 @@ const Dashboard = () => {
 				<div className="w-full col-span-2">
 					{isLoading ? (
 						<SkeletonLoad />
-					) : data?.data?.status === '0' && cpdData === null ? (
+					) : (pharmacist_cpd_score?.data?.data?.status === '0' &&
+							cpdData === null) ||
+					  pharmacist_cpd_score.isError ? (
 						<ErrorWidget />
 					) : (
 						<CPDWidget cpdDATA={cpdData} year={currentYear - 1} />
@@ -147,22 +227,29 @@ const Dashboard = () => {
 				</div>
 
 				<div className="w-full col-span-2 ">
-					{isLoading ? (
+					{isLoading || loadingPharmacistStatus ? (
 						<SkeletonLoad />
-					) : data?.data?.status === '0' && pharmacistData === null ? (
+					) : (data?.data?.status === '0' && pharmacistData === null) ||
+					  isError ? (
 						<ErrorWidget />
 					) : (
-						<RelicensureWidget pharmacistStanding={pharmacistData} />
+						<RelicensureWidget
+							pharmacistStanding={pharmacistData}
+							//pharmacistRenewalStatus={pharmacistStatus}
+						/>
 					)}
 				</div>
 
 				<div className="w-full col-span-2">
-					{isLoading ? (
+					{isLoading || loadingPharmacyStatus ? (
 						<SkeletonLoad />
 					) : data?.data?.status === '0' && pharmacistData === null ? (
 						<ErrorWidget />
 					) : (
-						<PharmacyRenewalWidget pharmacistStanding={pharmacistData} />
+						<PharmacyRenewalWidget
+							pharmacistStanding={pharmacistData}
+							pharmacyRenewalStatus={pharmacyStatus}
+						/>
 					)}
 				</div>
 				<div className="w-full col-span-2">

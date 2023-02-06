@@ -4,15 +4,28 @@ import { TbLicense } from 'react-icons/tb';
 import { BsPatchCheckFill, BsPatchExclamationFill } from 'react-icons/bs';
 import ButtonComponent from '../Button/Button';
 import { Link, useNavigate } from 'react-router-dom';
-import { toast } from 'react-hot-toast';
+import { toast } from 'react-toastify';
+//import { useStateContext } from '../../../context/StateContext';
 
-const RelicensureWidget = ({ pharmacistStanding }) => {
+const RelicensureWidget = ({ pharmacistStanding, pharmacistRenewalStatus }) => {
+	//const { relicensureProcessing } = useStateContext();
+
 	const [isGood, setIsGood] = useState(false);
 
 	const navigate = useNavigate();
 
+	/*
 	useEffect(() => {
-		if (pharmacistStanding?.in_good_standing === 'Approved') {
+		if (pharmacistRenewalStatus?.renewal_status === 'approved') {
+			setIsGood(true);
+		} else if (pharmacistRenewalStatus?.renewal_status === null) {
+			setIsGood(false);
+		}
+	}, [pharmacistRenewalStatus]);
+*/
+
+	useEffect(() => {
+		if (pharmacistStanding?.in_good_standing?.toLowerCase() === 'approved') {
 			setIsGood(true);
 		} else {
 			setIsGood(false);
@@ -35,6 +48,12 @@ const RelicensureWidget = ({ pharmacistStanding }) => {
 		}
 	};
 
+	/**
+	const openForm = () => {
+		navigate('/relicensure-application');
+	};
+	 */
+
 	return (
 		<div className="group relative transition-all duration-150 ease-in rounded-lg w-full h-72 p-4 bg-blue-600 shadow-blue-500/50 shadow-lg hover:shadow-blue-500/50 hover:shadow-xl overflow-hidden">
 			<div className="transition-all duration-150 ease-in absolute z-10 -top-10 -right-20 text-[16rem] text-white/30 group-hover:scale-105">
@@ -42,7 +61,13 @@ const RelicensureWidget = ({ pharmacistStanding }) => {
 			</div>
 			<div
 				className={`absolute z-10 bottom-0 left-0 w-full h-2 ${
-					isGood ? 'bg-green-400' : 'bg-red-400 animate-pulse'
+					isGood
+						? 'bg-green-400'
+						: pharmacistRenewalStatus?.renewal_status === 'pending_review' ||
+						  pharmacistStanding?.in_good_standing?.toLowerCase() ===
+								'pending payment'
+						? 'bg-yellow-400'
+						: 'bg-red-400 animate-pulse'
 				}`}
 			/>
 			<div className="relative z-20 w-full h-full flex flex-col justify-between items-center">
@@ -62,12 +87,27 @@ const RelicensureWidget = ({ pharmacistStanding }) => {
 				</div>
 
 				<div className="w-full flex flex-wrap justify-center items-center gap-3">
-					{!isGood ? (
+					{!isGood ||
+					pharmacistRenewalStatus?.renewal_status === 'pending_review' ||
+					pharmacistRenewalStatus?.renewal_status === 'approved' ||
+					pharmacistStanding?.in_good_standing?.toLowerCase() ===
+						'pending payment' ||
+					pharmacistStanding?.in_good_standing?.toLowerCase() === 'approved' ? (
 						<ButtonComponent
 							onClick={openForm}
 							width
 							title="apply"
 							color="green"
+							disabled={
+								pharmacistRenewalStatus?.renewal_status === 'pending_review' ||
+								pharmacistRenewalStatus?.renewal_status === 'approved' ||
+								pharmacistStanding?.in_good_standing?.toLowerCase() ===
+									'pending payment' ||
+								pharmacistStanding?.in_good_standing?.toLowerCase() ===
+									'approved'
+									? true
+									: false
+							}
 						/>
 					) : null}
 					<Link to="/" className="w-full">
@@ -84,6 +124,17 @@ const RelicensureWidget = ({ pharmacistStanding }) => {
 								you're in good standing
 							</Typography>
 							<BsPatchCheckFill className="text-2xl text-green-400" />
+						</>
+					) : pharmacistRenewalStatus?.renewal_status === 'pending_review' ||
+					  pharmacistStanding?.in_good_standing?.toLowerCase() ===
+							'pending payment' ? (
+						<>
+							<Typography
+								variant="paragraph"
+								className="capitalize text-sm text-right text-gray-200">
+								your application is processing
+							</Typography>
+							<BsPatchExclamationFill className="text-2xl text-yellow-400" />
 						</>
 					) : (
 						<>

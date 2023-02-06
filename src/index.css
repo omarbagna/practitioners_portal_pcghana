@@ -8,3 +8,18 @@
 	margin: 0;
 	box-sizing: border-box;
 }
+
+::-webkit-scrollbar {
+	width: 5px;
+	height: 5px;
+	border-radius: 50%;
+}
+
+::-webkit-scrollbar-thumb {
+	background-color: rgb(30, 136, 229);
+	border-radius: 0.5rem;
+}
+
+::-webkit-scrollbar-thumb:hover {
+	background-color: #0404ff;
+}

@@ -3,16 +3,34 @@ import React, { useEffect, useState } from 'react';
 import { BsPatchCheckFill, BsPatchExclamationFill } from 'react-icons/bs';
 import ButtonComponent from '../Button/Button';
 import { useNavigate } from 'react-router-dom';
-import { toast } from 'react-hot-toast';
+import { toast } from 'react-toastify';
 import { MdOutlineLocalPharmacy } from 'react-icons/md';
 
-const PharmacyRenewalWidget = ({ pharmacistStanding }) => {
-	const [isGood, setIsGood] = useState(false);
+const PharmacyRenewalWidget = ({
+	pharmacistStanding,
+	pharmacyRenewalStatus,
+}) => {
+	const [isGood, setIsGood] = useState(true);
 
 	const navigate = useNavigate();
 
+	/*
 	useEffect(() => {
-		if (pharmacistStanding?.in_good_standing === 'Approved') {
+		if (pharmacyRenewalStatus?.renewal_status === 'approved') {
+			setIsGood(true);
+		} else if (pharmacyRenewalStatus?.renewal_status === null) {
+			setIsGood(false);
+		}
+	}, [pharmacyRenewalStatus]);
+
+	const openForm = () => {
+		navigate('/pharmacy-renewal-application');
+	};
+
+*/
+
+	useEffect(() => {
+		if (pharmacistStanding?.in_good_standing?.toLowerCase() === 'approved') {
 			setIsGood(true);
 		} else {
 			setIsGood(false);
@@ -42,7 +60,11 @@ const PharmacyRenewalWidget = ({ pharmacistStanding }) => {
 			</div>
 			<div
 				className={`absolute z-10 bottom-0 left-0 w-full h-2 ${
-					isGood ? 'bg-green-400' : 'bg-red-400 animate-pulse'
+					isGood
+						? 'bg-green-400'
+						: pharmacyRenewalStatus?.renewal_status === 'pending_review'
+						? 'bg-yellow-400'
+						: 'bg-red-400 animate-pulse'
 				}`}
 			/>
 			<div className="relative z-20 w-full h-full flex flex-col justify-between items-center">
@@ -56,22 +78,22 @@ const PharmacyRenewalWidget = ({ pharmacistStanding }) => {
 				</div>
 
 				<div className="w-full flex justify-center items-center gap-5">
-					{isGood ? (
-						<ButtonComponent
-							onClick={openForm}
-							width
-							title="apply"
-							color="green"
-						/>
-					) : (
-						<ButtonComponent
-							onClick={openForm}
-							width
-							disabled
-							title="apply"
-							color="green"
-						/>
-					)}
+					<ButtonComponent
+						onClick={openForm}
+						width
+						disabled={
+							!isGood ||
+							pharmacyRenewalStatus?.renewal_status === 'pending_review' ||
+							pharmacyRenewalStatus?.renewal_status === 'approved' ||
+							pharmacistStanding?.in_good_standing?.toLowerCase() ===
+								'pending payment' ||
+							pharmacistStanding?.in_good_standing?.toLowerCase() === 'approved'
+								? true
+								: false
+						}
+						title="apply"
+						color="green"
+					/>
 				</div>
 
 				<div className="w-full flex justify-end items-center gap-2">
@@ -83,6 +105,15 @@ const PharmacyRenewalWidget = ({ pharmacistStanding }) => {
 								you're in good standing
 							</Typography>
 							<BsPatchCheckFill className="text-2xl text-green-400" />
+						</>
+					) : pharmacyRenewalStatus?.renewal_status === 'pending_review' ? (
+						<>
+							<Typography
+								variant="paragraph"
+								className="capitalize text-sm text-right text-gray-200">
+								your application is processing
+							</Typography>
+							<BsPatchExclamationFill className="text-2xl text-yellow-400" />
 						</>
 					) : (
 						<>

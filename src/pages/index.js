@@ -4,6 +4,10 @@ import { lazy } from 'react';
 
 export const Login = lazy(() => import('./Login/Login'));
 
+// Reset Password Page
+
+export const ResetPassword = lazy(() => import('./Login/ResetPassword'));
+
 // Dashboard Page
 
 export const Dashboard = lazy(() => import('./Dashboard/Dashboard'));

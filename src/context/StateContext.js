@@ -5,6 +5,8 @@ const Context = createContext();
 export const StateContext = ({ children }) => {
 	const [viewUserModal, setViewUserModal] = useState(false);
 	const [showInvoice, setShowInvoice] = useState(false);
+	const [submissionSuccess, setSubmissionSuccess] = useState(false);
+	const [relicensureProcessing, setRelicensureProcessing] = useState(false);
 	const [loadingInvoice, setLoadingInvoice] = useState(false);
 	return (
 		<Context.Provider
@@ -15,6 +17,10 @@ export const StateContext = ({ children }) => {
 				setShowInvoice,
 				loadingInvoice,
 				setLoadingInvoice,
+				submissionSuccess,
+				setSubmissionSuccess,
+				relicensureProcessing,
+				setRelicensureProcessing,
 			}}>
 			{children}
 		</Context.Provider>

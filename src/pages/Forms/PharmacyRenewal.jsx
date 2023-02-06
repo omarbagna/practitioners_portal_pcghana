@@ -14,7 +14,7 @@ import { Dialog, DialogFooter, DialogHeader } from '@material-tailwind/react';
 import { useNavigate } from 'react-router-dom';
 import { useQuery } from 'react-query';
 import { axiosPrivate } from '../../api/axios';
-import { toast } from 'react-hot-toast';
+import { toast } from 'react-toastify';
 import { SkeletonLoad } from '../../layout';
 import { useDataContext } from '../../context/DataContext';
 import { format } from 'date-fns';
@@ -50,7 +50,12 @@ const PharmacyRenewal = () => {
 	const hiddenApplicantImageInput = useRef(null);
 
 	useEffect(() => {
-		if (pharmacistData?.in_good_standing !== 'Approved') {
+		if (pharmacistData?.in_good_standing?.toLowerCase() === 'pending payment') {
+			toast.error(
+				'You cannot access this page. You pharmacist renewal application is currently processing'
+			);
+			navigate('/', { replace: true });
+		} else if (pharmacistData?.in_good_standing?.toLowerCase() !== 'approved') {
 			toast.error('You cannot access this page. You are not in good standing.');
 			navigate('/', { replace: true });
 		}

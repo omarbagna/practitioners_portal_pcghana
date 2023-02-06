@@ -1,10 +1,11 @@
 import { motion } from 'framer-motion';
 import React from 'react';
-//import { toast } from 'react-hot-toast';
+//import { toast } from 'react-toastify';
 //import { useAuthContext } from '../../context/AuthContext';
 import PageContent from '../PageContent/PageContent';
 import NavBar from '../NavBar/NavBar';
 import UserModal from '../UserModal/UserModal';
+import Footer from '../Footer/Footer';
 
 const PageLayout = () => {
 	const container = {
@@ -36,6 +37,8 @@ const PageLayout = () => {
 			</motion.span>
 
 			<UserModal />
+
+			<Footer />
 		</motion.div>
 	);
 };

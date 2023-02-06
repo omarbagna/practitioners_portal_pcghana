@@ -11,6 +11,7 @@ import {
 	RelicensureForm,
 	EPharmacyForm,
 	PharmacyRenewal,
+	ResetPassword,
 } from './pages';
 import PrivateRoutes from './utils/PrivateRoutes';
 
@@ -20,6 +21,7 @@ const App = () => {
 			<Suspense fallback={<LoadingScreen />}>
 				<Routes>
 					<Route path="/login" element={<Login />} />
+					<Route path="/reset-password" element={<ResetPassword />} />
 					<Route element={<PrivateRoutes />}>
 						<Route path="/" element={<PageLayout />} exact>
 							{/* Dashboard Page */}

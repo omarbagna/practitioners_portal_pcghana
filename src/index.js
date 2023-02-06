@@ -7,9 +7,10 @@ import { BrowserRouter } from 'react-router-dom';
 import { DataContext } from './context/DataContext';
 import { AuthContext } from './context/AuthContext';
 import { ThemeProvider } from '@material-tailwind/react';
-import { Toaster } from 'react-hot-toast';
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 import { QueryClient, QueryClientProvider } from 'react-query';
-import { ReactQueryDevtools } from 'react-query/devtools';
+//import { ReactQueryDevtools } from 'react-query/devtools';
 import ScrollToTop from './components/scrollToTop/ScrollToTop';
 
 const queryClient = new QueryClient();
@@ -22,15 +23,26 @@ root.render(
 				<StateContext>
 					<DataContext>
 						<ThemeProvider>
-							<Toaster />
 							<ScrollToTop>
 								<App />
 							</ScrollToTop>
+							<ToastContainer
+								position="top-right"
+								autoClose={8000}
+								hideProgressBar={false}
+								newestOnTop={false}
+								closeOnClick
+								rtl={false}
+								pauseOnFocusLoss
+								draggable
+								pauseOnHover
+								theme="colored"
+							/>
 						</ThemeProvider>
 					</DataContext>
 				</StateContext>
 			</AuthContext>
 		</BrowserRouter>
-		<ReactQueryDevtools initialIsOpen={false} position="bottom-left" />
+		{/*<ReactQueryDevtools initialIsOpen={false} position="bottom-left" />*/}
 	</QueryClientProvider>
 );

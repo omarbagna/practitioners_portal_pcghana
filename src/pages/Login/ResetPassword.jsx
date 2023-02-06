@@ -1,94 +1,61 @@
 import React, { useEffect, useState } from 'react';
 import { Card, CardBody, Typography } from '@material-tailwind/react';
 import ButtonComponent from '../../components/reusable/Button/Button';
-import {
-	LogoDefault,
-	//, LoginImage
-} from '../../assets';
+import { LogoDefault } from '../../assets';
 import { Controller, useForm } from 'react-hook-form';
 import { DefaultInput } from '../../components';
-import { useAuthContext } from '../../context/AuthContext';
 import { axiosPrivate } from '../../api/axios';
-//import { LazyLoadImage } from 'react-lazy-load-image-component';
-//import 'react-lazy-load-image-component/src/effects/blur.css';
-//import { useLogin } from '../../hooks/useLogin';
 //import toast from 'react-toastify';
-import {
-	AiFillEye,
-	AiFillEyeInvisible,
-	AiOutlineLoading3Quarters,
-} from 'react-icons/ai';
-import { SelectInput } from '../../components';
-import { Navigate, useNavigate } from 'react-router-dom';
+import { AiOutlineLoading3Quarters } from 'react-icons/ai';
+import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 
-const LOGIN_URL = 'api/login';
+const FORGOT_PASSWORD_URL = 'api/send_reset_password_link_email';
 
-const Login = () => {
+const ResetPassword = () => {
 	const navigate = useNavigate();
 	const [isLoading, setIsLoading] = useState(false);
 	const [loginError, setLoginError] = useState(false);
-	const [isVisible, setIsVisible] = useState(false);
-	const { login } = useAuthContext();
 
 	const { handleSubmit, control } = useForm({
 		mode: 'all',
 		reValidateMode: 'onChange',
 		defaultValues: {
-			login_type: '',
-			license_number: '',
-			password: '',
+			user_registration_number: '',
 		},
 	});
 
 	const formData = new FormData();
 
-	/*const onSuccess = (data) => {
-		if (data?.length < 1) {
-			toast.error('Incorrect email or password. Try again');
-			setLoginError(true);
-		} else {
-			setLoginError(false);
-			UserLogin(data);
-		}
-
-		console.log({ data });
-	};
-
-	const { refetch, isLoading, isFetching } = useLogin(
-		onSuccess,
-		userCredentials.email,
-		userCredentials.password
-	);
-*/
-
 	useEffect(() => {
 		localStorage.clear();
 	}, []);
 
-	const handleLogin = async (user) => {
-		formData.append('username', user?.license_number.toUpperCase());
-		formData.append('password', user?.password);
-		formData.append('type', user?.login_type.toLowerCase());
+	const handleForgotPassword = async (data) => {
+		//console.log({ data });
+		formData.append(
+			'registration_number',
+			data?.user_registration_number.toUpperCase()
+		);
 
 		setIsLoading(true);
 
 		try {
-			const response = await axiosPrivate.post(LOGIN_URL, formData, {
+			const response = await axiosPrivate.post(FORGOT_PASSWORD_URL, formData, {
 				headers: {
 					'Content-Type': 'multipart/form-data',
 				},
 			});
 
-			if (response?.data?.status === '0') {
+			if (response?.data?.status === '0' || response?.data?.status === '-1') {
 				setIsLoading(false);
 				setLoginError(true);
-				toast.error('Invalid Username or Password');
+				toast.error('Invalid License number');
 			} else if (response?.data?.status === '1') {
 				setIsLoading(false);
 				setLoginError(false);
-				login(response?.data?.user_data);
-				Navigate('/', { replace: true });
+				toast.success('Reset link sent to your email.');
+				navigate('/login', { replace: true });
 			}
 		} catch (err) {
 			let errMessage;
@@ -100,10 +67,6 @@ const Login = () => {
 			setLoginError(true);
 			setIsLoading(false);
 		}
-	};
-
-	const visibility = () => {
-		setIsVisible(!isVisible);
 	};
 
 	return (
@@ -167,45 +130,10 @@ const Login = () => {
 							) : (
 								<form
 									className="flex flex-col justify-center items-center gap-6 w-full"
-									onSubmit={handleSubmit(handleLogin)}>
+									onSubmit={handleSubmit(handleForgotPassword)}>
 									<Controller
 										control={control}
-										name="login_type"
-										rules={{
-											required: 'Please select Login Type',
-										}}
-										render={({
-											field: { ref, ...field },
-											fieldState: { error, invalid },
-										}) => (
-											<SelectInput
-												{...field}
-												ref={ref}
-												error={invalid || loginError}
-												helpertext={invalid ? error.message : null}
-												name="login_type"
-												label="Select Login Type *"
-												options={[
-													{
-														name: 'pharmacist',
-														value: 'pharmacist',
-													},
-													{
-														name: 'pharmacy technician',
-														value: 'pharmacist',
-													},
-													{
-														name: 'intern',
-														value: 'pharmacist',
-													},
-												]}
-												required
-											/>
-										)}
-									/>
-									<Controller
-										control={control}
-										name="license_number"
+										name="user_registration_number"
 										rules={{
 											required: 'Please enter license number to Login',
 										}}
@@ -218,54 +146,24 @@ const Login = () => {
 												ref={ref}
 												error={invalid || loginError}
 												helpertext={invalid ? error.message : null}
-												name="license_number"
+												name="user_registration_number"
 												label="Full registration / License number"
 												type="text"
 												required
 											/>
 										)}
 									/>
-									<Controller
-										control={control}
-										name="password"
-										rules={{
-											required: 'Please enter Password',
-										}}
-										render={({
-											field: { ref, ...field },
-											fieldState: { error, invalid },
-										}) => (
-											<DefaultInput
-												{...field}
-												ref={ref}
-												error={invalid || loginError}
-												helpertext={invalid ? error.message : null}
-												name="password"
-												label="Password"
-												type={isVisible ? 'text' : 'password'}
-												icon={
-													isVisible ? (
-														<AiFillEyeInvisible onClick={visibility} />
-													) : (
-														<AiFillEye onClick={visibility} />
-													)
-												}
-												required
-											/>
-										)}
-									/>
 
 									<ButtonComponent
-										width
-										title="login"
+										title="reset password"
 										type="submit"
 										color="blue"
 									/>
 									<Typography
 										variant="paragraph"
-										onClick={() => navigate('/reset-password')}
-										className="capitalize w-full transition-all duration-150 ease-in-out text-left text-xs underline hover:text-blue-600 cursor-pointer">
-										<em>forgot password? click here</em>
+										onClick={() => navigate('/login')}
+										className="capitalize transition-all duration-150 ease-in-out text-sm underline hover:text-blue-600 cursor-pointer">
+										back to login screen
 									</Typography>
 								</form>
 							)}
@@ -277,4 +175,4 @@ const Login = () => {
 	);
 };
 
-export default Login;
+export default ResetPassword;
