@@ -229,8 +229,6 @@ const EPharmacyForm = () => {
 
 		setIsSubmitting(true);
 
-		/**
-
 		try {
 			const privateResponse = await axios.post(
 				'https://goldenministersfellowship.org/pcghana-api/',
@@ -327,7 +325,8 @@ const EPharmacyForm = () => {
 					setInvoiceData(privateResponse.data?.invoices);
 				} else {
 					setInvoiceData([...invoiceData, ...privateResponse.data?.invoices]);
-				} 
+				}  */
+
 				setIsSubmitting(false);
 				setSubmissionSuccess(true);
 				//navigate('/', { replace: true });
@@ -345,8 +344,7 @@ const EPharmacyForm = () => {
 		}
 
 		setIsSubmitting(false);
-
- */
+		/*
 
 		try {
 			const response = await axiosPrivate.post('api/saverenewal', formData, {
@@ -426,7 +424,7 @@ const EPharmacyForm = () => {
 							setInvoiceData(privateResponse.data?.invoices);
 						} else {
 							setInvoiceData([...invoiceData, ...privateResponse.data?.invoices]);
-						} */
+						} 
 						toast.success('Application Submitted Successfully');
 						setIsSubmitting(false);
 						setSubmissionSuccess(true);
@@ -457,10 +455,12 @@ const EPharmacyForm = () => {
 				console.log(errMessage);
 			}
 
+			
 			setIsSubmitting(false);
 		}
+	
+	*/
 	};
-
 	const handleOpen = () => setOpen(!open);
 	const handleReset = () => {
 		reset();
