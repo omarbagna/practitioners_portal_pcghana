@@ -5,6 +5,7 @@ import { BsPatchCheckFill, BsPatchExclamationFill } from 'react-icons/bs';
 import ButtonComponent from '../Button/Button';
 import { Link, useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
+import BackgroundIcon from './BackgroundIcon';
 //import { useStateContext } from '../../../context/StateContext';
 
 const RelicensureWidget = ({ pharmacistStanding, pharmacistRenewalStatus }) => {
@@ -56,9 +57,8 @@ const RelicensureWidget = ({ pharmacistStanding, pharmacistRenewalStatus }) => {
 
 	return (
 		<div className="group relative transition-all duration-150 ease-in rounded-lg w-full h-72 p-4 bg-blue-600 shadow-blue-500/50 shadow-lg hover:shadow-blue-500/50 hover:shadow-xl overflow-hidden">
-			<div className="transition-all duration-150 ease-in absolute z-10 -top-10 -right-20 text-[16rem] text-white/30 group-hover:scale-105">
-				<TbLicense />
-			</div>
+			<BackgroundIcon icon={<TbLicense />} />
+
 			<div
 				className={`absolute z-10 bottom-0 left-0 w-full h-2 ${
 					isGood

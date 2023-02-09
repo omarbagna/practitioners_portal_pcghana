@@ -461,6 +461,11 @@ const EPharmacyForm = () => {
 	
 	*/
 	};
+
+	const onError = (errors) => {
+		toast.error('Please fill all required fields');
+	};
+
 	const handleOpen = () => setOpen(!open);
 	const handleReset = () => {
 		reset();
@@ -507,7 +512,7 @@ const EPharmacyForm = () => {
 						</div>
 
 						<form
-							onSubmit={handleSubmit(handleFormSubmit)}
+							onSubmit={handleSubmit(handleFormSubmit, onError)}
 							className="w-full h-full flex flex-col justify-start items-center gap-8 mt-6">
 							<FormSection sectionName="facility data">
 								<div className="w-full flex flex-col md:grid md:grid-cols-6 lg:grid-cols-12 gap-5 xl:gap-8 place-items-center place-content-center">
@@ -2296,13 +2301,12 @@ const EPharmacyForm = () => {
 											<div className="col-span-6 lg:col-span-12 w-full">
 												<Controller
 													control={control}
-													name="prescriptions_processed"
-													/*rules={{
+													name="pharmaceutical_services"
+													rules={{
 														validate: (value) =>
 															Object.values(value).includes(true) ||
 															'Please select at least one option',
 													}}
-													*/
 													render={({
 														field: { ref, onChange, ...field },
 														fieldState: { error, invalid },
@@ -2426,11 +2430,9 @@ const EPharmacyForm = () => {
 																	</Grid>
 																</Grid>
 															</FormGroup>
-															{/**
 															<FormHelperText>
 																{invalid ? error.message : null}
 															</FormHelperText>
-															 */}
 														</FormControl>
 													)}
 												/>

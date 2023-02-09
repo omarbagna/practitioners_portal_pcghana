@@ -188,65 +188,54 @@ const PharmacyRenewal = () => {
 	useEffect(() => {
 		if (pharmacyData && pharmacyRenewalData === null) {
 			reset({
-				pharmacy_name: pharmacyData?.name === null ? '--' : pharmacyData?.name,
+				pharmacy_name: pharmacyData?.name === null ? '' : pharmacyData?.name,
 				license_number:
 					pharmacyData?.license_number === null
-						? '--'
+						? ''
 						: pharmacyData?.license_number,
 				business_type:
 					pharmacyData?.business_type?.name === null
-						? '--'
+						? ''
 						: pharmacyData?.business_type?.name,
 				region:
-					pharmacyData?.region?.name === null
-						? '--'
-						: pharmacyData?.region?.name,
+					pharmacyData?.region?.name === null ? '' : pharmacyData?.region?.name,
 				district:
 					pharmacyData?.district?.name === null
-						? '--'
+						? ''
 						: pharmacyData?.district?.name,
-				town: pharmacyData?.town === null ? '--' : pharmacyData?.town,
-				street: pharmacyData?.street === null ? '--' : pharmacyData?.street,
+				town: pharmacyData?.town === null ? '' : pharmacyData?.town,
+				street: pharmacyData?.street === null ? '' : pharmacyData?.street,
 				location:
-					pharmacyData?.house_number === null
-						? '--'
-						: pharmacyData?.house_number,
+					pharmacyData?.house_number === null ? '' : pharmacyData?.house_number,
 				gps_address:
 					pharmacyData?.ghana_post_code === null
-						? '--'
+						? ''
 						: pharmacyData?.ghana_post_code,
-				phone_number: pharmacyData?.phone === null ? '--' : pharmacyData?.phone,
-				pharmacy_email:
-					pharmacyData?.email === null ? '--' : pharmacyData?.email,
+				phone_number: pharmacyData?.phone === null ? '' : pharmacyData?.phone,
+				pharmacy_email: pharmacyData?.email === null ? '' : pharmacyData?.email,
 				is_epharmacy:
-					pharmacyData?.is_epharmacy === null
-						? '--'
-						: pharmacyData?.is_epharmacy,
+					pharmacyData?.is_epharmacy === null ? '' : pharmacyData?.is_epharmacy,
 				last_renewal:
-					pharmacyData?.last_renewal === null
-						? '--'
-						: pharmacyData?.last_renewal,
-				cbd: pharmacyData?.cbd === null ? '--' : pharmacyData?.cbd,
+					pharmacyData?.last_renewal === null ? '' : pharmacyData?.last_renewal,
+				cbd: pharmacyData?.cbd === null ? '' : pharmacyData?.cbd,
 				weekdays_start_time: '',
 				weekdays_end_time: '',
 				weekend_start_time: '',
 				weekend_end_time: '',
 				registration_number:
-					user?.registration_number === null ? '--' : user?.registration_number,
-				person_title: user?.title === null ? '--' : user?.title,
-				person_surname: user?.last_name === null ? '--' : user?.last_name,
-				person_first_name: user?.first_name === null ? '--' : user?.first_name,
-				person_othernames:
-					user?.mobile_name === null ? '--' : user?.mobile_name,
-				person_nationality:
-					user?.nationality === null ? '--' : user?.nationality,
+					user?.registration_number === null ? '' : user?.registration_number,
+				person_title: user?.title === null ? '' : user?.title,
+				person_surname: user?.last_name === null ? '' : user?.last_name,
+				person_first_name: user?.first_name === null ? '' : user?.first_name,
+				person_othernames: user?.mobile_name === null ? '' : user?.mobile_name,
+				person_nationality: user?.nationality === null ? '' : user?.nationality,
 				person_postal_address:
-					user?.postal_address === null ? '--' : user?.postal_address,
+					user?.postal_address === null ? '' : user?.postal_address,
 				person_town:
-					user?.residential_city === null ? '--' : user?.residential_city,
-				person_mobile_number: user?.phone === null ? '--' : user?.phone,
+					user?.residential_city === null ? '' : user?.residential_city,
+				person_mobile_number: user?.phone === null ? '' : user?.phone,
 				person_landline: '',
-				person_email: user?.email === null ? '--' : user?.email,
+				person_email: user?.email === null ? '' : user?.email,
 			});
 
 			setFoundPharmacy(true);
@@ -254,79 +243,72 @@ const PharmacyRenewal = () => {
 			reset({
 				pharmacy_name:
 					pharmacyRenewalData?.pharmacy_name === null
-						? '--'
+						? ''
 						: pharmacyRenewalData?.pharmacy_name,
 				license_number:
 					pharmacyRenewalData?.license_number === null
-						? '--'
+						? ''
 						: pharmacyRenewalData?.license_number,
 				business_type:
 					pharmacyRenewalData?.business_type === null
-						? '--'
+						? ''
 						: pharmacyRenewalData?.business_type,
 				region:
 					pharmacyRenewalData?.region === null
-						? '--'
+						? ''
 						: pharmacyRenewalData?.region,
 				district:
 					pharmacyRenewalData?.district === null
-						? '--'
+						? ''
 						: pharmacyRenewalData?.district,
 				town:
-					pharmacyRenewalData?.town === null ? '--' : pharmacyRenewalData?.town,
+					pharmacyRenewalData?.town === null ? '' : pharmacyRenewalData?.town,
 				street:
 					pharmacyRenewalData?.street === null
-						? '--'
+						? ''
 						: pharmacyRenewalData?.street,
 				location:
 					pharmacyRenewalData?.house_number === null
-						? '--'
+						? ''
 						: pharmacyRenewalData?.house_number,
 				gps_address:
 					pharmacyRenewalData?.ghana_post_code === null
-						? '--'
+						? ''
 						: pharmacyRenewalData?.ghana_post_code,
 				phone_number:
-					pharmacyRenewalData?.phone === null
-						? '--'
-						: pharmacyRenewalData?.phone,
+					pharmacyRenewalData?.phone === null ? '' : pharmacyRenewalData?.phone,
 				pharmacy_email:
-					pharmacyRenewalData?.email === null
-						? '--'
-						: pharmacyRenewalData?.email,
+					pharmacyRenewalData?.email === null ? '' : pharmacyRenewalData?.email,
 				is_epharmacy:
 					pharmacyRenewalData?.is_epharmacy === null
-						? '--'
+						? ''
 						: pharmacyRenewalData?.is_epharmacy,
 				last_renewal:
 					pharmacyRenewalData?.last_renewal === null
-						? '--'
+						? ''
 						: pharmacyRenewalData?.last_renewal,
-				cbd:
-					pharmacyRenewalData?.cbd === null ? '--' : pharmacyRenewalData?.cbd,
+				cbd: pharmacyRenewalData?.cbd === null ? '' : pharmacyRenewalData?.cbd,
 				registration_number:
-					user?.registration_number === null ? '--' : user?.registration_number,
-				person_title: user?.title === null ? '--' : user?.title,
-				person_surname: user?.last_name === null ? '--' : user?.last_name,
-				person_first_name: user?.first_name === null ? '--' : user?.first_name,
-				person_othernames:
-					user?.mobile_name === null ? '--' : user?.mobile_name,
-				person_nationality:
-					user?.nationality === null ? '--' : user?.nationality,
+					user?.registration_number === null ? '' : user?.registration_number,
+				person_title: user?.title === null ? '' : user?.title,
+				person_surname: user?.last_name === null ? '' : user?.last_name,
+				person_first_name: user?.first_name === null ? '' : user?.first_name,
+				person_othernames: user?.mobile_name === null ? '' : user?.mobile_name,
+				person_nationality: user?.nationality === null ? '' : user?.nationality,
 				person_postal_address:
 					relicensureData?.person_postal_address === null
-						? '--'
+						? ''
 						: relicensureData?.person_postal_address,
 				person_town:
-					user?.residential_city === null ? '--' : user?.residential_city,
+					user?.residential_city === null ? '' : user?.residential_city,
 				person_mobile_number:
 					relicensureData?.person_mobile_number === null
-						? '--'
+						? ''
 						: relicensureData?.person_mobile_number,
 				person_landline: '',
 				person_email:
 					relicensureData?.person_email === null
-						? '--'
+						? ''
 						: relicensureData?.person_email,
 			});
 
@@ -356,6 +338,10 @@ const PharmacyRenewal = () => {
 		console.log({ data });
 		setPharmacyRenewalData(data);
 		navigate('/pharmacy-renewal-application-continued');
+	};
+
+	const onError = (errors) => {
+		toast.error('Please fill all required fields');
 	};
 
 	const addSupportStaffComponent = () => {
@@ -422,7 +408,7 @@ const PharmacyRenewal = () => {
 
 			{foundPharmacy ? (
 				<form
-					onSubmit={handleSubmit(handleFormSubmit)}
+					onSubmit={handleSubmit(handleFormSubmit, onError)}
 					className="w-full h-full flex flex-col justify-start items-center gap-8 mt-6">
 					<FormSection sectionName="facility data">
 						<div className="w-full flex flex-col md:grid md:grid-cols-6 lg:grid-cols-12 gap-5 xl:gap-8 place-items-center place-content-center">
@@ -1336,6 +1322,9 @@ const PharmacyRenewal = () => {
 															control={control}
 															name={`support_staff[${inputField}].type`}
 															defaultValue=""
+															rules={{
+																required: 'Please select an option',
+															}}
 															render={({
 																field: { ref, ...field },
 																fieldState: { error, invalid },
@@ -1347,6 +1336,7 @@ const PharmacyRenewal = () => {
 																	helpertext={invalid ? error.message : null}
 																	name={`support_staff[${inputField}].type`}
 																	label="Practitioner Type"
+																	required
 																	options={[
 																		{
 																			name: 'pharmacy technician',

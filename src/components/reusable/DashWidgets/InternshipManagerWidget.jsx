@@ -1,6 +1,7 @@
 import { Typography } from '@material-tailwind/react';
 import React from 'react';
 import { FaRegAddressBook } from 'react-icons/fa';
+import BackgroundIcon from './BackgroundIcon';
 //import { BsPatchCheckFill, BsPatchExclamationFill } from 'react-icons/bs';
 //import ButtonComponent from '../Button/Button';
 //import { Link } from 'react-router-dom';
@@ -11,9 +12,7 @@ const InternshipManagerWidget = () => {
 			{/* Render component inactive */}
 			<div className="absolute top-0 left-0 z-30 w-full h-full bg-gray-800/70 backdrop-blur-sm cursor-not-allowed" />
 
-			<div className="transition-all duration-150 ease-in absolute z-10 -top-10 -right-20 text-[16rem] text-white/30 group-hover:scale-105">
-				<FaRegAddressBook />
-			</div>
+			<BackgroundIcon icon={<FaRegAddressBook />} />
 
 			<div className="relative z-20 w-full h-full flex flex-col justify-between items-center">
 				<div className="w-full flex flex-col gap-3 justify-center items-center">

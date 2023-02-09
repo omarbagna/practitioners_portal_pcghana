@@ -4,6 +4,7 @@ import { MdOutlineLocalPharmacy } from 'react-icons/md';
 import { BsPatchCheckFill, BsPatchExclamationFill } from 'react-icons/bs';
 import ButtonComponent from '../Button/Button';
 import { Link } from 'react-router-dom';
+import BackgroundIcon from './BackgroundIcon';
 
 const PharmacySuperintendingWidget = () => {
 	const [
@@ -16,9 +17,8 @@ const PharmacySuperintendingWidget = () => {
 			{/* Render component inactive */}
 			<div className="absolute top-0 left-0 z-30 w-full h-full bg-gray-800/70 backdrop-blur-sm cursor-not-allowed" />
 
-			<div className="transition-all duration-150 ease-in absolute z-10 -top-10 -right-20 text-[16rem] text-white/30 group-hover:scale-105">
-				<MdOutlineLocalPharmacy />
-			</div>
+			<BackgroundIcon icon={<MdOutlineLocalPharmacy />} />
+
 			<div
 				className={`absolute z-10 bottom-0 left-0 w-full h-2 ${
 					isGood ? 'bg-green-400' : 'bg-red-400 animate-pulse'
