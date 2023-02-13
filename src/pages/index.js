@@ -16,13 +16,18 @@ export const Dashboard = lazy(() => import('./Dashboard/Dashboard'));
 
 export const RelicensureForm = lazy(() => import('./Forms/RelicensureForm'));
 
-// Relicensure Form Page
+// Pharmacy Renewal Form Page
 
 export const PharmacyRenewal = lazy(() => import('./Forms/PharmacyRenewal'));
 
-// Relicensure Form Page
+// Pharmacy Renewal continued (Digitalization assessment) Form Page
 
 export const EPharmacyForm = lazy(() => import('./Forms/EPharmacyForm'));
+// Relicensure Form Page
+
+export const DigitalizationForm = lazy(() =>
+	import('./Forms/DigitalizationForm')
+);
 
 // Error Page
 

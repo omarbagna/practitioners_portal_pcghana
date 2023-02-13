@@ -130,11 +130,11 @@ const Login = () => {
 					className="object-cover object-left w-full h-full z-0"
 				/>
 			</div>
-			<div className=" w-full lg:1/2 xl:w-3/5 h-full flex flex-col justify-center  items-center">
+			<div className="w-full lg:1/2 xl:w-3/5 h-full flex flex-col justify-center items-center overflow-y-auto pt-32">
 				<div className="w-full h-full flex justify-center items-center px-3 md:px-5 lg:px-16 xl:px-20">
 					<Card className="w-full h-fit bg-white shadow-none">
 						<CardBody className="flex flex-col gap-4 justify-start items-center">
-							<div className="w-full flex justify-start items-center gap-3 mb-6">
+							<div className="w-full flex justify-center lg:justify-start items-center gap-3 mb-6">
 								<img
 									alt="logo"
 									src={LogoDefault}

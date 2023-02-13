@@ -95,8 +95,8 @@ const RelicensureForm = () => {
 				user?.registration_number === null ? '' : user?.registration_number,
 			person_title: user?.title === null ? '' : user?.title,
 			person_surname: user?.last_name === null ? '' : user?.last_name,
-			person_first_name: user?.first_name === null ? '' : user?.mobile_name,
-			person_othernames: user?.mobile_name === null ? '' : user?.mobile_name,
+			person_first_name: user?.first_name === null ? '' : user?.first_name,
+			person_othernames: user?.middle_name === null ? '' : user?.middle_name,
 			person_nationality: user?.nationality === null ? '' : user?.nationality,
 			person_postal_address:
 				user?.postal_address === null ? '' : user?.postal_address,
@@ -192,7 +192,7 @@ const RelicensureForm = () => {
 				}
 			);
 
-			console.log(response);
+			//console.log(response);
 
 			if (response?.data?.status === '0') {
 				setIsSubmitting(false);
@@ -210,11 +210,11 @@ const RelicensureForm = () => {
 						JSON.stringify(finalFormData),
 						{
 							headers: { 'Content-Type': 'application/json' },
-							//withCredentials: true,
+							withCredentials: true,
 						}
 					);
 					responseData = privateResponse.data;
-					console.log(responseData);
+					//console.log(responseData);
 
 					if (responseData?.resp_code === '000') {
 						toast.success('Application submission successful');
@@ -258,7 +258,7 @@ const RelicensureForm = () => {
 				JSON.stringify(finalFormData),
 				{
 					headers: { 'Content-Type': 'application/json' },
-					//withCredentials: true,
+					withCredentials: true,
 				}
 			);
 			responseData = privateResponse.data;
@@ -327,6 +327,10 @@ const RelicensureForm = () => {
 		setIsSubmitting(false);
 	};
 
+	const onError = (errors) => {
+		toast.error('Please fill all required fields');
+	};
+
 	const addEmploymentDataComponent = () => {
 		setEmploymentDataComponentCount((prev) => prev + 1);
 		setEmploymentDataComponentVisible([
@@ -363,7 +367,7 @@ const RelicensureForm = () => {
 					</div>
 				) : (
 					<form
-						onSubmit={handleSubmit(handleFormSubmit)}
+						onSubmit={handleSubmit(handleFormSubmit, onError)}
 						className="w-full h-full flex flex-col justify-start items-center gap-8 mt-6">
 						<FormSection sectionName="personal data">
 							<div className="grid place-items-center grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 lg:gap-8 w-full">

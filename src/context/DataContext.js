@@ -1,4 +1,5 @@
 import React, { createContext, useContext, useEffect, useState } from 'react';
+import Resizer from 'react-image-file-resizer';
 
 const Context = createContext();
 
@@ -100,7 +101,24 @@ export const DataContext = ({ children }) => {
 		);
 	}, [relicensureData]);
 
-	const onImageChange = (e) => {
+	const resizeFile = (file) =>
+		new Promise((resolve) => {
+			Resizer.imageFileResizer(
+				file,
+				1200,
+				800,
+				'JPEG',
+				100,
+				0,
+				(uri) => {
+					resolve(uri);
+				},
+				'base64'
+			);
+		});
+
+	const onImageChange = async (e) => {
+		/*	
 		const fileUploaded = e.target.files[0];
 
 		let reader = new FileReader();
@@ -109,6 +127,17 @@ export const DataContext = ({ children }) => {
 		reader.onload = (e) => {
 			setImage(e.target.result);
 		};
+	*/
+
+		try {
+			const file = e.target.files[0];
+			const image = await resizeFile(file);
+
+			//console.log(onlyBase64String);
+			setImage(image);
+		} catch (err) {
+			console.log(err);
+		}
 	};
 
 	const removeImage = () => {

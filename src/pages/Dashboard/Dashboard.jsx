@@ -50,7 +50,7 @@ const Dashboard = () => {
 
 	const fetchPharmacistCPDScore = () => {
 		return axiosPrivate.get(
-			`api/getCpdScore?r=${user?.registration_number}?Year=${currentYear - 1}`,
+			`api/getCpdScore?r=${user?.registration_number}&year=${currentYear - 1}`,
 			{
 				headers: { Token: user?.token, Userid: user?.id, Type: user?.type },
 			}
@@ -102,7 +102,7 @@ const Dashboard = () => {
 					}),
 					{
 						headers: { 'Content-Type': 'application/json' },
-						//withCredentials: true,
+						withCredentials: true,
 					}
 				);
 
@@ -134,7 +134,7 @@ const Dashboard = () => {
 					}),
 					{
 						headers: { 'Content-Type': 'application/json' },
-						//withCredentials: true,
+						withCredentials: true,
 					}
 				);
 
@@ -171,13 +171,13 @@ const Dashboard = () => {
 					}),
 					{
 						headers: { 'Content-Type': 'application/json' },
-						//withCredentials: true,
+						withCredentials: true,
 					}
 				);
 
 				//console.log(response.data);
 				if (response.data !== null) {
-					console.log(response.data);
+					//console.log(response.data);
 					setPharmacyStatus(response.data);
 					setLoadingPharmacyStatus(false);
 				} else {
@@ -256,7 +256,16 @@ const Dashboard = () => {
 					<PharmacySuperintendingWidget />
 				</div>
 				<div className="w-full col-span-2">
-					<ElectronicPharmacyWidget />
+					{isLoading || loadingPharmacyStatus ? (
+						<SkeletonLoad />
+					) : data?.data?.status === '0' && pharmacistData === null ? (
+						<ErrorWidget />
+					) : (
+						<ElectronicPharmacyWidget
+							pharmacistStanding={pharmacistData}
+							//pharmacyRenewalStatus={pharmacyStatus}
+						/>
+					)}
 				</div>
 				<div className="w-full col-span-2">
 					<InternshipManagerWidget />

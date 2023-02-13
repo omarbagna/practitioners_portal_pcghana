@@ -7,15 +7,13 @@ import { Link } from 'react-router-dom';
 import BackgroundIcon from './BackgroundIcon';
 
 const CPDWidget = ({ cpdDATA, year }) => {
+	//console.log({ cpdDATA });
 	return (
 		<div className="group relative transition-all duration-150 ease-in rounded-lg w-full h-72 p-4 bg-blue-600 shadow-blue-500/50 shadow-lg hover:shadow-blue-500/50 hover:shadow-xl overflow-hidden">
-			{/* Render component inactive 
+			{/* 
+			Render component inactive 
 			<div className="absolute top-0 left-0 z-30 w-full h-full bg-gray-800/70 backdrop-blur-sm cursor-not-allowed" />
-			<div className="transition-all duration-150 ease-in absolute z-10 -top-6 -right-12 text-[10rem] text-white/10 group-hover:scale-105">
-				<MdWorkOutline />
-			</div>
-			*/}
-
+*/}
 			<BackgroundIcon icon={<MdWorkOutline />} />
 
 			<div className="relative z-20 w-full h-full flex flex-col justify-between items-center">

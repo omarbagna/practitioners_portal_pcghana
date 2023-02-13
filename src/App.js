@@ -12,6 +12,7 @@ import {
 	EPharmacyForm,
 	PharmacyRenewal,
 	ResetPassword,
+	DigitalizationForm,
 } from './pages';
 import PrivateRoutes from './utils/PrivateRoutes';
 
@@ -40,6 +41,11 @@ const App = () => {
 							<Route
 								path="pharmacy-renewal-application-continued"
 								element={<EPharmacyForm />}
+							/>
+
+							<Route
+								path="digitalization-assessment"
+								element={<DigitalizationForm />}
 							/>
 
 							{/* Error Page */}

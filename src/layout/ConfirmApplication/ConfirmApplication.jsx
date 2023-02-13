@@ -4,14 +4,34 @@ import React from 'react';
 import { useNavigate } from 'react-router-dom';
 //import { BiArrowBack } from 'react-icons/bi';
 import { ButtonComponent } from '../../components';
+import { useDataContext } from '../../context/DataContext';
 //import { useDataContext } from '../../context/DataContext';
 import { useStateContext } from '../../context/StateContext';
 //import SkeletonLoad from '../LoadingScreen/SkeletonLoad';
 
-const InvoiceModal = () => {
+const InvoiceModal = ({ epharmacyInvoice = true }) => {
 	const navigate = useNavigate();
 	const { submissionSuccess, setSubmissionSuccess, setShowInvoice } =
 		useStateContext();
+	const { setPharmacyRenewalData, setPharmacyData, setRelicensureData } =
+		useDataContext();
+
+	const goToInvoices = () => {
+		setShowInvoice(true);
+		setSubmissionSuccess(false);
+		navigate('/', { replace: true });
+		setPharmacyRenewalData(null);
+		setPharmacyData(null);
+		setRelicensureData(null);
+	};
+
+	const goToDashboard = () => {
+		setSubmissionSuccess(false);
+		navigate('/', { replace: true });
+		setPharmacyRenewalData(null);
+		setPharmacyData(null);
+		setRelicensureData(null);
+	};
 
 	return (
 		<AnimatePresence mode="wait">
@@ -40,6 +60,47 @@ const InvoiceModal = () => {
 						transition={{ duration: 0.5, type: 'tween' }}
 						//style={{ color: currentColor.code }}
 						className="w-fit h-full flex flex-col gap-5 justify-center items-center mt-24 px-5">
+						{epharmacyInvoice ? (
+							<div className="w-fit h-fit flex flex-col gap-5 justify-center items-center text-white bg-gradient-to-b from-green-500 to-green-800  rounded-2xl p-3  lg:py-10 lg:px-5">
+								<Typography
+									variant="paragraph"
+									className="font-medium text-xl text-center capitalize">
+									<strong>Application submitted successfully</strong>
+								</Typography>
+								<Typography
+									variant="paragraph"
+									className="font-normal text-xl text-center capitalize">
+									Click the button below to download your invoice
+								</Typography>
+								<ButtonComponent
+									color="blue"
+									width
+									type="button"
+									onClick={goToInvoices}
+									title="view invoice"
+								/>
+							</div>
+						) : (
+							<div className="w-fit h-fit flex flex-col gap-5 justify-center items-center text-white bg-gradient-to-b from-green-500 to-green-800  rounded-2xl p-3  lg:py-10 lg:px-5">
+								<Typography
+									variant="paragraph"
+									className="font-medium text-xl text-center capitalize">
+									<strong>Application submitted successfully</strong>
+								</Typography>
+								<Typography
+									variant="paragraph"
+									className="font-normal text-xl text-center capitalize">
+									Click the button below to go back to your dashboard
+								</Typography>
+								<ButtonComponent
+									color="blue"
+									width
+									type="button"
+									onClick={goToDashboard}
+									title="dashboard"
+								/>
+							</div>
+						)}
 						<div className="w-fit h-fit flex flex-col gap-5 justify-center items-center text-white bg-gradient-to-b from-green-500 to-green-800  rounded-2xl p-3  lg:py-10 lg:px-5">
 							<Typography
 								variant="paragraph"
@@ -55,11 +116,7 @@ const InvoiceModal = () => {
 								color="blue"
 								width
 								type="button"
-								onClick={() => {
-									setShowInvoice(true);
-									setSubmissionSuccess(false);
-									navigate('/');
-								}}
+								onClick={goToDashboard}
 								title="view invoice"
 							/>
 						</div>

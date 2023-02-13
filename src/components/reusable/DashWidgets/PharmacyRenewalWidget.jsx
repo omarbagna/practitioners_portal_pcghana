@@ -24,11 +24,11 @@ const PharmacyRenewalWidget = ({
 		}
 	}, [pharmacyRenewalStatus]);
 
+	
+	
 	const openForm = () => {
 		navigate('/pharmacy-renewal-application');
 	};
-
-	
 
 */
 

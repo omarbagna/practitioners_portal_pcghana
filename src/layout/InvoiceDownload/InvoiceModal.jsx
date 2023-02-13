@@ -37,13 +37,14 @@ const InvoiceModal = () => {
 
 	const handleUpload = async (event) => {
 		let uploadData;
+		let base64Image = image.replace('data:image/jpeg;base64,', '');
 		event.preventDefault();
 
 		uploadData = {
 			method: 'CONFIRM_PAYMENT_FOR_PORTAL_INVOICE',
 			api_key: '5f25016eff01da8246b9bf0cb7de33ae3da8246b78',
 			invoice_number: uploadReceiptDetails?.invoice_no,
-			receipt_photo_string: image,
+			receipt_photo_string: base64Image,
 		};
 
 		if (image === null) {
@@ -55,7 +56,7 @@ const InvoiceModal = () => {
 					JSON.stringify(uploadData),
 					{
 						headers: { 'Content-Type': 'application/json' },
-						//withCredentials: true,
+						withCredentials: true,
 					}
 				);
 				let responseData = privateResponse.data;
@@ -101,7 +102,7 @@ const InvoiceModal = () => {
 				JSON.stringify(requestOnlinePayment),
 				{
 					headers: { 'Content-Type': 'application/json' },
-					//withCredentials: true,
+					withCredentials: true,
 				}
 			);
 			let responseData = privateResponse.data;
@@ -111,7 +112,7 @@ const InvoiceModal = () => {
 				toast.success('Redirecting ...');
 
 				setIsLoadingPayOnline(false);
-				window.location.replace(responseData?.redirect_url);
+				window.open(responseData?.redirect_url, '_blank');
 			} else {
 				console.log(privateResponse?.data?.resp_msg);
 				toast.error(privateResponse?.data?.resp_msg);
@@ -171,10 +172,21 @@ const InvoiceModal = () => {
 													invoice_url,
 													invoice_no,
 													invoice_doc_url,
+													invoice_type,
+													payment_status,
 												}) => (
 													<div
 														key={invoice_no}
-														className="w-[25rem] h-fit mr-4 flex flex-col gap-5 justify-center items-center text-white bg-gradient-to-b from-blue-600 to-[#0404FF]  rounded-2xl p-3  lg:py-10 lg:px-5">
+														className="relative w-[25rem] h-fit mr-4 flex flex-col gap-5 justify-center items-center text-white bg-gradient-to-b from-blue-600 to-[#0404FF]  rounded-2xl p-3  lg:py-10 lg:px-5">
+														<div
+															className={`absolute top-2 right-3 uppercase w-fit rounded-md p-1 text-xs text-white font-medium ${
+																payment_status === 'paid'
+																	? 'bg-green-500/70'
+																	: 'bg-red-400/70'
+															}`}>
+															{payment_status === 'paid' ? 'paid' : 'unpaid'}
+														</div>
+
 														<Typography
 															variant="paragraph"
 															className="font-medium text-xl text-center capitalize">
@@ -203,13 +215,15 @@ const InvoiceModal = () => {
 														</a>
 
 														<div className="w-full flex justify-center items-center gap-3">
-															<ButtonComponent
-																color="teal"
-																width
-																type="button"
-																title="pay online"
-																onClick={(e) => payOnline(e, invoice_no)}
-															/>
+															{invoice_type === 'EP' ? (
+																<ButtonComponent
+																	color="teal"
+																	width
+																	type="button"
+																	title="pay online"
+																	onClick={(e) => payOnline(e, invoice_no)}
+																/>
+															) : payment_status === 'paid' ? null : null}
 
 															<ButtonComponent
 																color="purple"
@@ -231,6 +245,63 @@ const InvoiceModal = () => {
 													className="font-medium text-xl text-center capitalize">
 													<strong>nothing to see here</strong>
 												</Typography>
+
+												{/**
+
+												<div className="relative w-[25rem] h-fit mr-4 flex flex-col gap-5 justify-center items-center text-white bg-gradient-to-b from-blue-600 to-[#0404FF]  rounded-2xl p-3  lg:py-10 lg:px-5">
+													<div
+														className={`absolute top-2 right-3 uppercase w-fit rounded-md p-1 text-xs text-white font-medium ${'bg-red-400/70'}`}>
+														unpaid
+													</div>
+
+													<Typography
+														variant="paragraph"
+														className="font-medium text-xl text-center capitalize">
+														<strong>service</strong>
+													</Typography>
+
+													<div className="flex gap-2 justify-center items-end">
+														<Typography
+															variant="paragraph"
+															className="font-ligt text-base text-center capitalize">
+															invoice number: invoice_no
+														</Typography>
+													</div>
+
+													<a
+														href="https://google.com"
+														target="_blank"
+														className="w-full"
+														rel="noopener noreferrer">
+														<ButtonComponent
+															color="green"
+															width
+															type="button"
+															title="download invoice"
+														/>
+													</a>
+
+													<div className="w-full flex justify-center items-center gap-3">
+														<ButtonComponent
+															color="teal"
+															width
+															type="button"
+															title="pay online"
+															onClick={(e) => payOnline(e, 'invoice_no')}
+														/>
+
+														<ButtonComponent
+															color="purple"
+															width
+															type="button"
+															title="confirm payment"
+															onClick={() =>
+																openReceiptUpload('invoice_no', 'service')
+															}
+														/>
+													</div>
+												</div>
+												 */}
 											</div>
 										)}
 									</div>

@@ -81,21 +81,15 @@ const EPharmacyForm = () => {
 					? '--'
 					: pharmacyRenewalData?.location,
 			gps_address:
-				pharmacyRenewalData?.gps_address === null
-					? '--'
-					: pharmacyRenewalData?.gps_address,
+				pharmacyRenewalData?.gps === null ? '--' : pharmacyRenewalData?.gps,
 			phone_number:
-				pharmacyRenewalData?.phone_number === null
-					? '--'
-					: pharmacyRenewalData?.phone_number,
+				pharmacyRenewalData?.phone === null ? '--' : pharmacyRenewalData?.phone,
 			pharmacy_email:
-				pharmacyRenewalData?.pharmacy_email === null
-					? '--'
-					: pharmacyRenewalData?.pharmacy_email,
+				pharmacyRenewalData?.email === null ? '--' : pharmacyRenewalData?.email,
 
 			pos_nature_of_use: null,
 
-			pharmacist_registration_number: '',
+			//pharmacist_registration_number: '',
 			data_protection_certificate: '',
 
 			delivery_service: {
@@ -180,7 +174,7 @@ const EPharmacyForm = () => {
 		},
 	});
 
-	console.log(watch());
+	//console.log(watch());
 
 	useEffect(() => {
 		if (pharmacyRenewalData === null) {
@@ -190,7 +184,7 @@ const EPharmacyForm = () => {
 			navigate('/', { replace: true });
 		}
 
-		console.log(pharmacyRenewalData);
+		//console.log(pharmacyRenewalData);
 	}, [pharmacyRenewalData, navigate]);
 
 	//console.log(relicensureData);
@@ -214,9 +208,9 @@ const EPharmacyForm = () => {
 		formData.append('weekend_start_time', finalFormData?.weekend_start_time);
 		formData.append('weekend_end_time', finalFormData?.weekend_end_time);
 		formData.append('support_staff', finalFormData?.support_staff);
-		formData.append('phone', finalFormData?.phone_number);
-		formData.append('email', finalFormData?.pharmacy_email);
-		formData.append('gps', finalFormData?.gps_address);
+		formData.append('phone', finalFormData?.phone);
+		formData.append('email', finalFormData?.email);
+		formData.append('gps', finalFormData?.gps);
 		formData.append('epharmacy_data', finalFormData?.epharmacy_data);
 
 		epharmacyFormData.append('license_number', finalFormData?.license_number);
@@ -225,7 +219,7 @@ const EPharmacyForm = () => {
 			'readiness_assessment',
 			finalFormData?.epharmacy_data
 		);
-		console.log({ finalFormData });
+		//console.log({ finalFormData });
 
 		setIsSubmitting(true);
 
@@ -239,7 +233,7 @@ const EPharmacyForm = () => {
 				}),
 				{
 					headers: { 'Content-Type': 'application/json' },
-					//withCredentials: true,
+					withCredentials: true,
 				}
 			);
 
@@ -325,8 +319,7 @@ const EPharmacyForm = () => {
 					setInvoiceData(privateResponse.data?.invoices);
 				} else {
 					setInvoiceData([...invoiceData, ...privateResponse.data?.invoices]);
-				}  */
-
+				} */
 				setIsSubmitting(false);
 				setSubmissionSuccess(true);
 				//navigate('/', { replace: true });
@@ -344,6 +337,7 @@ const EPharmacyForm = () => {
 		}
 
 		setIsSubmitting(false);
+
 		/*
 
 		try {
@@ -412,7 +406,7 @@ const EPharmacyForm = () => {
 						}),
 						{
 							headers: { 'Content-Type': 'application/json' },
-							//withCredentials: true,
+							withCredentials: true,
 						}
 					);
 
@@ -455,11 +449,10 @@ const EPharmacyForm = () => {
 				console.log(errMessage);
 			}
 
-			
 			setIsSubmitting(false);
 		}
-	
-	*/
+
+*/
 	};
 
 	const onError = (errors) => {
@@ -810,7 +803,10 @@ const EPharmacyForm = () => {
 											)}
 										/>
 									</div>
+
+									{/**
 									<div className="col-span-3 lg:col-span-8 w-full flex flex-col md:flex-row justify-center items-center gap-3">
+										
 										<div className="w-full md:w-3/4">
 											<Controller
 												control={control}
@@ -836,8 +832,9 @@ const EPharmacyForm = () => {
 											<ButtonComponent width type="button" title="search" />
 										</div>
 									</div>
+									 */}
 
-									<div className="col-span-3 lg:col-span-4 w-full flex flex-col justify-center items-start gap-3">
+									<div className="col-span-3 md:col-span-6 lg:col-span-12 w-full flex flex-col justify-center items-start gap-3">
 										<Controller
 											control={control}
 											name="data_protection_certificate"
@@ -898,7 +895,7 @@ const EPharmacyForm = () => {
 															error={invalid}
 															helpertext={invalid ? error.message : null}
 															name="facility_readiness.desk_computer"
-															label="Desk Computer"
+															label="Desk Computer *"
 															required
 															options={[
 																{
@@ -931,7 +928,7 @@ const EPharmacyForm = () => {
 															error={invalid}
 															helpertext={invalid ? error.message : null}
 															name="facility_readiness.tablet"
-															label="Tablet"
+															label="Tablet *"
 															required
 															options={[
 																{
@@ -964,7 +961,7 @@ const EPharmacyForm = () => {
 															error={invalid}
 															helpertext={invalid ? error.message : null}
 															name="facility_readiness.smartphone"
-															label="Smartphone"
+															label="Smartphone *"
 															required
 															options={[
 																{
@@ -997,7 +994,7 @@ const EPharmacyForm = () => {
 															error={invalid}
 															helpertext={invalid ? error.message : null}
 															name="facility_readiness.feature_phone"
-															label="Feature Phone"
+															label="Feature Phone *"
 															required
 															options={[
 																{
@@ -1030,7 +1027,7 @@ const EPharmacyForm = () => {
 															error={invalid}
 															helpertext={invalid ? error.message : null}
 															name="facility_readiness.website"
-															label="Website"
+															label="Website *"
 															required
 															options={[
 																{
@@ -1063,7 +1060,7 @@ const EPharmacyForm = () => {
 															error={invalid}
 															helpertext={invalid ? error.message : null}
 															name="facility_readiness.social_media_presence"
-															label="Social Media Presence"
+															label="Social Media Presence *"
 															required
 															options={[
 																{
@@ -1096,7 +1093,7 @@ const EPharmacyForm = () => {
 															error={invalid}
 															helpertext={invalid ? error.message : null}
 															name="facility_readiness.phone_number_for_enquiries_and_orders"
-															label="Mobile/Phone Number for Enquiries and Orders"
+															label="Mobile/Phone Number for Enquiries and Orders *"
 															required
 															options={[
 																{
@@ -1129,7 +1126,7 @@ const EPharmacyForm = () => {
 															error={invalid}
 															helpertext={invalid ? error.message : null}
 															name="facility_readiness.presence_on_other_web_pages"
-															label="Presence on Other Web Pages (e.g directories)"
+															label="Presence on Other Web Pages (e.g directories) *"
 															required
 															options={[
 																{
@@ -1163,7 +1160,7 @@ const EPharmacyForm = () => {
 															error={invalid}
 															helpertext={invalid ? error.message : null}
 															name="facility_readiness.mobile_money_accepted"
-															label="Mobile Money Accepted"
+															label="Mobile Money Accepted *"
 															required
 															options={[
 																{
@@ -1196,7 +1193,7 @@ const EPharmacyForm = () => {
 															error={invalid}
 															helpertext={invalid ? error.message : null}
 															name="facility_readiness.bank_card_accepted"
-															label="Bank Card Payment Accepted"
+															label="Bank Card Payment Accepted *"
 															required
 															options={[
 																{
@@ -1229,7 +1226,7 @@ const EPharmacyForm = () => {
 															error={invalid}
 															helpertext={invalid ? error.message : null}
 															name="facility_readiness.internet_access_available"
-															label="Internet Access Available"
+															label="Internet Access Available *"
 															required
 															options={[
 																{
@@ -1262,7 +1259,7 @@ const EPharmacyForm = () => {
 															error={invalid}
 															helpertext={invalid ? error.message : null}
 															name="facility_readiness.pos_available"
-															label="Special Transactions Software – POS/Sales Software"
+															label="Special Transactions Software – POS/Sales Software *"
 															required
 															options={[
 																{
@@ -1295,7 +1292,7 @@ const EPharmacyForm = () => {
 															error={invalid}
 															helpertext={invalid ? error.message : null}
 															name="facility_readiness.standby_power_available"
-															label="Standby Power Source (e.g Generator) available"
+															label="Standby Power Source (e.g Generator) available *"
 															required
 															options={[
 																{
@@ -1339,7 +1336,7 @@ const EPharmacyForm = () => {
 															error={invalid}
 															helpertext={invalid ? error.message : null}
 															name="technical_proficiency.pharmacist_understanding_of_technologies"
-															label="General Understanding/Proficiency in digital technologies (Pharmacist)"
+															label="General Understanding/Proficiency in digital technologies (Pharmacist) *"
 															required
 															options={[
 																{
@@ -1372,7 +1369,7 @@ const EPharmacyForm = () => {
 															error={invalid}
 															helpertext={invalid ? error.message : null}
 															name="technical_proficiency.attendants_understanding_of_technologies"
-															label="General Understanding/Proficiency in digital technologies (Attendants)"
+															label="General Understanding/Proficiency in digital technologies (Attendants) *"
 															required
 															options={[
 																{
@@ -1408,7 +1405,7 @@ const EPharmacyForm = () => {
 															rules={{
 																required: 'Please select an option',
 															}}
-															label="Employees who can use Payment Processing System"
+															label="Employees who can use Payment Processing System *"
 															required
 															options={[
 																{
@@ -1444,7 +1441,7 @@ const EPharmacyForm = () => {
 															rules={{
 																required: 'Please select an option',
 															}}
-															label="Employees who can use Point of Sale System"
+															label="Employees who can use Point of Sale System *"
 															required
 															options={[
 																{
@@ -1694,7 +1691,7 @@ const EPharmacyForm = () => {
 															ref={ref}
 															error={invalid}
 															helpertext={invalid ? error.message : null}
-															name="pos_system_usage.inventory_management"
+															name="pos_system_usage.inventory_management *"
 															label="Inventory Management"
 															required
 															options={[
@@ -1728,7 +1725,7 @@ const EPharmacyForm = () => {
 															error={invalid}
 															helpertext={invalid ? error.message : null}
 															name="pos_system_usage.transaction_management"
-															label="Transaction Management"
+															label="Transaction Management *"
 															required
 															options={[
 																{
@@ -1761,7 +1758,7 @@ const EPharmacyForm = () => {
 															error={invalid}
 															helpertext={invalid ? error.message : null}
 															name="pos_system_usage.payment_processing"
-															label="Payment Processing"
+															label="Payment Processing *"
 															required
 															options={[
 																{
@@ -1794,7 +1791,7 @@ const EPharmacyForm = () => {
 															error={invalid}
 															helpertext={invalid ? error.message : null}
 															name="pos_system_usage.sales_reporting"
-															label="Sales Reporting"
+															label="Sales Reporting *"
 															required
 															options={[
 																{
@@ -1827,7 +1824,7 @@ const EPharmacyForm = () => {
 															error={invalid}
 															helpertext={invalid ? error.message : null}
 															name="pos_system_usage.employee_management"
-															label="Employee Management"
+															label="Employee Management *"
 															required
 															options={[
 																{
@@ -1860,7 +1857,7 @@ const EPharmacyForm = () => {
 															error={invalid}
 															helpertext={invalid ? error.message : null}
 															name="pos_system_usage.crm"
-															label="Customer Relationship Management"
+															label="Customer Relationship Management *"
 															required
 															options={[
 																{
@@ -1927,7 +1924,7 @@ const EPharmacyForm = () => {
 															error={invalid}
 															helpertext={invalid ? error.message : null}
 															name="pos_system_vendor_relationship.vendor_relationship"
-															label="Vendor Relationship (if known)"
+															label="Vendor Relationship (if known) *"
 															required
 															options={[
 																{
@@ -1960,7 +1957,7 @@ const EPharmacyForm = () => {
 															error={invalid}
 															helpertext={invalid ? error.message : null}
 															name="pos_system_vendor_relationship.vendor_provides_support"
-															label="Vendor Provides Support"
+															label="Vendor Provides Support *"
 															required
 															options={[
 																{
@@ -1993,7 +1990,7 @@ const EPharmacyForm = () => {
 															error={invalid}
 															helpertext={invalid ? error.message : null}
 															name="pos_system_vendor_relationship.internet_dependent"
-															label="Dependent on the Internet"
+															label="Dependent on the Internet *"
 															required
 															options={[
 																{
@@ -2026,7 +2023,7 @@ const EPharmacyForm = () => {
 															error={invalid}
 															helpertext={invalid ? error.message : null}
 															name="pos_system_vendor_relationship.internet_not_required"
-															label="Can work when Internet is Down"
+															label="Can work when Internet is Down *"
 															required
 															options={[
 																{
@@ -2069,7 +2066,7 @@ const EPharmacyForm = () => {
 															error={invalid}
 															helpertext={invalid ? error.message : null}
 															name="pos_nature_of_use"
-															label="Nature of use of Point-Of-Sale System"
+															label="Nature of use of Point-Of-Sale System *"
 															required
 															options={[
 																{
@@ -2464,7 +2461,7 @@ const EPharmacyForm = () => {
 															error={invalid}
 															helpertext={invalid ? error.message : null}
 															name="delivery_service.services_offered"
-															label="Services Offered"
+															label="Services Offered *"
 															required
 															options={[
 																{
@@ -2497,7 +2494,7 @@ const EPharmacyForm = () => {
 															error={invalid}
 															helpertext={invalid ? error.message : null}
 															name="delivery_service.services_provider"
-															label="Services Provider"
+															label="Services Provider *"
 															required
 															options={[
 																{
@@ -2722,7 +2719,7 @@ const EPharmacyForm = () => {
 																		}
 																	}}
 																	name="insurance_service"
-																	label="Do you offer any NHIS or private health insurance services in your pharmacy?"
+																	label="Do you offer any NHIS or private health insurance services in your pharmacy? *"
 																	required
 																	options={[
 																		{
@@ -3092,7 +3089,7 @@ const EPharmacyForm = () => {
 																				}
 																			}}
 																			name="eprescription_interest"
-																			label="Are you interested in signing up your pharmacy to receive e-prescriptions?"
+																			label="Are you interested in signing up your pharmacy to receive e-prescriptions? *"
 																			required
 																			options={[
 																				{
@@ -3118,67 +3115,73 @@ const EPharmacyForm = () => {
 							</FormSection>
 
 							{watch('insurance_service') === 'yes' ||
-							watch('eprescription_interest') ===
-								'yes' ? null : pharmacyRenewalData?.business_type?.toLowerCase() !==
-									'retail' &&
-							  pharmacyRenewalData?.business_type?.toLowerCase() !==
-									'wholesale/retail' &&
-							  pharmacyRenewalData?.is_epharmacy === false ? (
-								<>
-									<div className="w-full">
-										<Controller
-											control={control}
-											name="epharmacy_registration_agreement"
-											defaultValue={false}
-											render={({
-												field: { ref, ...field },
-												fieldState: { error, invalid },
-											}) => (
-												<FormControl error={invalid}>
-													<FormControlLabel
-														control={
-															<Checkbox
-																{...field}
-																ref={ref}
-																color="blue"
-																name="epharmacy_registration_agreement"
-															/>
-														}
-														label="I would like to register for ePharmacy"
-													/>
+							watch('eprescription_interest') === 'yes'
+								? null
+								: pharmacyRenewalData?.business_type?.toLowerCase() !==
+										'retail' &&
+								  pharmacyRenewalData?.business_type?.toLowerCase() !==
+										'wholesale/retail' &&
+								  pharmacyRenewalData?.is_epharmacy === false &&
+								  null}
 
-													<FormHelperText>{error?.message}</FormHelperText>
-												</FormControl>
-											)}
-										/>
-									</div>
+							<>
+								{/**
+							  : (
+							  <div className="w-full">
+								  <Controller
+									  control={control}
+									  name="epharmacy_registration_agreement"
+									  defaultValue={false}
+									  render={({
+										  field: { ref, ...field },
+										  fieldState: { error, invalid },
+									  }) => (
+										  <FormControl error={invalid}>
+											  <FormControlLabel
+												  control={
+													  <Checkbox
+														  {...field}
+														  ref={ref}
+														  color="blue"
+														  name="epharmacy_registration_agreement"
+													  />
+												  }
+												  label="I would like to register for ePharmacy"
+											  />
 
-									{watch('epharmacy_registration_agreement') === true ? (
-										<div className="w-full bg-[#B4B4FF] gap-5 text-[#0404FF] rounded-lg p-5 lg:p-8 flex flex-col justify-center items-start">
-											<Typography variant="h4" className="w-full text-left">
-												Please take note of the following:
-											</Typography>
+											  <FormHelperText>{error?.message}</FormHelperText>
+										  </FormControl>
+									  )}
+								  />
+							  </div>
 
-											{epharmacyFormNoticePoints.map(({ point, id }) => (
-												<div
-													key={id}
-													className="w-full flex justify-start items-start gap-3">
-													<Typography
-														variant="paragraph"
-														className="font-medium">
-														{id}
-													</Typography>
-													<Typography
-														variant="paragraph"
-														className="font-medium">
-														{point}
-													</Typography>
-												</div>
-											))}
-										</div>
-									) : null}
-								</>
-							) : null}
+							  {watch('epharmacy_registration_agreement') === true ? (
+								  <div className="w-full bg-[#B4B4FF] gap-5 text-[#0404FF] rounded-lg p-5 lg:p-8 flex flex-col justify-center items-start">
+									  <Typography variant="h4" className="w-full text-left">
+										  Please take note of the following:
+									  </Typography>
+
+									  {epharmacyFormNoticePoints.map(({ point, id }) => (
+										  <div
+											  key={id}
+											  className="w-full flex justify-start items-start gap-3">
+											  <Typography
+												  variant="paragraph"
+												  className="font-medium">
+												  {id}
+											  </Typography>
+											  <Typography
+												  variant="paragraph"
+												  className="font-medium">
+												  {point}
+											  </Typography>
+										  </div>
+									  ))}
+								  </div>
+							  ) : null}
+							)
+							   */}
+							</>
 
 							{watch('insurance_service') === 'yes' ||
 							watch('eprescription_interest') === 'yes' ? (

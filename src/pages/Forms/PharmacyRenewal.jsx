@@ -24,7 +24,6 @@ const PharmacyRenewal = () => {
 	const {
 		pharmacyData,
 		setPharmacyData,
-		relicensureData,
 		pharmacyRenewalData,
 		setPharmacyRenewalData,
 		pharmacistData,
@@ -48,6 +47,8 @@ const PharmacyRenewal = () => {
 		useState([1]);
 
 	const hiddenApplicantImageInput = useRef(null);
+
+	//console.log({ user });
 
 	useEffect(() => {
 		if (pharmacistData?.in_good_standing?.toLowerCase() === 'pending payment') {
@@ -116,33 +117,33 @@ const PharmacyRenewal = () => {
 			town: '',
 			street: '',
 			location: '',
-			gps_address: '',
-			phone_number: '',
+			gps: '',
+			phone: '',
 			is_epharmacy: '',
-			pharmacy_email: '',
+			email: '',
 			weekdays_start_time: '',
 			weekdays_end_time: '',
 			weekend_start_time: '',
 			weekend_end_time: '',
 			registration_number:
-				user?.registration_number === null ? '--' : user?.registration_number,
-			person_title: user?.title === null ? '--' : user?.title,
-			person_surname: user?.last_name === null ? '--' : user?.last_name,
-			person_first_name: user?.first_name === null ? '--' : user?.mobile_name,
-			person_othernames: user?.mobile_name === null ? '--' : user?.mobile_name,
-			person_nationality: user?.nationality === null ? '--' : user?.nationality,
+				user?.registration_number === null ? '' : user?.registration_number,
+			person_title: user?.title === null ? '' : user?.title,
+			person_surname: user?.last_name === null ? '' : user?.last_name,
+			person_first_name: user?.first_name === null ? '' : user?.first_name,
+			person_othernames: user?.middle_name === null ? '' : user?.middle_name,
+			person_nationality: user?.nationality === null ? '' : user?.nationality,
 			person_postal_address:
-				user?.postal_address === null ? '--' : user?.postal_address,
+				user?.postal_address === null ? '' : user?.postal_address,
 			person_town:
-				user?.residential_city === null ? '--' : user?.residential_city,
-			person_mobile_number: user?.phone === null ? '--' : user?.phone,
+				user?.residential_city === null ? '' : user?.residential_city,
+			person_mobile_number: user?.phone === null ? '' : user?.phone,
 			person_landline: '',
-			person_email: user?.email === null ? '--' : user?.email,
+			person_email: user?.email === null ? '' : user?.email,
 		},
 	});
 
 	const fetchPharmacyDetails = (searchValue) => {
-		console.log('this is the search value: ', searchValue);
+		//console.log('this is the search value: ', searchValue);
 		return axiosPrivate.get(
 			`api_pharmacy/getPharmacyDetailsByLicNum?lic_num=${searchValue}`,
 			{
@@ -156,7 +157,7 @@ const PharmacyRenewal = () => {
 	};
 
 	const onSuccess = (data) => {
-		console.log(data.data);
+		//console.log(data.data);
 		if (data.data.data !== false) {
 			setPharmacyData(data.data.data);
 			setPharmacyRenewalData(null);
@@ -207,12 +208,12 @@ const PharmacyRenewal = () => {
 				street: pharmacyData?.street === null ? '' : pharmacyData?.street,
 				location:
 					pharmacyData?.house_number === null ? '' : pharmacyData?.house_number,
-				gps_address:
+				gps:
 					pharmacyData?.ghana_post_code === null
 						? ''
 						: pharmacyData?.ghana_post_code,
-				phone_number: pharmacyData?.phone === null ? '' : pharmacyData?.phone,
-				pharmacy_email: pharmacyData?.email === null ? '' : pharmacyData?.email,
+				phone: pharmacyData?.phone === null ? '' : pharmacyData?.phone,
+				email: pharmacyData?.email === null ? '' : pharmacyData?.email,
 				is_epharmacy:
 					pharmacyData?.is_epharmacy === null ? '' : pharmacyData?.is_epharmacy,
 				last_renewal:
@@ -227,7 +228,7 @@ const PharmacyRenewal = () => {
 				person_title: user?.title === null ? '' : user?.title,
 				person_surname: user?.last_name === null ? '' : user?.last_name,
 				person_first_name: user?.first_name === null ? '' : user?.first_name,
-				person_othernames: user?.mobile_name === null ? '' : user?.mobile_name,
+				person_othernames: user?.middle_name === null ? '' : user?.middle_name,
 				person_nationality: user?.nationality === null ? '' : user?.nationality,
 				person_postal_address:
 					user?.postal_address === null ? '' : user?.postal_address,
@@ -239,7 +240,7 @@ const PharmacyRenewal = () => {
 			});
 
 			setFoundPharmacy(true);
-		} else if (pharmacyData && pharmacyRenewalData && relicensureData) {
+		} else if (pharmacyRenewalData && pharmacyData === null) {
 			reset({
 				pharmacy_name:
 					pharmacyRenewalData?.pharmacy_name === null
@@ -268,16 +269,13 @@ const PharmacyRenewal = () => {
 						? ''
 						: pharmacyRenewalData?.street,
 				location:
-					pharmacyRenewalData?.house_number === null
+					pharmacyRenewalData?.location === null
 						? ''
-						: pharmacyRenewalData?.house_number,
-				gps_address:
-					pharmacyRenewalData?.ghana_post_code === null
-						? ''
-						: pharmacyRenewalData?.ghana_post_code,
-				phone_number:
+						: pharmacyRenewalData?.location,
+				gps: pharmacyRenewalData?.gps === null ? '' : pharmacyRenewalData?.gps,
+				phone:
 					pharmacyRenewalData?.phone === null ? '' : pharmacyRenewalData?.phone,
-				pharmacy_email:
+				email:
 					pharmacyRenewalData?.email === null ? '' : pharmacyRenewalData?.email,
 				is_epharmacy:
 					pharmacyRenewalData?.is_epharmacy === null
@@ -288,33 +286,68 @@ const PharmacyRenewal = () => {
 						? ''
 						: pharmacyRenewalData?.last_renewal,
 				cbd: pharmacyRenewalData?.cbd === null ? '' : pharmacyRenewalData?.cbd,
+				weekdays_start_time:
+					pharmacyRenewalData?.weekdays_start_time === null
+						? ''
+						: pharmacyRenewalData?.weekdays_start_time,
+				weekdays_end_time:
+					pharmacyRenewalData?.weekdays_end_time === null
+						? ''
+						: pharmacyRenewalData?.weekdays_end_time,
+				weekend_start_time:
+					pharmacyRenewalData?.weekend_start_time === null
+						? ''
+						: pharmacyRenewalData?.weekend_start_time,
+				weekend_end_time:
+					pharmacyRenewalData?.weekend_end_time === null
+						? ''
+						: pharmacyRenewalData?.weekend_end_time,
 				registration_number:
-					user?.registration_number === null ? '' : user?.registration_number,
-				person_title: user?.title === null ? '' : user?.title,
-				person_surname: user?.last_name === null ? '' : user?.last_name,
-				person_first_name: user?.first_name === null ? '' : user?.first_name,
-				person_othernames: user?.mobile_name === null ? '' : user?.mobile_name,
-				person_nationality: user?.nationality === null ? '' : user?.nationality,
+					pharmacyRenewalData?.registration_number === null
+						? ''
+						: pharmacyRenewalData?.registration_number,
+				person_title:
+					pharmacyRenewalData?.person_title === null
+						? ''
+						: pharmacyRenewalData?.person_title,
+				person_surname:
+					pharmacyRenewalData?.person_surname === null
+						? ''
+						: pharmacyRenewalData?.person_surname,
+				person_first_name:
+					pharmacyRenewalData?.person_first_name === null
+						? ''
+						: pharmacyRenewalData?.person_first_name,
+				person_othernames:
+					pharmacyRenewalData?.person_othernames === null
+						? ''
+						: pharmacyRenewalData?.person_othernames,
+				person_nationality:
+					pharmacyRenewalData?.person_nationality === null
+						? ''
+						: pharmacyRenewalData?.person_nationality,
 				person_postal_address:
-					relicensureData?.person_postal_address === null
+					pharmacyRenewalData?.person_postal_address === null
 						? ''
-						: relicensureData?.person_postal_address,
+						: pharmacyRenewalData?.person_postal_address,
 				person_town:
-					user?.residential_city === null ? '' : user?.residential_city,
-				person_mobile_number:
-					relicensureData?.person_mobile_number === null
+					pharmacyRenewalData?.person_town === null
 						? ''
-						: relicensureData?.person_mobile_number,
+						: pharmacyRenewalData?.person_town,
+				person_mobile_number:
+					pharmacyRenewalData?.person_mobile_number === null
+						? ''
+						: pharmacyRenewalData?.person_mobile_number,
 				person_landline: '',
 				person_email:
-					relicensureData?.person_email === null
+					pharmacyRenewalData?.person_email === null
 						? ''
-						: relicensureData?.person_email,
+						: pharmacyRenewalData?.person_email,
 			});
 
 			setFoundPharmacy(true);
 		}
-	}, [user, relicensureData, pharmacyData, pharmacyRenewalData, reset]);
+	}, [user, pharmacyData, pharmacyRenewalData, reset]);
 
 	useEffect(() => {
 		if (data) {
@@ -335,8 +368,9 @@ const PharmacyRenewal = () => {
 	};
 
 	const handleFormSubmit = (data) => {
-		console.log({ data });
+		//console.log({ data });
 		setPharmacyRenewalData(data);
+		setPharmacyData(null);
 		navigate('/pharmacy-renewal-application-continued');
 	};
 
@@ -623,7 +657,7 @@ const PharmacyRenewal = () => {
 							<div className="col-span-6 lg:col-span-4 w-full">
 								<Controller
 									control={control}
-									name="gps_address"
+									name="gps"
 									/*rules={{
 											required: 'Please enter license number to Login',
 										}} */
@@ -636,7 +670,7 @@ const PharmacyRenewal = () => {
 											ref={ref}
 											error={invalid}
 											helpertext={invalid ? error.message : null}
-											name="gps_address"
+											name="gps"
 											label="Ghana Post Digital Address"
 											type="text"
 											disabled
@@ -649,7 +683,7 @@ const PharmacyRenewal = () => {
 							<div className="col-span-3 lg:col-span-4 w-full">
 								<Controller
 									control={control}
-									name="phone_number"
+									name="phone"
 									rules={{
 										pattern: {
 											value: /^(0|233|\+233)[\d]{9}$/gi,
@@ -665,7 +699,7 @@ const PharmacyRenewal = () => {
 											ref={ref}
 											error={invalid}
 											helpertext={invalid ? error.message : null}
-											name="phone_number"
+											name="phone"
 											label="Phone Number"
 											type="tel"
 											disabled={editFacilityData}
@@ -678,7 +712,7 @@ const PharmacyRenewal = () => {
 							<div className="col-span-3 lg:col-span-4 w-full">
 								<Controller
 									control={control}
-									name="pharmacy_email"
+									name="email"
 									rules={{
 										pattern: {
 											value: /^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/gi,
@@ -695,7 +729,7 @@ const PharmacyRenewal = () => {
 											ref={ref}
 											error={invalid}
 											helpertext={invalid ? error.message : null}
-											name="pharmacy_email"
+											name="email"
 											label="Pharmacy Email"
 											type="email"
 											disabled={editFacilityData}
@@ -1220,7 +1254,7 @@ const PharmacyRenewal = () => {
 																	error={invalid}
 																	helpertext={invalid ? error.message : null}
 																	name={`support_staff[${inputField}].sex`}
-																	label="Sex"
+																	label="Sex *"
 																	required
 																	options={[
 																		{
@@ -1335,7 +1369,7 @@ const PharmacyRenewal = () => {
 																	error={invalid}
 																	helpertext={invalid ? error.message : null}
 																	name={`support_staff[${inputField}].type`}
-																	label="Practitioner Type"
+																	label="Practitioner Type *"
 																	required
 																	options={[
 																		{
