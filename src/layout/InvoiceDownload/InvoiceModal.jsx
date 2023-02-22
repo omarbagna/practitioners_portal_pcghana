@@ -178,15 +178,6 @@ const InvoiceModal = () => {
 													<div
 														key={invoice_no}
 														className="relative w-[25rem] h-fit mr-4 flex flex-col gap-5 justify-center items-center text-white bg-gradient-to-b from-blue-600 to-[#0404FF]  rounded-2xl p-3  lg:py-10 lg:px-5">
-														<div
-															className={`absolute top-2 right-3 uppercase w-fit rounded-md p-1 text-xs text-white font-medium ${
-																payment_status === 'paid'
-																	? 'bg-green-500/70'
-																	: 'bg-red-400/70'
-															}`}>
-															{payment_status === 'paid' ? 'paid' : 'unpaid'}
-														</div>
-
 														<Typography
 															variant="paragraph"
 															className="font-medium text-xl text-center capitalize">
