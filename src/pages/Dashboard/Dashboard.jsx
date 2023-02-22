@@ -75,10 +75,7 @@ const Dashboard = () => {
 		const registrationNumber = user?.registration_number.split(' ');
 		const psgh_number = registrationNumber[1];
 		return axios.get(
-			`https://psgh.societymanager.org/api/PSGH-FC-GHHDEGGSDFFGDDFG/GS/members/${psgh_number}`,
-			{
-				headers: { 'Access-Control-Allow-Origin': '*' },
-			}
+			`https://psgh.societymanager.org/api/PSGH-FC-GHHDEGGSDFFGDDFG/GS/members/${psgh_number}`
 		);
 	};
 
