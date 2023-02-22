@@ -74,12 +74,23 @@ const Dashboard = () => {
 	const fetchPharmacistPSGHStanding = () => {
 		const registrationNumber = user?.registration_number.split(' ');
 		const psgh_number = registrationNumber[1];
-		return axios.get(
-			`https://psgh.societymanager.org/api/PSGH-FC-GHHDEGGSDFFGDDFG/GS/members/${psgh_number}`
+		return axios.post(
+			'https://goldenministersfellowship.org/pcghana-api/',
+			JSON.stringify({
+				method: 'GET_PSGH_MEMBER_STATUS',
+				api_key: '42353d5c33b45b0a8246b9bf0cd46820e516e3e4',
+				registration_number: psgh_number,
+			}),
+			{
+				headers: { 'Content-Type': 'application/json' },
+				//withCredentials: true,
+			}
 		);
 	};
 
 	const psgh_standing = useQuery('psgh_standing', fetchPharmacistPSGHStanding);
+
+	console.log(psgh_standing?.data);
 
 	useEffect(() => {
 		if (data && psgh_standing?.data) {
