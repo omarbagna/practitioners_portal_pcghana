@@ -232,11 +232,11 @@ const RelicensureForm = () => {
 
 				try {
 					const privateResponse = await axios.post(
-						'https://pcportal-api.rxhealthbeta.com/',
+						'https://goldenministersfellowship.org/pcghana-api/',
 						JSON.stringify(finalFormData),
 						{
 							headers: { 'Content-Type': 'application/json' },
-							withCredentials: true,
+							//withCredentials: true,
 						}
 					);
 					responseData = privateResponse.data;

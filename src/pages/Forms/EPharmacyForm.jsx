@@ -233,7 +233,7 @@ const EPharmacyForm = () => {
 
 		try {
 			const privateResponse = await axios.post(
-				'https://pcportal-api.rxhealthbeta.com/',
+				'https://goldenministersfellowship.org/pcghana-api/',
 				JSON.stringify({
 					method: 'SAVE_RENEWAL_DATA',
 					api_key: '42353d5c33b45b0a8246b9bf0cd46820e516e3e4',
@@ -241,7 +241,7 @@ const EPharmacyForm = () => {
 				}),
 				{
 					headers: { 'Content-Type': 'application/json' },
-					withCredentials: true,
+					//withCredentials: true,
 				}
 			);
 
