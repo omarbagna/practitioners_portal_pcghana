@@ -262,8 +262,8 @@ const Dashboard = () => {
 					<div className="transition-all duration-150 ease-in-out w-fit h-fit flex flex-col justify-center items-center gap-5 rounded-md overflow-hidden p-5 bg-red-400 shadow-md shadow-red-400/20 hover:shadow-lg hover:shadow-red-400/50">
 						<Typography
 							variant="h3"
-							color="white text-xl md:text-2xl lg:text-3xl"
-							className="text-center">
+							color="black"
+							className="text-center text-xl md:text-2xl lg:text-3xl">
 							You are not in good standing with the Pharmaceutical Society of
 							Ghana (PSGH)
 						</Typography>
