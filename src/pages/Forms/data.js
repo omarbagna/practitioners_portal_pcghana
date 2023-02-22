@@ -1,60 +1,3 @@
-export const epharmacyFormNoticePoints = [
-	{
-		id: 1,
-		point:
-			'Only registered retail pharmaceutical entities are eligible to apply.',
-	},
-	{
-		id: 2,
-		point:
-			'Mandatory registration with the Data Protection Agency and compliance with existing laws, including the Data Protection Act, 2012 (Act 843) is pre-requisite for renewal of the ePharmacy license.',
-	},
-	{
-		id: 3,
-		point:
-			'The medicines must be registered for use in both the country of origin and the country of destination and use.',
-	},
-	{
-		id: 4,
-		point:
-			'In situations where the medicine is not registrable in the country of origin, a certificate of pharmaceutical product shall be submitted.',
-	},
-	{
-		id: 5,
-		point:
-			'Provisions in relation to the prescription and supply of medicines shall be duly complied with.',
-	},
-	{
-		id: 6,
-		point:
-			'The operator of an online or electronic pharmacy shall keep, in electronic format, all documentations on all transactions and shall make such documentations available for inspection.',
-	},
-	{
-		id: 7,
-		point:
-			'ePharmacies shall have an obligation to provide periodic reports of ePharmacy transactions undertaken within a specified period as may be determined by the Council.',
-	},
-];
-
-export const regions = [
-	{ name: 'OTI', value: 'OTI' },
-	{ name: 'BONO EAST', value: 'BONO EAST' },
-	{ name: 'AHAFO', value: 'AHAFO' },
-	{ name: 'BRONG AHAFO', value: 'BRONG AHAFO' },
-	{ name: 'NORTH EAST', value: 'NORTH EAST' },
-	{ name: 'SAVANNAH', value: 'SAVANNAH' },
-	{ name: 'WESTERN NORTH', value: 'WESTERN NORTH' },
-	{ name: 'WESTERN', value: 'WESTERN' },
-	{ name: 'VOLTA', value: 'VOLTA' },
-	{ name: 'GREATER ACCRA', value: 'GREATER ACCRA' },
-	{ name: 'EASTERN', value: 'EASTERN' },
-	{ name: 'ASHANTI', value: 'ASHANTI' },
-	{ name: 'CENTRAL', value: 'CENTRAL' },
-	{ name: 'NORTHERN', value: 'NORTHERN' },
-	{ name: 'UPPER EAST', value: 'UPPER EAST' },
-	{ name: 'UPPER WEST', value: 'UPPER WEST' },
-];
-
 export const countries = [
 	{ name: 'Afghanistan', value: 'Afghanistan' },
 	{ name: 'Albania', value: 'Albania' },
@@ -338,4 +281,1140 @@ export const countries = [
 	{ name: 'Yemen', value: 'Yemen' },
 	{ name: 'Zambia', value: 'Zambia' },
 	{ name: 'Zimbabwe', value: 'Zimbabwe' },
+];
+
+export const regions = [
+	{ name: 'OTI', value: 'OTI' },
+	{ name: 'BONO EAST', value: 'BONO EAST' },
+	{ name: 'AHAFO', value: 'AHAFO' },
+	{ name: 'BRONG AHAFO', value: 'BRONG AHAFO' },
+	{ name: 'NORTH EAST', value: 'NORTH EAST' },
+	{ name: 'SAVANNAH', value: 'SAVANNAH' },
+	{ name: 'WESTERN NORTH', value: 'WESTERN NORTH' },
+	{ name: 'WESTERN', value: 'WESTERN' },
+	{ name: 'VOLTA', value: 'VOLTA' },
+	{ name: 'GREATER ACCRA', value: 'GREATER ACCRA' },
+	{ name: 'EASTERN', value: 'EASTERN' },
+	{ name: 'ASHANTI', value: 'ASHANTI' },
+	{ name: 'CENTRAL', value: 'CENTRAL' },
+	{ name: 'NORTHERN', value: 'NORTHERN' },
+	{ name: 'UPPER EAST', value: 'UPPER EAST' },
+	{ name: 'UPPER WEST', value: 'UPPER WEST' },
+];
+
+// Relicensure Form Inputs
+
+export const institutionOptions = [
+	{
+		name: 'academia',
+		value: 'academia',
+	},
+	{
+		name: 'administration',
+		value: 'administration',
+	},
+	{
+		name: 'community',
+		value: 'community',
+	},
+	{
+		name: 'hospital',
+		value: 'hospital',
+	},
+	{
+		name: 'industry',
+		value: 'industry',
+	},
+	{
+		name: 'regulatory',
+		value: 'regulatory',
+	},
+	{
+		name: 'other',
+		value: 'other',
+	},
+];
+
+export const employerOptions = [
+	{
+		name: 'government/quasi government',
+		value: 'government',
+	},
+	{
+		name: 'private',
+		value: 'private',
+	},
+	{
+		name: 'self',
+		value: 'self',
+	},
+];
+
+export const relicensurePersonalDataInputs = [
+	{
+		name: 'registration_number',
+		inputType: 'text-input',
+		label: 'Registration Number',
+		type: 'text',
+		disabled: true,
+		labelProps: { style: { color: '#000' } },
+		required: true,
+	},
+	{
+		name: 'person_title',
+		inputType: 'text-input',
+		label: 'Title',
+		type: 'text',
+		disabled: true,
+		labelProps: { style: { color: '#000' } },
+		required: true,
+	},
+	{
+		name: 'person_surname',
+		inputType: 'text-input',
+		label: 'Surname',
+		type: 'text',
+		disabled: true,
+		labelProps: { style: { color: '#000' } },
+		required: true,
+	},
+	{
+		name: 'person_first_name',
+		inputType: 'text-input',
+		label: 'First Name',
+		type: 'text',
+		disabled: true,
+		labelProps: { style: { color: '#000' } },
+		required: true,
+	},
+	{
+		name: 'person_othernames',
+		inputType: 'text-input',
+		label: 'Othernames',
+		type: 'text',
+		disabled: true,
+		labelProps: { style: { color: '#000' } },
+		required: false,
+	},
+	{
+		name: 'person_nationality',
+		inputType: 'text-input',
+		label: 'Nationality',
+		type: 'text',
+		disabled: true,
+		labelProps: { style: { color: '#000' } },
+		required: false,
+	},
+	{
+		name: 'person_postal_address',
+		inputType: 'text-input',
+		label: 'Postal Address',
+		type: 'text',
+		disabled: false,
+		labelProps: { style: { color: '#000' } },
+		required: true,
+	},
+	{
+		name: 'person_town',
+		inputType: 'text-input',
+		label: 'Town',
+		type: 'text',
+		disabled: true,
+		labelProps: { style: { color: '#000' } },
+		required: false,
+	},
+	{
+		name: 'person_mobile_number',
+		inputType: 'text-input',
+		label: 'Mobile Number',
+		type: 'tel',
+		rules: {
+			pattern: {
+				value: /^(0|233|\+233)[\d]{9}$/gi,
+				message: 'Please enter a valid mobile number',
+			},
+		},
+		disabled: false,
+		labelProps: { style: { color: '#000' } },
+		required: true,
+	},
+	{
+		name: 'person_landline',
+		inputType: 'text-input',
+		label: 'Landline',
+		type: 'tel',
+		disabled: true,
+		labelProps: { style: { color: '#000' } },
+		required: false,
+	},
+	{
+		name: 'person_email',
+		inputType: 'text-input',
+		label: 'Email',
+		type: 'email',
+		rules: {
+			pattern: {
+				value: /^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/gi,
+				message: 'Please enter a valid email address',
+			},
+			required: 'Please enter email address',
+		},
+		disabled: false,
+		labelProps: { style: { color: '#000' } },
+		required: true,
+	},
+	{
+		name: 'residential_region',
+		inputType: 'select-input',
+		rules: { required: 'Please select a region' },
+		label: 'Region *',
+		disabled: false,
+		labelProps: { style: { color: '#000' } },
+		required: true,
+		options: regions,
+	},
+];
+
+// Digitalization and ePharmacy Form Inputs
+
+export const facilityDataInputs = [
+	{
+		name: 'pharmacy_name',
+		inputType: 'text-input',
+		label: 'Name of Pharmacy',
+		type: 'text',
+		class: 'col-span-3 lg:col-span-4 w-full',
+		disabled: true,
+		labelProps: { style: { color: '#000' } },
+		required: true,
+	},
+	{
+		name: 'license_number',
+		inputType: 'text-input',
+		label: 'License Number',
+		type: 'text',
+		class: 'col-span-3 lg:col-span-4 w-full',
+		disabled: true,
+		labelProps: { style: { color: '#000' } },
+		required: true,
+	},
+	{
+		name: 'business_type',
+		inputType: 'text-input',
+		label: 'Business Type',
+		type: 'text',
+		class: 'col-span-3 lg:col-span-4 w-full',
+		disabled: true,
+		labelProps: { style: { color: '#000' } },
+		required: true,
+	},
+	{
+		name: 'region',
+		inputType: 'text-input',
+		label: 'Region',
+		type: 'text',
+		class: 'col-span-3 lg:col-span-4 w-full',
+		disabled: true,
+		labelProps: { style: { color: '#000' } },
+		required: true,
+	},
+	{
+		name: 'district',
+		inputType: 'text-input',
+		label: 'District',
+		type: 'text',
+		class: 'col-span-3 lg:col-span-4 w-full',
+		disabled: true,
+		labelProps: { style: { color: '#000' } },
+		required: true,
+	},
+	{
+		name: 'town',
+		inputType: 'text-input',
+		label: 'Town',
+		type: 'text',
+		class: 'col-span-3 lg:col-span-4 w-full',
+		disabled: true,
+		labelProps: { style: { color: '#000' } },
+		required: true,
+	},
+	{
+		name: 'street',
+		inputType: 'text-input',
+		label: 'Street',
+		type: 'text',
+		class: 'col-span-3 lg:col-span-6 w-full',
+		disabled: true,
+		labelProps: { style: { color: '#000' } },
+		required: true,
+	},
+	{
+		name: 'location',
+		inputType: 'text-input',
+		label: 'Location Hse / No',
+		type: 'text',
+		class: 'col-span-3 lg:col-span-6 w-full',
+		disabled: true,
+		labelProps: { style: { color: '#000' } },
+		required: true,
+	},
+	{
+		name: 'gps',
+		inputType: 'text-input',
+		label: 'Ghana Post Digital Address',
+		type: 'text',
+		class: 'col-span-6 lg:col-span-4 w-full',
+		disabled: true,
+		labelProps: { style: { color: '#000' } },
+		required: true,
+	},
+	{
+		name: 'phone',
+		inputType: 'text-input',
+		label: 'Phone Number',
+		rules: {
+			pattern: {
+				value: /^(0|233|\+233)[\d]{9}$/gi,
+				message: 'Please enter a valid Phone Number',
+			},
+		},
+		type: 'tel',
+		class: 'col-span-3 lg:col-span-4 w-full',
+		disabled: true,
+		labelProps: { style: { color: '#000' } },
+		required: true,
+	},
+	{
+		name: 'email',
+		inputType: 'text-input',
+		label: 'Pharmacy Email',
+		rules: {
+			pattern: {
+				value: /^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/gi,
+				message: 'Please enter a valid email address',
+			},
+			required: 'Please enter email address',
+		},
+		type: 'email',
+		class: 'col-span-3 lg:col-span-4 w-full',
+		disabled: true,
+		labelProps: { style: { color: '#000' } },
+		required: true,
+	},
+];
+
+export const facilityReadinessInputs = [
+	{
+		name: 'facility_readiness.desk_computer',
+		inputType: 'select-input',
+		rules: { required: 'Please select an option' },
+		label: 'Desk Computer *',
+		class: 'col-span-2 lg:col-span-4 xl:col-span-3 w-full',
+		disabled: false,
+		labelProps: { style: { color: '#000' } },
+		required: true,
+		options: [
+			{
+				name: 'Yes',
+				value: 'yes',
+			},
+			{
+				name: 'No',
+				value: 'no',
+			},
+		],
+	},
+	{
+		name: 'facility_readiness.tablet',
+		inputType: 'select-input',
+		rules: { required: 'Please select an option' },
+		label: 'Tablet *',
+		class: 'col-span-2 lg:col-span-4 xl:col-span-3 w-full',
+		disabled: false,
+		labelProps: { style: { color: '#000' } },
+		required: true,
+		options: [
+			{
+				name: 'Yes',
+				value: 'yes',
+			},
+			{
+				name: 'No',
+				value: 'no',
+			},
+		],
+	},
+	{
+		name: 'facility_readiness.smartphone',
+		inputType: 'select-input',
+		rules: { required: 'Please select an option' },
+		label: 'Smartphone *',
+		class: 'col-span-2 lg:col-span-4 xl:col-span-3 w-full',
+		disabled: false,
+		labelProps: { style: { color: '#000' } },
+		required: true,
+		options: [
+			{
+				name: 'Yes',
+				value: 'yes',
+			},
+			{
+				name: 'No',
+				value: 'no',
+			},
+		],
+	},
+	{
+		name: 'facility_readiness.feature_phone',
+		inputType: 'select-input',
+		rules: { required: 'Please select an option' },
+		label: 'Feature Phone *',
+		class: 'col-span-2 lg:col-span-4 xl:col-span-3 w-full',
+		disabled: false,
+		labelProps: { style: { color: '#000' } },
+		required: true,
+		options: [
+			{
+				name: 'Yes',
+				value: 'yes',
+			},
+			{
+				name: 'No',
+				value: 'no',
+			},
+		],
+	},
+	{
+		name: 'facility_readiness.website',
+		inputType: 'select-input',
+		rules: { required: 'Please select an option' },
+		label: 'Website *',
+		class: 'col-span-2 lg:col-span-4 xl:col-span-3 w-full',
+		disabled: false,
+		labelProps: { style: { color: '#000' } },
+		required: true,
+		options: [
+			{
+				name: 'Yes',
+				value: 'yes',
+			},
+			{
+				name: 'No',
+				value: 'no',
+			},
+		],
+	},
+	{
+		name: 'facility_readiness.social_media_presence',
+		inputType: 'select-input',
+		rules: { required: 'Please select an option' },
+		label: 'Social Media Presence *',
+		class: 'col-span-2 lg:col-span-4 xl:col-span-3 w-full',
+		disabled: false,
+		labelProps: { style: { color: '#000' } },
+		required: true,
+		options: [
+			{
+				name: 'Yes',
+				value: 'yes',
+			},
+			{
+				name: 'No',
+				value: 'no',
+			},
+		],
+	},
+	{
+		name: 'facility_readiness.phone_number_for_enquiries_and_orders',
+		inputType: 'select-input',
+		rules: { required: 'Please select an option' },
+		label: 'Mobile/Phone Number for Enquiries and Orders *',
+		class: 'col-span-3 lg:col-span-6 xl:col-span-6 w-full',
+		disabled: false,
+		labelProps: { style: { color: '#000' } },
+		required: true,
+		options: [
+			{
+				name: 'Yes',
+				value: 'yes',
+			},
+			{
+				name: 'No',
+				value: 'no',
+			},
+		],
+	},
+	{
+		name: 'facility_readiness.presence_on_other_web_pages',
+		inputType: 'select-input',
+		rules: { required: 'Please select an option' },
+		label: 'Presence on Other Web Pages (e.g directories) *',
+		class: 'col-span-3 lg:col-span-6 xl:col-span-6 w-full',
+		disabled: false,
+		labelProps: { style: { color: '#000' } },
+		required: true,
+		options: [
+			{
+				name: 'Yes',
+				value: 'yes',
+			},
+			{
+				name: 'No',
+				value: 'no',
+			},
+		],
+	},
+
+	{
+		name: 'facility_readiness.mobile_money_accepted',
+		inputType: 'select-input',
+		rules: { required: 'Please select an option' },
+		label: 'Mobile Money Accepted *',
+		class: 'col-span-2 lg:col-span-4 xl:col-span-3 w-full',
+		disabled: false,
+		labelProps: { style: { color: '#000' } },
+		required: true,
+		options: [
+			{
+				name: 'Yes',
+				value: 'yes',
+			},
+			{
+				name: 'No',
+				value: 'no',
+			},
+		],
+	},
+	{
+		name: 'facility_readiness.bank_card_accepted',
+		inputType: 'select-input',
+		rules: { required: 'Please select an option' },
+		label: 'Bank Card Payment Accepted *',
+		class: 'col-span-2 lg:col-span-4 xl:col-span-3 w-full',
+		disabled: false,
+		labelProps: { style: { color: '#000' } },
+		required: true,
+		options: [
+			{
+				name: 'Yes',
+				value: 'yes',
+			},
+			{
+				name: 'No',
+				value: 'no',
+			},
+		],
+	},
+	{
+		name: 'facility_readiness.internet_access_available',
+		inputType: 'select-input',
+		rules: { required: 'Please select an option' },
+		label: 'Internet Access Available *',
+		class: 'col-span-2 lg:col-span-4 xl:col-span-3 w-full',
+		disabled: false,
+		labelProps: { style: { color: '#000' } },
+		required: true,
+		options: [
+			{
+				name: 'Yes',
+				value: 'yes',
+			},
+			{
+				name: 'No',
+				value: 'no',
+			},
+		],
+	},
+	{
+		name: 'facility_readiness.pos_available',
+		inputType: 'select-input',
+		rules: { required: 'Please select an option' },
+		label: 'Special Transactions Software – POS/Sales Software *',
+		class: 'col-span-6 lg:col-span-12 xl:col-span-5 w-full',
+		disabled: false,
+		labelProps: { style: { color: '#000' } },
+		required: true,
+		options: [
+			{
+				name: 'Yes',
+				value: 'yes',
+			},
+			{
+				name: 'No',
+				value: 'no',
+			},
+		],
+	},
+	{
+		name: 'facility_readiness.standby_power_available',
+		inputType: 'select-input',
+		rules: { required: 'Please select an option' },
+		label: 'Standby Power Source (e.g Generator) available *',
+		class: 'col-span-6 lg:col-span-12 xl:col-span-4 w-full',
+		disabled: false,
+		labelProps: { style: { color: '#000' } },
+		required: true,
+		options: [
+			{
+				name: 'Yes',
+				value: 'yes',
+			},
+			{
+				name: 'No',
+				value: 'no',
+			},
+		],
+	},
+];
+
+export const technicalProficiencyInputs = [
+	{
+		class: 'col-span-6 lg:col-span-12 xl:col-span-6 w-full',
+		name: 'technical_proficiency.pharmacist_understanding_of_technologies',
+		inputType: 'select-input',
+		rules: { required: 'Please select an option' },
+		label:
+			'General Understanding/Proficiency in digital technologies (Pharmacist) *',
+		disabled: false,
+		labelProps: { style: { color: '#000' } },
+		required: true,
+		options: [
+			{
+				name: 'Yes',
+				value: 'yes',
+			},
+			{
+				name: 'No',
+				value: 'no',
+			},
+		],
+	},
+	{
+		class: 'col-span-6 lg:col-span-12 xl:col-span-6 w-full',
+		name: 'technical_proficiency.attendants_understanding_of_technologies',
+		inputType: 'select-input',
+		rules: { required: 'Please select an option' },
+		label:
+			'General Understanding/Proficiency in digital technologies (Attendants) *',
+		disabled: false,
+		labelProps: { style: { color: '#000' } },
+		required: true,
+		options: [
+			{
+				name: 'Yes',
+				value: 'yes',
+			},
+			{
+				name: 'No',
+				value: 'no',
+			},
+		],
+	},
+	{
+		class: 'col-span-6 lg:col-span-12 xl:col-span-6 w-full',
+		name: 'technical_proficiency.employees_can_use_payment_processing_system',
+		inputType: 'select-input',
+		rules: { required: 'Please select an option' },
+		label: 'Employees who can use Payment Processing System *',
+		disabled: false,
+		labelProps: { style: { color: '#000' } },
+		required: true,
+		options: [
+			{
+				name: 'Yes',
+				value: 'yes',
+			},
+			{
+				name: 'No',
+				value: 'no',
+			},
+		],
+	},
+	{
+		class: 'col-span-6 lg:col-span-12 xl:col-span-6 w-full',
+		name: 'technical_proficiency.employees_can_use_pos_system',
+		inputType: 'select-input',
+		rules: { required: 'Please select an option' },
+		label: 'Employees who can use Point of Sale System *',
+		disabled: false,
+		labelProps: { style: { color: '#000' } },
+		required: true,
+		options: [
+			{
+				name: 'Yes',
+				value: 'yes',
+			},
+			{
+				name: 'No',
+				value: 'no',
+			},
+		],
+	},
+];
+
+export const purchaseProcessInputs = [
+	{
+		name: 'purchase_process.in_person_check',
+
+		label: 'In-Person',
+	},
+	{
+		name: 'purchase_process.phone_call',
+
+		label: 'Phone /Voice Call',
+	},
+	{
+		name: 'purchase_process.website',
+
+		label: 'Website',
+	},
+	{
+		name: 'purchase_process.whatsapp',
+
+		label: 'WhatsApp',
+	},
+	{
+		name: 'purchase_process.text_sms',
+
+		label: 'Text/SMS',
+	},
+	{
+		name: 'purchase_process.email',
+
+		label: 'Email',
+	},
+];
+
+export const posUsageInputs = [
+	{
+		class: 'col-span-2 lg:col-span-4 w-full',
+		name: 'pos_system_usage.inventory_management',
+		inputType: 'select-input',
+		rules: { required: 'Please select an option' },
+		label: 'Inventory Management *',
+		disabled: false,
+		labelProps: { style: { color: '#000' } },
+		required: true,
+		options: [
+			{
+				name: 'Yes',
+				value: 'yes',
+			},
+			{
+				name: 'No',
+				value: 'no',
+			},
+		],
+	},
+	{
+		class: 'col-span-2 lg:col-span-4 w-full',
+		name: 'pos_system_usage.transaction_management',
+		inputType: 'select-input',
+		rules: { required: 'Please select an option' },
+		label: 'Transaction Management *',
+		disabled: false,
+		labelProps: { style: { color: '#000' } },
+		required: true,
+		options: [
+			{
+				name: 'Yes',
+				value: 'yes',
+			},
+			{
+				name: 'No',
+				value: 'no',
+			},
+		],
+	},
+	{
+		class: 'col-span-2 lg:col-span-4 w-full',
+		name: 'pos_system_usage.payment_processing',
+		inputType: 'select-input',
+		rules: { required: 'Please select an option' },
+		label: 'Payment Processing *',
+		disabled: false,
+		labelProps: { style: { color: '#000' } },
+		required: true,
+		options: [
+			{
+				name: 'Yes',
+				value: 'yes',
+			},
+			{
+				name: 'No',
+				value: 'no',
+			},
+		],
+	},
+	{
+		class: 'col-span-3 lg:col-span-6 xl:col-span-4 w-full',
+		name: 'pos_system_usage.sales_reporting',
+		inputType: 'select-input',
+		rules: { required: 'Please select an option' },
+		label: 'Sales Reporting *',
+		disabled: false,
+		labelProps: { style: { color: '#000' } },
+		required: true,
+		options: [
+			{
+				name: 'Yes',
+				value: 'yes',
+			},
+			{
+				name: 'No',
+				value: 'no',
+			},
+		],
+	},
+	{
+		class: 'col-span-3 lg:col-span-6 xl:col-span-4 w-full',
+		name: 'pos_system_usage.employee_management',
+		inputType: 'select-input',
+		rules: { required: 'Please select an option' },
+		label: 'Employee Management *',
+		disabled: false,
+		labelProps: { style: { color: '#000' } },
+		required: true,
+		options: [
+			{
+				name: 'Yes',
+				value: 'yes',
+			},
+			{
+				name: 'No',
+				value: 'no',
+			},
+		],
+	},
+	{
+		class: 'col-span-6 lg:col-span-12 xl:col-span-4 w-full',
+		name: 'pos_system_usage.crm',
+		inputType: 'select-input',
+		rules: { required: 'Please select an option' },
+		label: 'Customer Relationship Management *',
+		disabled: false,
+		labelProps: { style: { color: '#000' } },
+		required: true,
+		options: [
+			{
+				name: 'Yes',
+				value: 'yes',
+			},
+			{
+				name: 'No',
+				value: 'no',
+			},
+		],
+	},
+];
+
+export const posVendorRelationInputs = [
+	{
+		class: 'col-span-3 lg:col-span-6 xl:col-span-4 w-full',
+		name: 'pos_system_vendor_relationship.vendor_name',
+		inputType: 'text-input',
+		rules: { required: 'Please select an option' },
+		label: 'Name of Vendor',
+		type: 'text',
+		disabled: false,
+		required: true,
+	},
+	{
+		class: 'col-span-3 lg:col-span-6 xl:col-span-4 w-full',
+		name: 'pos_system_vendor_relationship.vendor_relationship',
+		inputType: 'select-input',
+		rules: { required: 'Please select an option' },
+		label: 'Vendor Relationship (if known) *',
+		disabled: false,
+		labelProps: { style: { color: '#000' } },
+		required: true,
+		options: [
+			{
+				name: 'Yes',
+				value: 'yes',
+			},
+			{
+				name: 'No',
+				value: 'no',
+			},
+		],
+	},
+	{
+		class: 'col-span-3 lg:col-span-6 xl:col-span-4 w-full',
+		name: 'pos_system_vendor_relationship.vendor_provides_support',
+		inputType: 'select-input',
+		rules: { required: 'Please select an option' },
+		label: 'Vendor Provides Support *',
+		disabled: false,
+		labelProps: { style: { color: '#000' } },
+		required: true,
+		options: [
+			{
+				name: 'Yes',
+				value: 'yes',
+			},
+			{
+				name: 'No',
+				value: 'no',
+			},
+		],
+	},
+	{
+		class: 'col-span-3 lg:col-span-6 xl:col-span-4 w-full',
+		name: 'pos_system_vendor_relationship.internet_dependent',
+		inputType: 'select-input',
+		rules: { required: 'Please select an option' },
+		label: 'Dependent on the Internet *',
+		disabled: false,
+		labelProps: { style: { color: '#000' } },
+		required: true,
+		options: [
+			{
+				name: 'Yes',
+				value: 'yes',
+			},
+			{
+				name: 'No',
+				value: 'no',
+			},
+		],
+	},
+	{
+		class: 'col-span-3 lg:col-span-6 xl:col-span-4 w-full',
+		name: 'pos_system_vendor_relationship.internet_not_required',
+		inputType: 'select-input',
+		rules: { required: 'Please select an option' },
+		label: 'Can work when Internet is Down *',
+		disabled: false,
+		labelProps: { style: { color: '#000' } },
+		required: true,
+		options: [
+			{
+				name: 'Yes',
+				value: 'yes',
+			},
+			{
+				name: 'No',
+				value: 'no',
+			},
+		],
+	},
+];
+
+export const paymentProcessGatewayInputs = [
+	{
+		name: 'payment_processing_gateway.cash',
+
+		label: 'Cash',
+	},
+	{
+		name: 'payment_processing_gateway.mobile_money',
+
+		label: 'Mobile Money',
+	},
+	{
+		name: 'payment_processing_gateway.cheque',
+
+		label: 'Cheque (Repeat Customers)',
+	},
+	{
+		name: 'payment_processing_gateway.nhis',
+
+		label: 'Health Insurance NHIS',
+	},
+	{
+		name: 'payment_processing_gateway.private_insurance',
+
+		label: 'Private Health Insurance',
+	},
+	{
+		name: 'payment_processing_gateway.bank_debit_card',
+
+		label: 'Bank Debit Card',
+	},
+];
+
+export const pharmaceuticalServicesInputs = [
+	{
+		name: 'pharmaceutical_services.in_person',
+
+		label: 'In-Person',
+	},
+	{
+		name: 'pharmaceutical_services.phone_call',
+
+		label: 'Phone/Voice Call',
+	},
+	{
+		name: 'pharmaceutical_services.text_sms_email_whatsapp',
+
+		label: 'Text/SMS - SMS | WhatsApp | Email',
+	},
+	{
+		name: 'pharmaceutical_services.website',
+
+		label: 'Website',
+	},
+];
+
+export const deliveryServiceInputs = [
+	{
+		class: 'col-span-3 lg:col-span-6 w-full',
+		name: 'delivery_service.services_offered',
+		inputType: 'select-input',
+		rules: { required: 'Please select an option' },
+		label: 'Services Offered *',
+		disabled: false,
+		labelProps: { style: { color: '#000' } },
+		required: true,
+		options: [
+			{
+				name: 'Yes',
+				value: 'yes',
+			},
+			{
+				name: 'No',
+				value: 'no',
+			},
+		],
+	},
+	{
+		class: 'col-span-3 lg:col-span-6 w-full',
+		name: 'delivery_service.services_provider',
+		inputType: 'select-input',
+		rules: { required: 'Please select an option' },
+		label: 'Services Provider *',
+		disabled: false,
+		labelProps: { style: { color: '#000' } },
+		required: true,
+		options: [
+			{
+				name: 'Yes',
+				value: 'yes',
+			},
+			{
+				name: 'No',
+				value: 'no',
+			},
+		],
+	},
+];
+
+export const prescriptionsProcessInputs = [
+	{
+		name: 'prescriptions_processed.written_submitted_in_person',
+
+		label: 'Official Written and submitted in-person (Valid)',
+	},
+	{
+		name: 'prescriptions_processed.written_submitted_digitally',
+
+		label: 'Official Written and submitted digitally (scan or picture)',
+	},
+	{
+		name: 'prescriptions_processed.e_prescription_submitted_digitally',
+
+		label: 'Official E-prescription submitted digitally',
+	},
+	{
+		name: 'prescriptions_processed.physician_request_voice_call',
+
+		label: 'Physician Request via voice call (Oral)',
+	},
+	{
+		name: 'prescriptions_processed.physician_request_text_sms_whatsapp_email',
+
+		label: 'Physician Request via Text/SMS – SMS | WhatsApp | Email',
+	},
+];
+
+export const selectedInsuranceCompaniesInputs = [
+	{
+		name: 'selected_insurance_companies.nationwide_insurance',
+
+		label: 'Nationwide Insurance',
+	},
+	{
+		name: 'selected_insurance_companies.metropolitan_insurance',
+
+		label: 'Metropolitan Insurance',
+	},
+	{
+		name: 'selected_insurance_companies.acacia_insurance',
+
+		label: 'Acacia Insurance',
+	},
+	{
+		name: 'selected_insurance_companies.premier_insurance',
+
+		label: 'Premier Insurance',
+	},
+	{
+		name: 'selected_insurance_companies.apex_insurance',
+
+		label: 'Apex Insurance',
+	},
+	{
+		name: 'selected_insurance_companies.cosmopolitan_insurance',
+
+		label: 'Cosmopolitan Insurance',
+	},
+	{
+		name: 'selected_insurance_companies.vitality_insurance',
+
+		label: 'Vitality Insurance',
+	},
+	{
+		name: 'selected_insurance_companies.ace_insurance',
+
+		label: 'Ace Insurance',
+	},
+	{
+		name: 'selected_insurance_companies.equity_insurance',
+
+		label: 'Equity Insurance',
+	},
+	{
+		name: 'selected_insurance_companies.gab_insurance',
+
+		label: 'GAB Insurance',
+	},
+];
+
+export const epharmacyFormNoticePoints = [
+	{
+		id: 1,
+		point:
+			'Only registered retail pharmaceutical entities are eligible to apply.',
+	},
+	{
+		id: 2,
+		point:
+			'Mandatory registration with the Data Protection Agency and compliance with existing laws, including the Data Protection Act, 2012 (Act 843) is pre-requisite for renewal of the ePharmacy license.',
+	},
+	{
+		id: 3,
+		point:
+			'The medicines must be registered for use in both the country of origin and the country of destination and use.',
+	},
+	{
+		id: 4,
+		point:
+			'In situations where the medicine is not registrable in the country of origin, a certificate of pharmaceutical product shall be submitted.',
+	},
+	{
+		id: 5,
+		point:
+			'Provisions in relation to the prescription and supply of medicines shall be duly complied with.',
+	},
+	{
+		id: 6,
+		point:
+			'The operator of an online or electronic pharmacy shall keep, in electronic format, all documentations on all transactions and shall make such documentations available for inspection.',
+	},
+	{
+		id: 7,
+		point:
+			'ePharmacies shall have an obligation to provide periodic reports of ePharmacy transactions undertaken within a specified period as may be determined by the Council.',
+	},
 ];

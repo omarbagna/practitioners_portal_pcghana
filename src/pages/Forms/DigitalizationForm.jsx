@@ -17,7 +17,6 @@ import React, { useEffect, useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import { toast } from 'react-toastify';
 import { useNavigate } from 'react-router-dom';
-//import { axiosPrivate } from '../../api/axios';
 import axios from 'axios';
 import {
 	ButtonComponent,
@@ -30,14 +29,32 @@ import {
 import { useAuthContext } from '../../context/AuthContext';
 import { useDataContext } from '../../context/DataContext';
 import { ConfirmApplication, SkeletonLoad } from '../../layout';
-import { epharmacyFormNoticePoints } from './data';
+import {
+	deliveryServiceInputs,
+	epharmacyFormNoticePoints,
+	facilityDataInputs,
+	facilityReadinessInputs,
+	paymentProcessGatewayInputs,
+	pharmaceuticalServicesInputs,
+	posUsageInputs,
+	posVendorRelationInputs,
+	prescriptionsProcessInputs,
+	purchaseProcessInputs,
+	selectedInsuranceCompaniesInputs,
+	technicalProficiencyInputs,
+} from './data';
 import { useStateContext } from '../../context/StateContext';
 import { axiosPrivate } from '../../api/axios';
 import { useQuery } from 'react-query';
 
 const EPharmacyForm = () => {
 	const { user, logout } = useAuthContext();
-	const { pharmacyData, setPharmacyData } = useDataContext();
+	const {
+		pharmacyData,
+		setPharmacyData,
+		pharmacyRenewalStatus,
+		pharmacistData,
+	} = useDataContext();
 	const { setSubmissionSuccess } = useStateContext();
 	const [open, setOpen] = useState(false);
 	const [isSubmitting, setIsSubmitting] = useState(false);
@@ -180,7 +197,6 @@ const EPharmacyForm = () => {
 	});
 
 	const fetchPharmacyDetails = (searchValue) => {
-		//console.log('this is the search value: ', searchValue);
 		return axiosPrivate.get(
 			`api_pharmacy/getPharmacyDetailsByLicNum?lic_num=${searchValue}`,
 			{
@@ -361,20 +377,26 @@ const EPharmacyForm = () => {
 		setSearchParams(data.pharmacy_license_number);
 	};
 
-	/*
 	useEffect(() => {
-		if (pharmacyData === null) {
-			toast.error(
-				'You cannot access this page. Fill pharmacy renewal form before attempting to access page.'
-			);
+		if (
+			pharmacistData?.is_superintendent !== '1' &&
+			pharmacyRenewalStatus?.renewal_status === null
+		) {
+			toast.error('Please fill the pharmacy renewal form');
 			navigate('/', { replace: true });
+		} else if (
+			pharmacistData?.is_superintendent === '1' &&
+			pharmacyRenewalStatus?.renewal_status !== null
+		) {
+			toast.error('Digitalization form already submitted');
+			navigate('/', { replace: true });
+		} else {
+			return;
 		}
 
 		//console.log(pharmacyData);
-	}, [pharmacyData, navigate]);
-	*/
+	}, [pharmacistData, pharmacyRenewalStatus, navigate]);
 
-	//console.log(relicensureData);
 	const epharmacyFormData = new FormData();
 
 	const handleFormSubmit = async (data) => {
@@ -388,19 +410,36 @@ const EPharmacyForm = () => {
 		};
 
 		rxFormData = {
-			...data,
+			registration_number: user?.registration_number,
+			pharmacy_name: data?.pharmacy_name,
+			license_number: data?.license_number,
+			business_type: data?.business_type,
+			region: data?.region,
+			district: data?.district,
+			town: data?.town,
+			street: data?.street,
+			location: data?.location,
+			gps: data?.gps,
+			phone: data?.phone,
+			email: data?.email,
+			is_epharmacy: data?.is_epharmacy,
+			last_renewal: data?.last_renewal,
+			cbd: data?.cbd,
 			assessment_renewal_only: 'yes',
+			epharmacy_data: {
+				...data,
+			},
 		};
 
 		epharmacyFormData.append('license_number', pcFormData?.license_number);
-		epharmacyFormData.append('reg_num', pcFormData?.registration_number);
+		epharmacyFormData.append('reg_num', user?.registration_number);
 		epharmacyFormData.append('readiness_assessment', pcFormData);
 
 		setIsSubmitting(true);
 
 		try {
 			const privateResponse = await axios.post(
-				'https://goldenministersfellowship.org/pcghana-api/',
+				'https://pcportal-api.rxhealthbeta.com/',
 				JSON.stringify({
 					method: 'SAVE_RENEWAL_DATA',
 					api_key: '42353d5c33b45b0a8246b9bf0cd46820e516e3e4',
@@ -442,11 +481,6 @@ const EPharmacyForm = () => {
 						console.log(
 							'Initial submission successful (pc part epharmacy digital assessment)'
 						);
-
-						//setIsSubmitting(false);
-						//toast.success('Application Submitted Successful pc part');
-
-						//Navigate('/', { replace: true });
 					}
 				} catch (err) {
 					let errMessage;
@@ -457,14 +491,9 @@ const EPharmacyForm = () => {
 				}
 
 				toast.success('Application Submitted Successful');
-				/*if (invoiceData === null) {
-					setInvoiceData(privateResponse.data?.invoices);
-				} else {
-					setInvoiceData([...invoiceData, ...privateResponse.data?.invoices]);
-				} */
+
 				setIsSubmitting(false);
 				setSubmissionSuccess(true);
-				//navigate('/', { replace: true });
 			} else {
 				console.log(privateResponse?.data?.resp_msg);
 				toast.error(privateResponse?.data?.resp_msg);
@@ -479,122 +508,6 @@ const EPharmacyForm = () => {
 		}
 
 		setIsSubmitting(false);
-
-		/*
-
-		try {
-			const response = await axiosPrivate.post('api/saverenewal', formData, {
-				headers: {
-					Token: user?.token,
-					Userid: user?.id,
-					Type: user?.type,
-					'Content-Type': 'multipart/form-data',
-				},
-			});
-
-			if (response?.data?.status === '0') {
-				setIsSubmitting(false);
-				toast.error('Application submission failed');
-			} else if (response?.data?.status === '-1') {
-				setIsSubmitting(false);
-				console.log(response?.data);
-				toast.error(response?.data?.message);
-			} else if (response?.data?.status === '1') {
-				console.log('Initial submission successful');
-				try {
-					const secondResponse = await axiosPrivate.post(
-						'api_pharmacy/saveEpharmacyRegistration',
-						epharmacyFormData,
-						{
-							headers: {
-								Token: user?.token,
-								Userid: user?.id,
-								Type: user?.type,
-								'Content-Type': 'multipart/form-data',
-							},
-						}
-					);
-
-					if (secondResponse?.data?.status === '0') {
-						//setIsSubmitting(false);
-						console.log('Application submission failed (pc part epharmacy)');
-					} else if (secondResponse?.data?.status === '-1') {
-						//setIsSubmitting(false);
-						//console.log(secondResponse?.data);
-						console.log(secondResponse?.data?.message);
-					} else if (secondResponse?.data?.status === '1') {
-						console.log('Initial submission successful (pc part epharmacy)');
-
-						//setIsSubmitting(false);
-						//toast.success('Application Submitted Successful pc part');
-
-						//navigate('/', { replace: true });
-					}
-				} catch (err) {
-					let errMessage;
-					if (err.response?.status === 400) {
-						errMessage = 'Server Error';
-						console.log(errMessage);
-					}
-				}
-
-				try {
-					const privateResponse = await axios.post(
-						'https://goldenministersfellowship.org/pcghana-api/',
-						JSON.stringify({
-							method: 'SAVE_RENEWAL_DATA',
-							api_key: '42353d5c33b45b0a8246b9bf0cd46820e516e3e4',
-							...finalFormData,
-						}),
-						{
-							headers: { 'Content-Type': 'application/json' },
-							withCredentials: true,
-						}
-					);
-
-					//console.log(privateResponse);
-
-					if (privateResponse.data?.resp_code === '000') {
-						//toast.success('Application Submitted Successful');
-						/*if (invoiceData === null) {
-							setInvoiceData(privateResponse.data?.invoices);
-						} else {
-							setInvoiceData([...invoiceData, ...privateResponse.data?.invoices]);
-						} 
-						toast.success('Application Submitted Successfully');
-						setIsSubmitting(false);
-						setSubmissionSuccess(true);
-						//navigate('/', { replace: true });
-
-						return;
-					} else {
-						console.log(privateResponse?.data?.resp_msg);
-						toast.error(privateResponse?.data?.resp_msg);
-						setIsSubmitting(false);
-					}
-				} catch (error) {
-					let errorMessage;
-					if (error.response?.status === 400) {
-						errorMessage = 'Server Error';
-						console.log(errorMessage);
-					}
-				}
-
-				setIsSubmitting(false);
-
-				//navigate('/', { replace: true });
-			}
-		} catch (err) {
-			let errMessage;
-			if (err.response?.status === 400) {
-				errMessage = 'Server Error';
-				console.log(errMessage);
-			}
-
-			setIsSubmitting(false);
-		}
-
-*/
 	};
 
 	const onError = (errors) => {
@@ -625,9 +538,6 @@ const EPharmacyForm = () => {
 								<Controller
 									control={controlSearch}
 									name="pharmacy_license_number"
-									/*rules={{
-							required: 'Please enter registration number to Login',
-						}} */
 									render={({
 										field: { ref, ...field },
 										fieldState: { error, invalid },
@@ -686,330 +596,53 @@ const EPharmacyForm = () => {
 									className="w-full h-full flex flex-col justify-start items-center gap-8 mt-6">
 									<FormSection sectionName="facility data">
 										<div className="w-full flex flex-col md:grid md:grid-cols-6 lg:grid-cols-12 gap-5 xl:gap-8 place-items-center place-content-center">
-											<div className="col-span-3 lg:col-span-4 w-full">
-												<Controller
-													control={control}
-													name="pharmacy_name"
-													/*rules={{
-											required: 'Please enter license number to Login',
-										}} */
-													render={({
-														field: { ref, ...field },
-														fieldState: { error, invalid },
-													}) => (
-														<DefaultInput
-															{...field}
-															ref={ref}
-															error={invalid}
-															helpertext={invalid ? error.message : null}
-															name="pharmacy_name"
-															label="Name of Pharmacy"
-															type="text"
-															disabled
-															labelProps={{ style: { color: '#000' } }}
-															required
-														/>
-													)}
-												/>
-											</div>
-											<div className="col-span-3 lg:col-span-4 w-full">
-												<Controller
-													control={control}
-													name="license_number"
-													/*rules={{
-											required: 'Please enter license number to Login',
-										}} */
-													render={({
-														field: { ref, ...field },
-														fieldState: { error, invalid },
-													}) => (
-														<DefaultInput
-															{...field}
-															ref={ref}
-															error={invalid}
-															helpertext={invalid ? error.message : null}
-															name="license_number"
-															label="License Number"
-															type="text"
-															disabled
-															labelProps={{ style: { color: '#000' } }}
-															required
-														/>
-													)}
-												/>
-											</div>
-											<div className="col-span-3 lg:col-span-4 w-full">
-												<Controller
-													control={control}
-													name="business_type"
-													/*rules={{
-											required: 'Please enter license number to Login',
-										}} */
-													render={({
-														field: { ref, ...field },
-														fieldState: { error, invalid },
-													}) => (
-														<DefaultInput
-															{...field}
-															ref={ref}
-															error={invalid}
-															helpertext={invalid ? error.message : null}
-															name="business_type"
-															label="Business Type"
-															type="text"
-															disabled
-															labelProps={{ style: { color: '#000' } }}
-															required
-														/>
-													)}
-												/>
-											</div>
-											<div className="col-span-3 lg:col-span-4 w-full">
-												<Controller
-													control={control}
-													name="region"
-													/*rules={{
-											required: 'Please enter license number to Login',
-										}} */
-													render={({
-														field: { ref, ...field },
-														fieldState: { error, invalid },
-													}) => (
-														<DefaultInput
-															{...field}
-															ref={ref}
-															error={invalid}
-															helpertext={invalid ? error.message : null}
-															name="region"
-															label="Region"
-															type="text"
-															disabled
-															labelProps={{ style: { color: '#000' } }}
-															required
-														/>
-													)}
-												/>
-											</div>
-											<div className="col-span-3 lg:col-span-4 w-full">
-												<Controller
-													control={control}
-													name="district"
-													/*rules={{
-											required: 'Please enter license number to Login',
-										}} */
-													render={({
-														field: { ref, ...field },
-														fieldState: { error, invalid },
-													}) => (
-														<DefaultInput
-															{...field}
-															ref={ref}
-															error={invalid}
-															helpertext={invalid ? error.message : null}
-															name="district"
-															label="District"
-															type="text"
-															disabled
-															labelProps={{ style: { color: '#000' } }}
-															required
-														/>
-													)}
-												/>
-											</div>
-											<div className="col-span-3 lg:col-span-4 w-full">
-												<Controller
-													control={control}
-													name="town"
-													/*rules={{
-											required: 'Please enter license number to Login',
-										}} */
-													render={({
-														field: { ref, ...field },
-														fieldState: { error, invalid },
-													}) => (
-														<DefaultInput
-															{...field}
-															ref={ref}
-															error={invalid}
-															helpertext={invalid ? error.message : null}
-															name="town"
-															label="Town"
-															type="text"
-															disabled
-															labelProps={{ style: { color: '#000' } }}
-															required
-														/>
-													)}
-												/>
-											</div>
-											<div className="col-span-3 lg:col-span-6 w-full">
-												<Controller
-													control={control}
-													name="street"
-													/*rules={{
-											required: 'Please enter license number to Login',
-										}} */
-													render={({
-														field: { ref, ...field },
-														fieldState: { error, invalid },
-													}) => (
-														<DefaultInput
-															{...field}
-															ref={ref}
-															error={invalid}
-															helpertext={invalid ? error.message : null}
-															name="street"
-															label="Street"
-															type="text"
-															disabled
-															labelProps={{ style: { color: '#000' } }}
-															required
-														/>
-													)}
-												/>
-											</div>
-											<div className="col-span-3 lg:col-span-6 w-full">
-												<Controller
-													control={control}
-													name="location"
-													/*rules={{
-											required: 'Please enter license number to Login',
-										}} */
-													render={({
-														field: { ref, ...field },
-														fieldState: { error, invalid },
-													}) => (
-														<DefaultInput
-															{...field}
-															ref={ref}
-															error={invalid}
-															helpertext={invalid ? error.message : null}
-															name="location"
-															label="Location Hse / No"
-															type="text"
-															disabled
-															labelProps={{ style: { color: '#000' } }}
-															required
-														/>
-													)}
-												/>
-											</div>
-											<div className="col-span-6 lg:col-span-4 w-full">
-												<Controller
-													control={control}
-													name="gps"
-													/*rules={{
-											required: 'Please enter license number to Login',
-										}} */
-													render={({
-														field: { ref, ...field },
-														fieldState: { error, invalid },
-													}) => (
-														<DefaultInput
-															{...field}
-															ref={ref}
-															error={invalid}
-															helpertext={invalid ? error.message : null}
-															name="gps"
-															label="Ghana Post Digital Address"
-															type="text"
-															disabled
-															labelProps={{ style: { color: '#000' } }}
-															required
-														/>
-													)}
-												/>
-											</div>
-											<div className="col-span-3 lg:col-span-4 w-full">
-												<Controller
-													control={control}
-													name="phone"
-													rules={{
-														pattern: {
-															value: /^(0|233|\+233)[\d]{9}$/gi,
-															message: 'Please enter a valid Phone Number',
-														},
-													}}
-													render={({
-														field: { ref, ...field },
-														fieldState: { error, invalid },
-													}) => (
-														<DefaultInput
-															{...field}
-															ref={ref}
-															error={invalid}
-															helpertext={invalid ? error.message : null}
-															name="phone"
-															label="Phone Number"
-															type="tel"
-															disabled
-															labelProps={{ style: { color: '#000' } }}
-															required
-														/>
-													)}
-												/>
-											</div>
-											<div className="col-span-3 lg:col-span-4 w-full">
-												<Controller
-													control={control}
-													name="email"
-													rules={{
-														pattern: {
-															value:
-																/^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/gi,
-															message: 'Please enter a valid email address',
-														},
-														required: 'Please enter email address',
-													}}
-													render={({
-														field: { ref, ...field },
-														fieldState: { error, invalid },
-													}) => (
-														<DefaultInput
-															{...field}
-															ref={ref}
-															error={invalid}
-															helpertext={invalid ? error.message : null}
-															name="email"
-															label="Pharmacy Email"
-															type="email"
-															disabled
-															labelProps={{ style: { color: '#000' } }}
-															required
-														/>
-													)}
-												/>
-											</div>
-
-											{/**
-									<div className="col-span-3 lg:col-span-8 w-full flex flex-col md:flex-row justify-center items-center gap-3">
-										
-										<div className="w-full md:w-3/4">
-											<Controller
-												control={control}
-												name="pharmacist_registration_number"
-												render={({
-													field: { ref, ...field },
-													fieldState: { error, invalid },
-												}) => (
-													<DefaultInput
-														{...field}
-														ref={ref}
-														error={invalid}
-														helpertext={invalid ? error.message : null}
-														name="pharmacist_registration_number"
-														label="Registration Number of Pharmacist-In-Charge"
-														type="text"
+											{facilityDataInputs.map((inputProps) => (
+												<div
+													key={inputProps.name}
+													className={`${inputProps.class}`}>
+													<Controller
+														control={control}
+														name={inputProps.name}
+														rules={inputProps.rules}
+														render={({
+															field: { ref, ...field },
+															fieldState: { error, invalid },
+														}) => {
+															if (inputProps.inputType === 'text-input') {
+																return (
+																	<DefaultInput
+																		{...field}
+																		ref={ref}
+																		error={invalid}
+																		helpertext={invalid ? error.message : null}
+																		name={inputProps.name}
+																		label={inputProps.label}
+																		type={inputProps.type}
+																		disabled={inputProps.disabled}
+																		labelProps={inputProps.labelProps}
+																		required={inputProps.required}
+																	/>
+																);
+															} else if (
+																inputProps.inputType === 'select-input'
+															) {
+																return (
+																	<SelectInput
+																		{...field}
+																		ref={ref}
+																		error={invalid}
+																		helpertext={invalid ? error.message : null}
+																		name={inputProps.name}
+																		label={inputProps.label}
+																		required={inputProps.required}
+																		options={inputProps.options}
+																	/>
+																);
+															}
+														}}
 													/>
-												)}
-											/>
-										</div>
-
-										<div className="w-full md:w-1/4">
-											<ButtonComponent width type="button" title="search" />
-										</div>
-									</div>
-									 */}
+												</div>
+											))}
 
 											<div className="col-span-3 md:col-span-6 lg:col-span-12 w-full flex flex-col justify-center items-start gap-3">
 												<Controller
@@ -1055,436 +688,57 @@ const EPharmacyForm = () => {
 												/>
 
 												<div className="w-full flex flex-col md:grid md:grid-cols-6 lg:grid-cols-12 gap-5 xl:gap-8 place-items-center place-content-center">
-													<div className="col-span-2 lg:col-span-4 xl:col-span-3 w-full">
-														<Controller
-															control={control}
-															name="facility_readiness.desk_computer"
-															rules={{
-																required: 'Please select an option',
-															}}
-															render={({
-																field: { ref, ...field },
-																fieldState: { error, invalid },
-															}) => (
-																<SelectInput
-																	{...field}
-																	ref={ref}
-																	error={invalid}
-																	helpertext={invalid ? error.message : null}
-																	name="facility_readiness.desk_computer"
-																	label="Desk Computer *"
-																	required
-																	options={[
-																		{
-																			name: 'Yes',
-																			value: 'yes',
-																		},
-																		{
-																			name: 'No',
-																			value: 'no',
-																		},
-																	]}
-																/>
-															)}
-														/>
-													</div>
-													<div className="col-span-2 lg:col-span-4 xl:col-span-3 w-full">
-														<Controller
-															control={control}
-															name="facility_readiness.tablet"
-															rules={{
-																required: 'Please select an option',
-															}}
-															render={({
-																field: { ref, ...field },
-																fieldState: { error, invalid },
-															}) => (
-																<SelectInput
-																	{...field}
-																	ref={ref}
-																	error={invalid}
-																	helpertext={invalid ? error.message : null}
-																	name="facility_readiness.tablet"
-																	label="Tablet *"
-																	required
-																	options={[
-																		{
-																			name: 'Yes',
-																			value: 'yes',
-																		},
-																		{
-																			name: 'No',
-																			value: 'no',
-																		},
-																	]}
-																/>
-															)}
-														/>
-													</div>
-													<div className="col-span-2 lg:col-span-4 xl:col-span-3 w-full">
-														<Controller
-															control={control}
-															name="facility_readiness.smartphone"
-															rules={{
-																required: 'Please select an option',
-															}}
-															render={({
-																field: { ref, ...field },
-																fieldState: { error, invalid },
-															}) => (
-																<SelectInput
-																	{...field}
-																	ref={ref}
-																	error={invalid}
-																	helpertext={invalid ? error.message : null}
-																	name="facility_readiness.smartphone"
-																	label="Smartphone *"
-																	required
-																	options={[
-																		{
-																			name: 'Yes',
-																			value: 'yes',
-																		},
-																		{
-																			name: 'No',
-																			value: 'no',
-																		},
-																	]}
-																/>
-															)}
-														/>
-													</div>
-													<div className="col-span-2 lg:col-span-4 xl:col-span-3 w-full">
-														<Controller
-															control={control}
-															name="facility_readiness.feature_phone"
-															rules={{
-																required: 'Please select an option',
-															}}
-															render={({
-																field: { ref, ...field },
-																fieldState: { error, invalid },
-															}) => (
-																<SelectInput
-																	{...field}
-																	ref={ref}
-																	error={invalid}
-																	helpertext={invalid ? error.message : null}
-																	name="facility_readiness.feature_phone"
-																	label="Feature Phone *"
-																	required
-																	options={[
-																		{
-																			name: 'Yes',
-																			value: 'yes',
-																		},
-																		{
-																			name: 'No',
-																			value: 'no',
-																		},
-																	]}
-																/>
-															)}
-														/>
-													</div>
-													<div className="col-span-2 lg:col-span-4 xl:col-span-3 w-full">
-														<Controller
-															control={control}
-															name="facility_readiness.website"
-															rules={{
-																required: 'Please select an option',
-															}}
-															render={({
-																field: { ref, ...field },
-																fieldState: { error, invalid },
-															}) => (
-																<SelectInput
-																	{...field}
-																	ref={ref}
-																	error={invalid}
-																	helpertext={invalid ? error.message : null}
-																	name="facility_readiness.website"
-																	label="Website *"
-																	required
-																	options={[
-																		{
-																			name: 'Yes',
-																			value: 'yes',
-																		},
-																		{
-																			name: 'No',
-																			value: 'no',
-																		},
-																	]}
-																/>
-															)}
-														/>
-													</div>
-													<div className="col-span-2 lg:col-span-4 xl:col-span-3 w-full">
-														<Controller
-															control={control}
-															name="facility_readiness.social_media_presence"
-															rules={{
-																required: 'Please select an option',
-															}}
-															render={({
-																field: { ref, ...field },
-																fieldState: { error, invalid },
-															}) => (
-																<SelectInput
-																	{...field}
-																	ref={ref}
-																	error={invalid}
-																	helpertext={invalid ? error.message : null}
-																	name="facility_readiness.social_media_presence"
-																	label="Social Media Presence *"
-																	required
-																	options={[
-																		{
-																			name: 'Yes',
-																			value: 'yes',
-																		},
-																		{
-																			name: 'No',
-																			value: 'no',
-																		},
-																	]}
-																/>
-															)}
-														/>
-													</div>
-													<div className="col-span-3 lg:col-span-6 xl:col-span-6 w-full">
-														<Controller
-															control={control}
-															name="facility_readiness.phone_number_for_enquiries_and_orders"
-															rules={{
-																required: 'Please select an option',
-															}}
-															render={({
-																field: { ref, ...field },
-																fieldState: { error, invalid },
-															}) => (
-																<SelectInput
-																	{...field}
-																	ref={ref}
-																	error={invalid}
-																	helpertext={invalid ? error.message : null}
-																	name="facility_readiness.phone_number_for_enquiries_and_orders"
-																	label="Mobile/Phone Number for Enquiries and Orders *"
-																	required
-																	options={[
-																		{
-																			name: 'Yes',
-																			value: 'yes',
-																		},
-																		{
-																			name: 'No',
-																			value: 'no',
-																		},
-																	]}
-																/>
-															)}
-														/>
-													</div>
-													<div className="col-span-3 lg:col-span-6 xl:col-span-6 w-full">
-														<Controller
-															control={control}
-															name="facility_readiness.presence_on_other_web_pages"
-															rules={{
-																required: 'Please select an option',
-															}}
-															render={({
-																field: { ref, ...field },
-																fieldState: { error, invalid },
-															}) => (
-																<SelectInput
-																	{...field}
-																	ref={ref}
-																	error={invalid}
-																	helpertext={invalid ? error.message : null}
-																	name="facility_readiness.presence_on_other_web_pages"
-																	label="Presence on Other Web Pages (e.g directories) *"
-																	required
-																	options={[
-																		{
-																			name: 'Yes',
-																			value: 'yes',
-																		},
-																		{
-																			name: 'No',
-																			value: 'no',
-																		},
-																	]}
-																/>
-															)}
-														/>
-													</div>
-
-													<div className="col-span-2 lg:col-span-4 xl:col-span-3 w-full">
-														<Controller
-															control={control}
-															name="facility_readiness.mobile_money_accepted"
-															rules={{
-																required: 'Please select an option',
-															}}
-															render={({
-																field: { ref, ...field },
-																fieldState: { error, invalid },
-															}) => (
-																<SelectInput
-																	{...field}
-																	ref={ref}
-																	error={invalid}
-																	helpertext={invalid ? error.message : null}
-																	name="facility_readiness.mobile_money_accepted"
-																	label="Mobile Money Accepted *"
-																	required
-																	options={[
-																		{
-																			name: 'Yes',
-																			value: 'yes',
-																		},
-																		{
-																			name: 'No',
-																			value: 'no',
-																		},
-																	]}
-																/>
-															)}
-														/>
-													</div>
-													<div className="col-span-2 lg:col-span-4 xl:col-span-3 w-full">
-														<Controller
-															control={control}
-															name="facility_readiness.bank_card_accepted"
-															rules={{
-																required: 'Please select an option',
-															}}
-															render={({
-																field: { ref, ...field },
-																fieldState: { error, invalid },
-															}) => (
-																<SelectInput
-																	{...field}
-																	ref={ref}
-																	error={invalid}
-																	helpertext={invalid ? error.message : null}
-																	name="facility_readiness.bank_card_accepted"
-																	label="Bank Card Payment Accepted *"
-																	required
-																	options={[
-																		{
-																			name: 'Yes',
-																			value: 'yes',
-																		},
-																		{
-																			name: 'No',
-																			value: 'no',
-																		},
-																	]}
-																/>
-															)}
-														/>
-													</div>
-													<div className="col-span-2 lg:col-span-4 xl:col-span-3 w-full">
-														<Controller
-															control={control}
-															name="facility_readiness.internet_access_available"
-															rules={{
-																required: 'Please select an option',
-															}}
-															render={({
-																field: { ref, ...field },
-																fieldState: { error, invalid },
-															}) => (
-																<SelectInput
-																	{...field}
-																	ref={ref}
-																	error={invalid}
-																	helpertext={invalid ? error.message : null}
-																	name="facility_readiness.internet_access_available"
-																	label="Internet Access Available *"
-																	required
-																	options={[
-																		{
-																			name: 'Yes',
-																			value: 'yes',
-																		},
-																		{
-																			name: 'No',
-																			value: 'no',
-																		},
-																	]}
-																/>
-															)}
-														/>
-													</div>
-													<div className="col-span-6 lg:col-span-12 xl:col-span-5 w-full">
-														<Controller
-															control={control}
-															name="facility_readiness.pos_available"
-															rules={{
-																required: 'Please select an option',
-															}}
-															render={({
-																field: { ref, ...field },
-																fieldState: { error, invalid },
-															}) => (
-																<SelectInput
-																	{...field}
-																	ref={ref}
-																	error={invalid}
-																	helpertext={invalid ? error.message : null}
-																	name="facility_readiness.pos_available"
-																	label="Special Transactions Software – POS/Sales Software *"
-																	required
-																	options={[
-																		{
-																			name: 'Yes',
-																			value: 'yes',
-																		},
-																		{
-																			name: 'No',
-																			value: 'no',
-																		},
-																	]}
-																/>
-															)}
-														/>
-													</div>
-													<div className="col-span-6 lg:col-span-12 xl:col-span-4 w-full">
-														<Controller
-															control={control}
-															name="facility_readiness.standby_power_available"
-															rules={{
-																required: 'Please select an option',
-															}}
-															render={({
-																field: { ref, ...field },
-																fieldState: { error, invalid },
-															}) => (
-																<SelectInput
-																	{...field}
-																	ref={ref}
-																	error={invalid}
-																	helpertext={invalid ? error.message : null}
-																	name="facility_readiness.standby_power_available"
-																	label="Standby Power Source (e.g Generator) available *"
-																	required
-																	options={[
-																		{
-																			name: 'Yes',
-																			value: 'yes',
-																		},
-																		{
-																			name: 'No',
-																			value: 'no',
-																		},
-																	]}
-																/>
-															)}
-														/>
-													</div>
+													{facilityReadinessInputs.map((inputProps) => (
+														<div
+															key={inputProps.name}
+															className={`${inputProps.class}`}>
+															<Controller
+																control={control}
+																name={inputProps.name}
+																rules={inputProps.rules}
+																render={({
+																	field: { ref, ...field },
+																	fieldState: { error, invalid },
+																}) => {
+																	if (inputProps.inputType === 'text-input') {
+																		return (
+																			<DefaultInput
+																				{...field}
+																				ref={ref}
+																				error={invalid}
+																				helpertext={
+																					invalid ? error.message : null
+																				}
+																				name={inputProps.name}
+																				label={inputProps.label}
+																				type={inputProps.type}
+																				disabled={inputProps.disabled}
+																				labelProps={inputProps.labelProps}
+																				required={inputProps.required}
+																			/>
+																		);
+																	} else if (
+																		inputProps.inputType === 'select-input'
+																	) {
+																		return (
+																			<SelectInput
+																				{...field}
+																				ref={ref}
+																				error={invalid}
+																				helpertext={
+																					invalid ? error.message : null
+																				}
+																				name={inputProps.name}
+																				label={inputProps.label}
+																				required={inputProps.required}
+																				options={inputProps.options}
+																			/>
+																		);
+																	}
+																}}
+															/>
+														</div>
+													))}
 												</div>
 											</div>
 
@@ -1496,144 +750,57 @@ const EPharmacyForm = () => {
 												/>
 
 												<div className="w-full flex flex-col md:grid md:grid-cols-6 lg:grid-cols-12 gap-5 xl:gap-8 place-items-center place-content-center">
-													<div className="col-span-6 lg:col-span-12 xl:col-span-6 w-full">
-														<Controller
-															control={control}
-															name="technical_proficiency.pharmacist_understanding_of_technologies"
-															rules={{
-																required: 'Please select an option',
-															}}
-															render={({
-																field: { ref, ...field },
-																fieldState: { error, invalid },
-															}) => (
-																<SelectInput
-																	{...field}
-																	ref={ref}
-																	error={invalid}
-																	helpertext={invalid ? error.message : null}
-																	name="technical_proficiency.pharmacist_understanding_of_technologies"
-																	label="General Understanding/Proficiency in digital technologies (Pharmacist) *"
-																	required
-																	options={[
-																		{
-																			name: 'Yes',
-																			value: 'yes',
-																		},
-																		{
-																			name: 'No',
-																			value: 'no',
-																		},
-																	]}
-																/>
-															)}
-														/>
-													</div>
-													<div className="col-span-6 lg:col-span-12 xl:col-span-6 w-full">
-														<Controller
-															control={control}
-															name="technical_proficiency.attendants_understanding_of_technologies"
-															rules={{
-																required: 'Please select an option',
-															}}
-															render={({
-																field: { ref, ...field },
-																fieldState: { error, invalid },
-															}) => (
-																<SelectInput
-																	{...field}
-																	ref={ref}
-																	error={invalid}
-																	helpertext={invalid ? error.message : null}
-																	name="technical_proficiency.attendants_understanding_of_technologies"
-																	label="General Understanding/Proficiency in digital technologies (Attendants) *"
-																	required
-																	options={[
-																		{
-																			name: 'Yes',
-																			value: 'yes',
-																		},
-																		{
-																			name: 'No',
-																			value: 'no',
-																		},
-																	]}
-																/>
-															)}
-														/>
-													</div>
-													<div className="col-span-6 lg:col-span-12 xl:col-span-6 w-full">
-														<Controller
-															control={control}
-															name="technical_proficiency.employees_can_use_payment_processing_system"
-															rules={{
-																required: 'Please select an option',
-															}}
-															render={({
-																field: { ref, ...field },
-																fieldState: { error, invalid },
-															}) => (
-																<SelectInput
-																	{...field}
-																	ref={ref}
-																	error={invalid}
-																	helpertext={invalid ? error.message : null}
-																	name="technical_proficiency.employees_can_use_payment_processing_system"
-																	rules={{
-																		required: 'Please select an option',
-																	}}
-																	label="Employees who can use Payment Processing System *"
-																	required
-																	options={[
-																		{
-																			name: 'Yes',
-																			value: 'yes',
-																		},
-																		{
-																			name: 'No',
-																			value: 'no',
-																		},
-																	]}
-																/>
-															)}
-														/>
-													</div>
-													<div className="col-span-6 lg:col-span-12 xl:col-span-6 w-full">
-														<Controller
-															control={control}
-															name="technical_proficiency.employees_can_use_pos_system"
-															rules={{
-																required: 'Please select an option',
-															}}
-															render={({
-																field: { ref, ...field },
-																fieldState: { error, invalid },
-															}) => (
-																<SelectInput
-																	{...field}
-																	ref={ref}
-																	error={invalid}
-																	helpertext={invalid ? error.message : null}
-																	name="technical_proficiency.employees_can_use_pos_system"
-																	rules={{
-																		required: 'Please select an option',
-																	}}
-																	label="Employees who can use Point of Sale System *"
-																	required
-																	options={[
-																		{
-																			name: 'Yes',
-																			value: 'yes',
-																		},
-																		{
-																			name: 'No',
-																			value: 'no',
-																		},
-																	]}
-																/>
-															)}
-														/>
-													</div>
+													{technicalProficiencyInputs.map((inputProps) => (
+														<div
+															key={inputProps.name}
+															className={`${inputProps.class}`}>
+															<Controller
+																control={control}
+																name={inputProps.name}
+																rules={inputProps.rules}
+																render={({
+																	field: { ref, ...field },
+																	fieldState: { error, invalid },
+																}) => {
+																	if (inputProps.inputType === 'text-input') {
+																		return (
+																			<DefaultInput
+																				{...field}
+																				ref={ref}
+																				error={invalid}
+																				helpertext={
+																					invalid ? error.message : null
+																				}
+																				name={inputProps.name}
+																				label={inputProps.label}
+																				type={inputProps.type}
+																				disabled={inputProps.disabled}
+																				labelProps={inputProps.labelProps}
+																				required={inputProps.required}
+																			/>
+																		);
+																	} else if (
+																		inputProps.inputType === 'select-input'
+																	) {
+																		return (
+																			<SelectInput
+																				{...field}
+																				ref={ref}
+																				error={invalid}
+																				helpertext={
+																					invalid ? error.message : null
+																				}
+																				name={inputProps.name}
+																				label={inputProps.label}
+																				required={inputProps.required}
+																				options={inputProps.options}
+																			/>
+																		);
+																	}
+																}}
+															/>
+														</div>
+													))}
 												</div>
 											</div>
 										</div>
@@ -1670,168 +837,42 @@ const EPharmacyForm = () => {
 																	component="fieldset">
 																	<FormGroup>
 																		<Grid container spacing={2} columns={12}>
-																			<Grid item xs={12} sm={6} md={6} lg={4}>
-																				<div className="w-full">
-																					<Controller
-																						control={control}
-																						name="purchase_process.in_person_check"
-																						render={({
-																							field: { ref, ...field },
-																							//fieldState: { error, invalid },
-																						}) => (
-																							<FormControlLabel
-																								control={
-																									<Checkbox
-																										{...field}
-																										ref={ref}
-																										color="blue"
-																										checked={watch(
-																											'purchase_process.in_person_check'
-																										)}
-																										name="purchase_process.in_person_check"
+																			{purchaseProcessInputs.map(
+																				(inputProps) => (
+																					<Grid
+																						key={inputProps.name}
+																						item
+																						xs={12}
+																						sm={6}
+																						md={6}
+																						lg={4}>
+																						<div className="w-full">
+																							<Controller
+																								control={control}
+																								name={inputProps.name}
+																								render={({
+																									field: { ref, ...field },
+																								}) => (
+																									<FormControlLabel
+																										control={
+																											<Checkbox
+																												{...field}
+																												ref={ref}
+																												color="blue"
+																												checked={watch(
+																													`${inputProps.name}`
+																												)}
+																												name={inputProps.name}
+																											/>
+																										}
+																										label={inputProps.label}
 																									/>
-																								}
-																								label="In-Person"
+																								)}
 																							/>
-																						)}
-																					/>
-																				</div>
-																			</Grid>
-																			<Grid item xs={12} sm={6} md={6} lg={4}>
-																				<div className="w-full">
-																					<Controller
-																						control={control}
-																						name="purchase_process.phone_call"
-																						render={({
-																							field: { ref, ...field },
-																							//fieldState: { error, invalid },
-																						}) => (
-																							<FormControlLabel
-																								control={
-																									<Checkbox
-																										{...field}
-																										ref={ref}
-																										color="blue"
-																										checked={watch(
-																											'purchase_process.phone_call'
-																										)}
-																										name="purchase_process.phone_call"
-																									/>
-																								}
-																								label="Phone /Voice Call"
-																							/>
-																						)}
-																					/>
-																				</div>
-																			</Grid>
-																			<Grid item xs={12} sm={6} md={6} lg={4}>
-																				<div className="w-full">
-																					<Controller
-																						control={control}
-																						name="purchase_process.website"
-																						render={({
-																							field: { ref, ...field },
-																							//fieldState: { error, invalid },
-																						}) => (
-																							<FormControlLabel
-																								control={
-																									<Checkbox
-																										{...field}
-																										ref={ref}
-																										color="blue"
-																										checked={watch(
-																											'purchase_process.website'
-																										)}
-																										name="purchase_process.website"
-																									/>
-																								}
-																								label="Website"
-																							/>
-																						)}
-																					/>
-																				</div>
-																			</Grid>
-																			<Grid item xs={12} sm={6} md={6} lg={4}>
-																				<div className="w-full">
-																					<Controller
-																						control={control}
-																						name="purchase_process.whatsapp"
-																						render={({
-																							field: { ref, ...field },
-																							//fieldState: { error, invalid },
-																						}) => (
-																							<FormControlLabel
-																								control={
-																									<Checkbox
-																										{...field}
-																										ref={ref}
-																										color="blue"
-																										checked={watch(
-																											'purchase_process.whatsapp'
-																										)}
-																										name="purchase_process.whatsapp"
-																									/>
-																								}
-																								label="WhatsApp"
-																							/>
-																						)}
-																					/>
-																				</div>
-																			</Grid>
-																			<Grid item xs={12} sm={6} md={6} lg={4}>
-																				<div className="w-full">
-																					<Controller
-																						control={control}
-																						name="purchase_process.text_sms"
-																						render={({
-																							field: { ref, ...field },
-																							//fieldState: { error, invalid },
-																						}) => (
-																							<FormControlLabel
-																								control={
-																									<Checkbox
-																										{...field}
-																										ref={ref}
-																										color="blue"
-																										checked={watch(
-																											'purchase_process.text_sms'
-																										)}
-																										name="purchase_process.text_sms"
-																									/>
-																								}
-																								label="Text/SMS"
-																							/>
-																						)}
-																					/>
-																				</div>
-																			</Grid>
-																			<Grid item xs={12} sm={6} md={6} lg={4}>
-																				<div className="w-full">
-																					<Controller
-																						control={control}
-																						name="purchase_process.email"
-																						render={({
-																							field: { ref, ...field },
-																							//fieldState: { error, invalid },
-																						}) => (
-																							<FormControlLabel
-																								control={
-																									<Checkbox
-																										{...field}
-																										ref={ref}
-																										color="blue"
-																										checked={watch(
-																											'purchase_process.email'
-																										)}
-																										name="purchase_process.email"
-																									/>
-																								}
-																								label="Email"
-																							/>
-																						)}
-																					/>
-																				</div>
-																			</Grid>
+																						</div>
+																					</Grid>
+																				)
+																			)}
 																		</Grid>
 																	</FormGroup>
 																	<FormHelperText>
@@ -1852,204 +893,57 @@ const EPharmacyForm = () => {
 												/>
 
 												<div className="w-full flex flex-col md:grid md:grid-cols-6 lg:grid-cols-12 gap-5 xl:gap-8 place-items-center place-content-center">
-													<div className="col-span-2 lg:col-span-4 w-full">
-														<Controller
-															control={control}
-															name="pos_system_usage.inventory_management"
-															rules={{
-																required: 'Please select an option',
-															}}
-															render={({
-																field: { ref, ...field },
-																fieldState: { error, invalid },
-															}) => (
-																<SelectInput
-																	{...field}
-																	ref={ref}
-																	error={invalid}
-																	helpertext={invalid ? error.message : null}
-																	name="pos_system_usage.inventory_management *"
-																	label="Inventory Management"
-																	required
-																	options={[
-																		{
-																			name: 'Yes',
-																			value: 'yes',
-																		},
-																		{
-																			name: 'No',
-																			value: 'no',
-																		},
-																	]}
-																/>
-															)}
-														/>
-													</div>
-													<div className="col-span-2 lg:col-span-4 w-full">
-														<Controller
-															control={control}
-															name="pos_system_usage.transaction_management"
-															rules={{
-																required: 'Please select an option',
-															}}
-															render={({
-																field: { ref, ...field },
-																fieldState: { error, invalid },
-															}) => (
-																<SelectInput
-																	{...field}
-																	ref={ref}
-																	error={invalid}
-																	helpertext={invalid ? error.message : null}
-																	name="pos_system_usage.transaction_management"
-																	label="Transaction Management *"
-																	required
-																	options={[
-																		{
-																			name: 'Yes',
-																			value: 'yes',
-																		},
-																		{
-																			name: 'No',
-																			value: 'no',
-																		},
-																	]}
-																/>
-															)}
-														/>
-													</div>
-													<div className="col-span-2 lg:col-span-4 w-full">
-														<Controller
-															control={control}
-															name="pos_system_usage.payment_processing"
-															rules={{
-																required: 'Please select an option',
-															}}
-															render={({
-																field: { ref, ...field },
-																fieldState: { error, invalid },
-															}) => (
-																<SelectInput
-																	{...field}
-																	ref={ref}
-																	error={invalid}
-																	helpertext={invalid ? error.message : null}
-																	name="pos_system_usage.payment_processing"
-																	label="Payment Processing *"
-																	required
-																	options={[
-																		{
-																			name: 'Yes',
-																			value: 'yes',
-																		},
-																		{
-																			name: 'No',
-																			value: 'no',
-																		},
-																	]}
-																/>
-															)}
-														/>
-													</div>
-													<div className="col-span-3 lg:col-span-6 xl:col-span-4 w-full">
-														<Controller
-															control={control}
-															name="pos_system_usage.sales_reporting"
-															rules={{
-																required: 'Please select an option',
-															}}
-															render={({
-																field: { ref, ...field },
-																fieldState: { error, invalid },
-															}) => (
-																<SelectInput
-																	{...field}
-																	ref={ref}
-																	error={invalid}
-																	helpertext={invalid ? error.message : null}
-																	name="pos_system_usage.sales_reporting"
-																	label="Sales Reporting *"
-																	required
-																	options={[
-																		{
-																			name: 'Yes',
-																			value: 'yes',
-																		},
-																		{
-																			name: 'No',
-																			value: 'no',
-																		},
-																	]}
-																/>
-															)}
-														/>
-													</div>
-													<div className="col-span-3 lg:col-span-6 xl:col-span-4 w-full">
-														<Controller
-															control={control}
-															name="pos_system_usage.employee_management"
-															rules={{
-																required: 'Please select an option',
-															}}
-															render={({
-																field: { ref, ...field },
-																fieldState: { error, invalid },
-															}) => (
-																<SelectInput
-																	{...field}
-																	ref={ref}
-																	error={invalid}
-																	helpertext={invalid ? error.message : null}
-																	name="pos_system_usage.employee_management"
-																	label="Employee Management *"
-																	required
-																	options={[
-																		{
-																			name: 'Yes',
-																			value: 'yes',
-																		},
-																		{
-																			name: 'No',
-																			value: 'no',
-																		},
-																	]}
-																/>
-															)}
-														/>
-													</div>
-													<div className="col-span-6 lg:col-span-12 xl:col-span-4 w-full">
-														<Controller
-															control={control}
-															name="pos_system_usage.crm"
-															rules={{
-																required: 'Please select an option',
-															}}
-															render={({
-																field: { ref, ...field },
-																fieldState: { error, invalid },
-															}) => (
-																<SelectInput
-																	{...field}
-																	ref={ref}
-																	error={invalid}
-																	helpertext={invalid ? error.message : null}
-																	name="pos_system_usage.crm"
-																	label="Customer Relationship Management *"
-																	required
-																	options={[
-																		{
-																			name: 'Yes',
-																			value: 'yes',
-																		},
-																		{
-																			name: 'No',
-																			value: 'no',
-																		},
-																	]}
-																/>
-															)}
-														/>
-													</div>
+													{posUsageInputs.map((inputProps) => (
+														<div
+															key={inputProps.name}
+															className={`${inputProps.class}`}>
+															<Controller
+																control={control}
+																name={inputProps.name}
+																rules={inputProps.rules}
+																render={({
+																	field: { ref, ...field },
+																	fieldState: { error, invalid },
+																}) => {
+																	if (inputProps.inputType === 'text-input') {
+																		return (
+																			<DefaultInput
+																				{...field}
+																				ref={ref}
+																				error={invalid}
+																				helpertext={
+																					invalid ? error.message : null
+																				}
+																				name={inputProps.name}
+																				label={inputProps.label}
+																				type={inputProps.type}
+																				disabled={inputProps.disabled}
+																				labelProps={inputProps.labelProps}
+																				required={inputProps.required}
+																			/>
+																		);
+																	} else if (
+																		inputProps.inputType === 'select-input'
+																	) {
+																		return (
+																			<SelectInput
+																				{...field}
+																				ref={ref}
+																				error={invalid}
+																				helpertext={
+																					invalid ? error.message : null
+																				}
+																				name={inputProps.name}
+																				label={inputProps.label}
+																				required={inputProps.required}
+																				options={inputProps.options}
+																			/>
+																		);
+																	}
+																}}
+															/>
+														</div>
+													))}
 												</div>
 											</div>
 
@@ -2060,162 +954,57 @@ const EPharmacyForm = () => {
 													instruction="(please select a option from the list of options for each field)"
 												/>
 												<div className="w-full flex flex-col md:grid md:grid-cols-6 lg:grid-cols-12 gap-5 xl:gap-8 place-items-center place-content-center">
-													<div className="col-span-3 lg:col-span-6 xl:col-span-4 w-full">
-														<Controller
-															control={control}
-															name="pos_system_vendor_relationship.vendor_name"
-															rules={{
-																required: 'Please select an option',
-															}}
-															render={({
-																field: { ref, ...field },
-																fieldState: { error, invalid },
-															}) => (
-																<DefaultInput
-																	{...field}
-																	ref={ref}
-																	error={invalid}
-																	helpertext={invalid ? error.message : null}
-																	name="pos_system_vendor_relationship.vendor_name"
-																	label="Name of Vendor"
-																	type="text"
-																/>
-															)}
-														/>
-													</div>
-
-													<div className="col-span-3 lg:col-span-6 xl:col-span-4 w-full">
-														<Controller
-															control={control}
-															name="pos_system_vendor_relationship.vendor_relationship"
-															rules={{
-																required: 'Please select an option',
-															}}
-															render={({
-																field: { ref, ...field },
-																fieldState: { error, invalid },
-															}) => (
-																<SelectInput
-																	{...field}
-																	ref={ref}
-																	error={invalid}
-																	helpertext={invalid ? error.message : null}
-																	name="pos_system_vendor_relationship.vendor_relationship"
-																	label="Vendor Relationship (if known) *"
-																	required
-																	options={[
-																		{
-																			name: 'Yes',
-																			value: 'yes',
-																		},
-																		{
-																			name: 'No',
-																			value: 'no',
-																		},
-																	]}
-																/>
-															)}
-														/>
-													</div>
-													<div className="col-span-3 lg:col-span-6 xl:col-span-4 w-full">
-														<Controller
-															control={control}
-															name="pos_system_vendor_relationship.vendor_provides_support"
-															rules={{
-																required: 'Please select an option',
-															}}
-															render={({
-																field: { ref, ...field },
-																fieldState: { error, invalid },
-															}) => (
-																<SelectInput
-																	{...field}
-																	ref={ref}
-																	error={invalid}
-																	helpertext={invalid ? error.message : null}
-																	name="pos_system_vendor_relationship.vendor_provides_support"
-																	label="Vendor Provides Support *"
-																	required
-																	options={[
-																		{
-																			name: 'Yes',
-																			value: 'yes',
-																		},
-																		{
-																			name: 'No',
-																			value: 'no',
-																		},
-																	]}
-																/>
-															)}
-														/>
-													</div>
-													<div className="col-span-3 lg:col-span-6 xl:col-span-4 w-full">
-														<Controller
-															control={control}
-															name="pos_system_vendor_relationship.internet_dependent"
-															rules={{
-																required: 'Please select an option',
-															}}
-															render={({
-																field: { ref, ...field },
-																fieldState: { error, invalid },
-															}) => (
-																<SelectInput
-																	{...field}
-																	ref={ref}
-																	error={invalid}
-																	helpertext={invalid ? error.message : null}
-																	name="pos_system_vendor_relationship.internet_dependent"
-																	label="Dependent on the Internet *"
-																	required
-																	options={[
-																		{
-																			name: 'Yes',
-																			value: 'yes',
-																		},
-																		{
-																			name: 'No',
-																			value: 'no',
-																		},
-																	]}
-																/>
-															)}
-														/>
-													</div>
-													<div className="col-span-3 lg:col-span-6 xl:col-span-4 w-full">
-														<Controller
-															control={control}
-															name="pos_system_vendor_relationship.internet_not_required"
-															rules={{
-																required: 'Please select an option',
-															}}
-															render={({
-																field: { ref, ...field },
-																fieldState: { error, invalid },
-															}) => (
-																<SelectInput
-																	{...field}
-																	ref={ref}
-																	error={invalid}
-																	helpertext={invalid ? error.message : null}
-																	name="pos_system_vendor_relationship.internet_not_required"
-																	label="Can work when Internet is Down *"
-																	required
-																	options={[
-																		{
-																			name: 'Yes',
-																			value: 'yes',
-																		},
-																		{
-																			name: 'No',
-																			value: 'no',
-																		},
-																	]}
-																/>
-															)}
-														/>
-													</div>
+													{posVendorRelationInputs.map((inputProps) => (
+														<div
+															key={inputProps.name}
+															className={`${inputProps.class}`}>
+															<Controller
+																control={control}
+																name={inputProps.name}
+																rules={inputProps.rules}
+																render={({
+																	field: { ref, ...field },
+																	fieldState: { error, invalid },
+																}) => {
+																	if (inputProps.inputType === 'text-input') {
+																		return (
+																			<DefaultInput
+																				{...field}
+																				ref={ref}
+																				error={invalid}
+																				helpertext={
+																					invalid ? error.message : null
+																				}
+																				name={inputProps.name}
+																				label={inputProps.label}
+																				type={inputProps.type}
+																				disabled={inputProps.disabled}
+																				labelProps={inputProps.labelProps}
+																				required={inputProps.required}
+																			/>
+																		);
+																	} else if (
+																		inputProps.inputType === 'select-input'
+																	) {
+																		return (
+																			<SelectInput
+																				{...field}
+																				ref={ref}
+																				error={invalid}
+																				helpertext={
+																					invalid ? error.message : null
+																				}
+																				name={inputProps.name}
+																				label={inputProps.label}
+																				required={inputProps.required}
+																				options={inputProps.options}
+																			/>
+																		);
+																	}
+																}}
+															/>
+														</div>
+													))}
 												</div>
 											</div>
 
@@ -2291,168 +1080,42 @@ const EPharmacyForm = () => {
 																	component="fieldset">
 																	<FormGroup>
 																		<Grid container spacing={2} columns={12}>
-																			<Grid item xs={12} sm={6} md={6} lg={4}>
-																				<div className="w-full">
-																					<Controller
-																						control={control}
-																						name="payment_processing_gateway.cash"
-																						render={({
-																							field: { ref, ...field },
-																							//fieldState: { error, invalid },
-																						}) => (
-																							<FormControlLabel
-																								control={
-																									<Checkbox
-																										{...field}
-																										ref={ref}
-																										color="blue"
-																										checked={watch(
-																											'payment_processing_gateway.cash'
-																										)}
-																										name="payment_processing_gateway.cash"
+																			{paymentProcessGatewayInputs.map(
+																				(inputProps) => (
+																					<Grid
+																						key={inputProps.name}
+																						item
+																						xs={12}
+																						sm={6}
+																						md={6}
+																						lg={4}>
+																						<div className="w-full">
+																							<Controller
+																								control={control}
+																								name={inputProps.name}
+																								render={({
+																									field: { ref, ...field },
+																								}) => (
+																									<FormControlLabel
+																										control={
+																											<Checkbox
+																												{...field}
+																												ref={ref}
+																												color="blue"
+																												checked={watch(
+																													`${inputProps.name}`
+																												)}
+																												name={inputProps.name}
+																											/>
+																										}
+																										label={inputProps.label}
 																									/>
-																								}
-																								label="Cash"
+																								)}
 																							/>
-																						)}
-																					/>
-																				</div>
-																			</Grid>
-																			<Grid item xs={12} sm={6} md={6} lg={4}>
-																				<div className="w-full">
-																					<Controller
-																						control={control}
-																						name="payment_processing_gateway.mobile_money"
-																						render={({
-																							field: { ref, ...field },
-																							//fieldState: { error, invalid },
-																						}) => (
-																							<FormControlLabel
-																								control={
-																									<Checkbox
-																										{...field}
-																										ref={ref}
-																										color="blue"
-																										checked={watch(
-																											'payment_processing_gateway.mobile_money'
-																										)}
-																										name="payment_processing_gateway.mobile_money"
-																									/>
-																								}
-																								label="Mobile Money"
-																							/>
-																						)}
-																					/>
-																				</div>
-																			</Grid>
-																			<Grid item xs={12} sm={6} md={6} lg={4}>
-																				<div className="w-full">
-																					<Controller
-																						control={control}
-																						name="payment_processing_gateway.cheque"
-																						render={({
-																							field: { ref, ...field },
-																							//fieldState: { error, invalid },
-																						}) => (
-																							<FormControlLabel
-																								control={
-																									<Checkbox
-																										{...field}
-																										ref={ref}
-																										color="blue"
-																										checked={watch(
-																											'payment_processing_gateway.cheque'
-																										)}
-																										name="payment_processing_gateway.cheque"
-																									/>
-																								}
-																								label="Cheque (Repeat Customers)"
-																							/>
-																						)}
-																					/>
-																				</div>
-																			</Grid>
-																			<Grid item xs={12} sm={6} md={6} lg={4}>
-																				<div className="w-full">
-																					<Controller
-																						control={control}
-																						name="payment_processing_gateway.nhis"
-																						render={({
-																							field: { ref, ...field },
-																							//fieldState: { error, invalid },
-																						}) => (
-																							<FormControlLabel
-																								control={
-																									<Checkbox
-																										{...field}
-																										ref={ref}
-																										color="blue"
-																										checked={watch(
-																											'payment_processing_gateway.nhis'
-																										)}
-																										name="payment_processing_gateway.nhis"
-																									/>
-																								}
-																								label="Health Insurance NHIS"
-																							/>
-																						)}
-																					/>
-																				</div>
-																			</Grid>
-																			<Grid item xs={12} sm={6} md={6} lg={4}>
-																				<div className="w-full">
-																					<Controller
-																						control={control}
-																						name="payment_processing_gateway.private_insurance"
-																						render={({
-																							field: { ref, ...field },
-																							//fieldState: { error, invalid },
-																						}) => (
-																							<FormControlLabel
-																								control={
-																									<Checkbox
-																										{...field}
-																										ref={ref}
-																										color="blue"
-																										checked={watch(
-																											'payment_processing_gateway.private_insurance'
-																										)}
-																										name="payment_processing_gateway.private_insurance"
-																									/>
-																								}
-																								label="Private Health Insurance"
-																							/>
-																						)}
-																					/>
-																				</div>
-																			</Grid>
-																			<Grid item xs={12} sm={6} md={6} lg={4}>
-																				<div className="w-full">
-																					<Controller
-																						control={control}
-																						name="payment_processing_gateway.bank_debit_card"
-																						render={({
-																							field: { ref, ...field },
-																							//fieldState: { error, invalid },
-																						}) => (
-																							<FormControlLabel
-																								control={
-																									<Checkbox
-																										{...field}
-																										ref={ref}
-																										color="blue"
-																										checked={watch(
-																											'payment_processing_gateway.bank_debit_card'
-																										)}
-																										name="payment_processing_gateway.bank_debit_card"
-																									/>
-																								}
-																								label="Bank Debit Card"
-																							/>
-																						)}
-																					/>
-																				</div>
-																			</Grid>
+																						</div>
+																					</Grid>
+																				)
+																			)}
 																		</Grid>
 																	</FormGroup>
 																	<FormHelperText>
@@ -2494,114 +1157,42 @@ const EPharmacyForm = () => {
 																	component="fieldset">
 																	<FormGroup>
 																		<Grid container spacing={2} columns={12}>
-																			<Grid item xs={12} sm={6} md={6} lg={4}>
-																				<div className="w-full">
-																					<Controller
-																						control={control}
-																						name="pharmaceutical_services.in_person"
-																						render={({
-																							field: { ref, ...field },
-																							//fieldState: { error, invalid },
-																						}) => (
-																							<FormControlLabel
-																								control={
-																									<Checkbox
-																										{...field}
-																										ref={ref}
-																										color="blue"
-																										checked={watch(
-																											'pharmaceutical_services.in_person'
-																										)}
-																										name="pharmaceutical_services.in_person"
+																			{pharmaceuticalServicesInputs.map(
+																				(inputProps) => (
+																					<Grid
+																						key={inputProps.name}
+																						item
+																						xs={12}
+																						sm={6}
+																						md={6}
+																						lg={4}>
+																						<div className="w-full">
+																							<Controller
+																								control={control}
+																								name={inputProps.name}
+																								render={({
+																									field: { ref, ...field },
+																								}) => (
+																									<FormControlLabel
+																										control={
+																											<Checkbox
+																												{...field}
+																												ref={ref}
+																												color="blue"
+																												checked={watch(
+																													`${inputProps.name}`
+																												)}
+																												name={inputProps.name}
+																											/>
+																										}
+																										label={inputProps.label}
 																									/>
-																								}
-																								label="In-Person"
+																								)}
 																							/>
-																						)}
-																					/>
-																				</div>
-																			</Grid>
-																			<Grid item xs={12} sm={6} md={6} lg={4}>
-																				<div className="w-full">
-																					<Controller
-																						control={control}
-																						name="pharmaceutical_services.phone_call"
-																						render={({
-																							field: { ref, ...field },
-																							//fieldState: { error, invalid },
-																						}) => (
-																							<FormControlLabel
-																								control={
-																									<Checkbox
-																										{...field}
-																										ref={ref}
-																										color="blue"
-																										checked={watch(
-																											'pharmaceutical_services.phone_call'
-																										)}
-																										name="pharmaceutical_services.phone_call"
-																									/>
-																								}
-																								label="Phone/Voice Call"
-																							/>
-																						)}
-																					/>
-																				</div>
-																			</Grid>
-																			<Grid item xs={12} sm={6} md={6} lg={4}>
-																				<div className="w-full">
-																					<Controller
-																						control={control}
-																						name="pharmaceutical_services.text_sms_email_whatsapp"
-																						render={({
-																							field: { ref, ...field },
-																							//fieldState: { error, invalid },
-																						}) => (
-																							<FormControlLabel
-																								control={
-																									<Checkbox
-																										{...field}
-																										ref={ref}
-																										color="blue"
-																										checked={watch(
-																											'pharmaceutical_services.text_sms_email_whatsapp'
-																										)}
-																										name="pharmaceutical_services.text_sms_email_whatsapp"
-																									/>
-																								}
-																								label="Text/SMS - SMS | WhatsApp | Email"
-																							/>
-																						)}
-																					/>
-																				</div>
-																			</Grid>
-																			<Grid item xs={12} sm={6} md={6} lg={4}>
-																				<div className="w-full">
-																					<Controller
-																						control={control}
-																						name="pharmaceutical_services.website"
-																						render={({
-																							field: { ref, ...field },
-																							//fieldState: { error, invalid },
-																						}) => (
-																							<FormControlLabel
-																								control={
-																									<Checkbox
-																										{...field}
-																										ref={ref}
-																										color="blue"
-																										checked={watch(
-																											'pharmaceutical_services.website'
-																										)}
-																										name="pharmaceutical_services.website"
-																									/>
-																								}
-																								label="Website"
-																							/>
-																						)}
-																					/>
-																				</div>
-																			</Grid>
+																						</div>
+																					</Grid>
+																				)
+																			)}
 																		</Grid>
 																	</FormGroup>
 																	<FormHelperText>
@@ -2621,72 +1212,57 @@ const EPharmacyForm = () => {
 													instruction="(please select a option from the list of options for each field)"
 												/>
 												<div className="w-full flex flex-col md:grid md:grid-cols-6 lg:grid-cols-12 gap-5 xl:gap-8 place-items-center place-content-center">
-													<div className="col-span-3 lg:col-span-6 w-full">
-														<Controller
-															control={control}
-															name="delivery_service.services_offered"
-															rules={{
-																required: 'Please select an option',
-															}}
-															render={({
-																field: { ref, ...field },
-																fieldState: { error, invalid },
-															}) => (
-																<SelectInput
-																	{...field}
-																	ref={ref}
-																	error={invalid}
-																	helpertext={invalid ? error.message : null}
-																	name="delivery_service.services_offered"
-																	label="Services Offered *"
-																	required
-																	options={[
-																		{
-																			name: 'Yes',
-																			value: 'yes',
-																		},
-																		{
-																			name: 'No',
-																			value: 'no',
-																		},
-																	]}
-																/>
-															)}
-														/>
-													</div>
-													<div className="col-span-3 lg:col-span-6 w-full">
-														<Controller
-															control={control}
-															name="delivery_service.services_provider"
-															rules={{
-																required: 'Please select an option',
-															}}
-															render={({
-																field: { ref, ...field },
-																fieldState: { error, invalid },
-															}) => (
-																<SelectInput
-																	{...field}
-																	ref={ref}
-																	error={invalid}
-																	helpertext={invalid ? error.message : null}
-																	name="delivery_service.services_provider"
-																	label="Services Provider *"
-																	required
-																	options={[
-																		{
-																			name: 'Yes',
-																			value: 'yes',
-																		},
-																		{
-																			name: 'No',
-																			value: 'no',
-																		},
-																	]}
-																/>
-															)}
-														/>
-													</div>
+													{deliveryServiceInputs.map((inputProps) => (
+														<div
+															key={inputProps.name}
+															className={`${inputProps.class}`}>
+															<Controller
+																control={control}
+																name={inputProps.name}
+																rules={inputProps.rules}
+																render={({
+																	field: { ref, ...field },
+																	fieldState: { error, invalid },
+																}) => {
+																	if (inputProps.inputType === 'text-input') {
+																		return (
+																			<DefaultInput
+																				{...field}
+																				ref={ref}
+																				error={invalid}
+																				helpertext={
+																					invalid ? error.message : null
+																				}
+																				name={inputProps.name}
+																				label={inputProps.label}
+																				type={inputProps.type}
+																				disabled={inputProps.disabled}
+																				labelProps={inputProps.labelProps}
+																				required={inputProps.required}
+																			/>
+																		);
+																	} else if (
+																		inputProps.inputType === 'select-input'
+																	) {
+																		return (
+																			<SelectInput
+																				{...field}
+																				ref={ref}
+																				error={invalid}
+																				helpertext={
+																					invalid ? error.message : null
+																				}
+																				name={inputProps.name}
+																				label={inputProps.label}
+																				required={inputProps.required}
+																				options={inputProps.options}
+																			/>
+																		);
+																	}
+																}}
+															/>
+														</div>
+													))}
 												</div>
 											</div>
 
@@ -2722,130 +1298,36 @@ const EPharmacyForm = () => {
 																			error={invalid}
 																			component="fieldset">
 																			<FormGroup>
-																				<div className="col-span-6 lg:col-span-6 w-full">
-																					<Controller
-																						control={control}
-																						name="prescriptions_processed.written_submitted_in_person"
-																						render={({
-																							field: { ref, ...field },
-																						}) => (
-																							<FormControlLabel
-																								control={
-																									<Checkbox
-																										{...field}
-																										ref={ref}
-																										color="blue"
-																										checked={watch(
-																											'prescriptions_processed.written_submitted_in_person'
-																										)}
-																										name="prescriptions_processed.written_submitted_in_person"
+																				{prescriptionsProcessInputs.map(
+																					(inputProps) => (
+																						<div
+																							key={inputProps.name}
+																							className="col-span-6 lg:col-span-6 w-full">
+																							<Controller
+																								control={control}
+																								name={inputProps.name}
+																								render={({
+																									field: { ref, ...field },
+																								}) => (
+																									<FormControlLabel
+																										control={
+																											<Checkbox
+																												{...field}
+																												ref={ref}
+																												color="blue"
+																												checked={watch(
+																													`${inputProps.name}`
+																												)}
+																												name={inputProps.name}
+																											/>
+																										}
+																										label={inputProps.label}
 																									/>
-																								}
-																								label="Official Written and submitted in-person (Valid)"
+																								)}
 																							/>
-																						)}
-																					/>
-																				</div>
-																				<div className="col-span-6 lg:col-span-6 w-full">
-																					<Controller
-																						control={control}
-																						name="prescriptions_processed.written_submitted_digitally"
-																						render={({
-																							field: { ref, ...field },
-																							//fieldState: { error, invalid },
-																						}) => (
-																							<FormControlLabel
-																								control={
-																									<Checkbox
-																										{...field}
-																										ref={ref}
-																										color="blue"
-																										checked={watch(
-																											'prescriptions_processed.written_submitted_digitally'
-																										)}
-																										name="prescriptions_processed.written_submitted_digitally"
-																									/>
-																								}
-																								label="Official Written and submitted digitally (scan or picture)"
-																							/>
-																						)}
-																					/>
-																				</div>
-																				<div className="col-span-6 lg:col-span-6 w-full">
-																					<Controller
-																						control={control}
-																						name="prescriptions_processed.e_prescription_submitted_digitally"
-																						render={({
-																							field: { ref, ...field },
-																							//fieldState: { error, invalid },
-																						}) => (
-																							<FormControlLabel
-																								control={
-																									<Checkbox
-																										{...field}
-																										ref={ref}
-																										color="blue"
-																										checked={watch(
-																											'prescriptions_processed.e_prescription_submitted_digitally'
-																										)}
-																										name="prescriptions_processed.e_prescription_submitted_digitally"
-																									/>
-																								}
-																								label="Official E-prescription submitted digitally"
-																							/>
-																						)}
-																					/>
-																				</div>
-																				<div className="col-span-6 lg:col-span-6 w-full">
-																					<Controller
-																						control={control}
-																						name="prescriptions_processed.physician_request_voice_call"
-																						render={({
-																							field: { ref, ...field },
-																							//fieldState: { error, invalid },
-																						}) => (
-																							<FormControlLabel
-																								control={
-																									<Checkbox
-																										{...field}
-																										ref={ref}
-																										color="blue"
-																										checked={watch(
-																											'prescriptions_processed.physician_request_voice_call'
-																										)}
-																										name="prescriptions_processed.physician_request_voice_call"
-																									/>
-																								}
-																								label="Physician Request via voice call (Oral)"
-																							/>
-																						)}
-																					/>
-																				</div>
-																				<div className="col-span-6 lg:col-span-6 w-full">
-																					<Controller
-																						control={control}
-																						name="prescriptions_processed.physician_request_text_sms_whatsapp_email"
-																						render={({
-																							field: { ref, ...field },
-																							//fieldState: { error, invalid },
-																						}) => (
-																							<FormControlLabel
-																								control={
-																									<Checkbox
-																										{...field}
-																										ref={ref}
-																										color="blue"
-																										checked={watch(
-																											'prescriptions_processed.physician_request_text_sms_whatsapp_email'
-																										)}
-																										name="prescriptions_processed.physician_request_text_sms_whatsapp_email"
-																									/>
-																								}
-																								label="Physician Request via Text/SMS – SMS | WhatsApp | Email"
-																							/>
-																						)}
-																					/>
-																				</div>
+																						</div>
+																					)
+																				)}
 																			</FormGroup>
 
 																			<FormHelperText>
@@ -2947,326 +1429,50 @@ const EPharmacyForm = () => {
 																						container
 																						spacing={2}
 																						columns={12}>
-																						<Grid
-																							item
-																							xs={12}
-																							sm={6}
-																							md={6}
-																							lg={3}>
-																							<div className=" w-full">
-																								<Controller
-																									control={control}
-																									defaultValue={false}
-																									name="selected_insurance_companies.nationwide_insurance"
-																									render={({
-																										field: { ref, ...field },
-																									}) => (
-																										<FormControlLabel
-																											control={
-																												<Checkbox
-																													{...field}
-																													ref={ref}
-																													checked={watch(
-																														'selected_insurance_companies.nationwide_insurance'
-																													)}
-																													color="blue"
-																													name="selected_insurance_companies.nationwide_insurance"
+																						{selectedInsuranceCompaniesInputs.map(
+																							(inputProps) => (
+																								<Grid
+																									key={inputProps.name}
+																									item
+																									xs={12}
+																									sm={6}
+																									md={6}
+																									lg={3}>
+																									<div className="w-full">
+																										<Controller
+																											control={control}
+																											defaultValue={false}
+																											name={inputProps.name}
+																											render={({
+																												field: {
+																													ref,
+																													...field
+																												},
+																											}) => (
+																												<FormControlLabel
+																													control={
+																														<Checkbox
+																															{...field}
+																															ref={ref}
+																															color="blue"
+																															checked={watch(
+																																`${inputProps.name}`
+																															)}
+																															name={
+																																inputProps.name
+																															}
+																														/>
+																													}
+																													label={
+																														inputProps.label
+																													}
 																												/>
-																											}
-																											label="Nationwide Insurance"
+																											)}
 																										/>
-																									)}
-																								/>
-																							</div>
-																						</Grid>
-																						<Grid
-																							item
-																							xs={12}
-																							sm={6}
-																							md={6}
-																							lg={3}>
-																							<div className=" w-full">
-																								<Controller
-																									control={control}
-																									defaultValue={false}
-																									name="selected_insurance_companies.metropolitan_insurance"
-																									render={({
-																										field: { ref, ...field },
-																									}) => (
-																										<FormControlLabel
-																											control={
-																												<Checkbox
-																													{...field}
-																													ref={ref}
-																													checked={watch(
-																														'selected_insurance_companies.metropolitan_insurance'
-																													)}
-																													color="blue"
-																													name="selected_insurance_companies.metropolitan_insurance"
-																												/>
-																											}
-																											label="Metropolitan Insurance"
-																										/>
-																									)}
-																								/>
-																							</div>
-																						</Grid>
-																						<Grid
-																							item
-																							xs={12}
-																							sm={6}
-																							md={6}
-																							lg={3}>
-																							<div className=" w-full">
-																								<Controller
-																									control={control}
-																									defaultValue={false}
-																									name="selected_insurance_companies.acacia_insurance"
-																									render={({
-																										field: { ref, ...field },
-																									}) => (
-																										<FormControlLabel
-																											control={
-																												<Checkbox
-																													{...field}
-																													ref={ref}
-																													color="blue"
-																													checked={watch(
-																														'selected_insurance_companies.acacia_insurance'
-																													)}
-																													name="selected_insurance_companies.acacia_insurance"
-																												/>
-																											}
-																											label="Acacia Insurance"
-																										/>
-																									)}
-																								/>
-																							</div>
-																						</Grid>
-																						<Grid
-																							item
-																							xs={12}
-																							sm={6}
-																							md={6}
-																							lg={3}>
-																							<div className=" w-full">
-																								<Controller
-																									control={control}
-																									defaultValue={false}
-																									name="selected_insurance_companies.premier_insurance"
-																									render={({
-																										field: { ref, ...field },
-																									}) => (
-																										<FormControlLabel
-																											control={
-																												<Checkbox
-																													{...field}
-																													ref={ref}
-																													color="blue"
-																													checked={watch(
-																														'selected_insurance_companies.premier_insurance'
-																													)}
-																													name="selected_insurance_companies.premier_insurance"
-																												/>
-																											}
-																											label="Premier Insurance"
-																										/>
-																									)}
-																								/>
-																							</div>
-																						</Grid>
-																						<Grid
-																							item
-																							xs={12}
-																							sm={6}
-																							md={6}
-																							lg={3}>
-																							<div className=" w-full">
-																								<Controller
-																									control={control}
-																									defaultValue={false}
-																									name="selected_insurance_companies.apex_insurance"
-																									render={({
-																										field: { ref, ...field },
-																									}) => (
-																										<FormControlLabel
-																											control={
-																												<Checkbox
-																													{...field}
-																													ref={ref}
-																													color="blue"
-																													checked={watch(
-																														'selected_insurance_companies.apex_insurance'
-																													)}
-																													name="selected_insurance_companies.apex_insurance"
-																												/>
-																											}
-																											label="Apex Insurance"
-																										/>
-																									)}
-																								/>
-																							</div>
-																						</Grid>
-																						<Grid
-																							item
-																							xs={12}
-																							sm={6}
-																							md={6}
-																							lg={3}>
-																							<div className=" w-full">
-																								<Controller
-																									control={control}
-																									defaultValue={false}
-																									name="selected_insurance_companies.cosmopolitan_insurance"
-																									render={({
-																										field: { ref, ...field },
-																									}) => (
-																										<FormControlLabel
-																											control={
-																												<Checkbox
-																													{...field}
-																													ref={ref}
-																													color="blue"
-																													checked={watch(
-																														'selected_insurance_companies.cosmopolitan_insurance'
-																													)}
-																													name="selected_insurance_companies.cosmopolitan_insurance"
-																												/>
-																											}
-																											label="Cosmopolitan Insurance"
-																										/>
-																									)}
-																								/>
-																							</div>
-																						</Grid>
-																						<Grid
-																							item
-																							xs={12}
-																							sm={6}
-																							md={6}
-																							lg={3}>
-																							<div className=" w-full">
-																								<Controller
-																									control={control}
-																									defaultValue={false}
-																									name="selected_insurance_companies.vitality_insurance"
-																									render={({
-																										field: { ref, ...field },
-																									}) => (
-																										<FormControlLabel
-																											control={
-																												<Checkbox
-																													{...field}
-																													ref={ref}
-																													color="blue"
-																													checked={watch(
-																														'selected_insurance_companies.vitality_insurance'
-																													)}
-																													name="selected_insurance_companies.vitality_insurance"
-																												/>
-																											}
-																											label="Vitality Insurance"
-																										/>
-																									)}
-																								/>
-																							</div>
-																						</Grid>
-																						<Grid
-																							item
-																							xs={12}
-																							sm={6}
-																							md={6}
-																							lg={3}>
-																							<div className=" w-full">
-																								<Controller
-																									control={control}
-																									defaultValue={false}
-																									name="selected_insurance_companies.ace_insurance"
-																									render={({
-																										field: { ref, ...field },
-																									}) => (
-																										<FormControlLabel
-																											control={
-																												<Checkbox
-																													{...field}
-																													ref={ref}
-																													color="blue"
-																													checked={watch(
-																														'selected_insurance_companies.ace_insurance'
-																													)}
-																													name="selected_insurance_companies.ace_insurance"
-																												/>
-																											}
-																											label="Ace Insurance"
-																										/>
-																									)}
-																								/>
-																							</div>
-																						</Grid>
-																						<Grid
-																							item
-																							xs={12}
-																							sm={6}
-																							md={6}
-																							lg={3}>
-																							<div className=" w-full">
-																								<Controller
-																									control={control}
-																									defaultValue={false}
-																									name="selected_insurance_companies.equity_insurance"
-																									render={({
-																										field: { ref, ...field },
-																									}) => (
-																										<FormControlLabel
-																											control={
-																												<Checkbox
-																													{...field}
-																													ref={ref}
-																													color="blue"
-																													checked={watch(
-																														'selected_insurance_companies.equity_insurance'
-																													)}
-																													name="selected_insurance_companies.equity_insurance"
-																												/>
-																											}
-																											label="Equity Insurance"
-																										/>
-																									)}
-																								/>
-																							</div>
-																						</Grid>
-																						<Grid
-																							item
-																							xs={12}
-																							sm={6}
-																							md={6}
-																							lg={3}>
-																							<div className=" w-full">
-																								<Controller
-																									control={control}
-																									defaultValue={false}
-																									name="selected_insurance_companies.gab_insurance"
-																									render={({
-																										field: { ref, ...field },
-																									}) => (
-																										<FormControlLabel
-																											control={
-																												<Checkbox
-																													{...field}
-																													ref={ref}
-																													color="blue"
-																													checked={watch(
-																														'selected_insurance_companies.gab_insurance'
-																													)}
-																													name="selected_insurance_companies.gab_insurance"
-																												/>
-																											}
-																											label="GAB Insurance"
-																										/>
-																									)}
-																								/>
-																							</div>
-																						</Grid>
+																									</div>
+																								</Grid>
+																							)
+																						)}
 																					</Grid>
 																				</FormGroup>
 																				<FormHelperText>
@@ -3355,65 +1561,6 @@ const EPharmacyForm = () => {
 												'wholesale/retail' &&
 										  pharmacyData?.is_epharmacy === false &&
 										  null}
-
-									<>
-										{/**
-							  : (
-							  <div className="w-full">
-								  <Controller
-									  control={control}
-									  name="epharmacy_registration_agreement"
-									  defaultValue={false}
-									  render={({
-										  field: { ref, ...field },
-										  fieldState: { error, invalid },
-									  }) => (
-										  <FormControl error={invalid}>
-											  <FormControlLabel
-												  control={
-													  <Checkbox
-														  {...field}
-														  ref={ref}
-														  color="blue"
-														  name="epharmacy_registration_agreement"
-													  />
-												  }
-												  label="I would like to register for ePharmacy"
-											  />
-
-											  <FormHelperText>{error?.message}</FormHelperText>
-										  </FormControl>
-									  )}
-								  />
-							  </div>
-
-							  {watch('epharmacy_registration_agreement') === true ? (
-								  <div className="w-full bg-[#B4B4FF] gap-5 text-[#0404FF] rounded-lg p-5 lg:p-8 flex flex-col justify-center items-start">
-									  <Typography variant="h4" className="w-full text-left">
-										  Please take note of the following:
-									  </Typography>
-
-									  {epharmacyFormNoticePoints.map(({ point, id }) => (
-										  <div
-											  key={id}
-											  className="w-full flex justify-start items-start gap-3">
-											  <Typography
-												  variant="paragraph"
-												  className="font-medium">
-												  {id}
-											  </Typography>
-											  <Typography
-												  variant="paragraph"
-												  className="font-medium">
-												  {point}
-											  </Typography>
-										  </div>
-									  ))}
-								  </div>
-							  ) : null}
-							)
-							   */}
-									</>
 
 									{watch('insurance_service') === 'yes' ||
 									watch('eprescription_interest') === 'yes' ? (

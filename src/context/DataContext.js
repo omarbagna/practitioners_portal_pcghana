@@ -20,8 +20,8 @@ export const DataContext = ({ children }) => {
 		JSON.parse(localStorage.getItem('pharmacyRenewalData'))
 	);
 
-	const [relicensureData, setRelicensureData] = useState(
-		JSON.parse(localStorage.getItem('relicensureData'))
+	const [pharmacyRenewalStatus, setPharmacyRenewalStatus] = useState(
+		JSON.parse(localStorage.getItem('pharmacyRenewalStatus'))
 	);
 
 	const [invoiceData, setInvoiceData] = useState(
@@ -29,8 +29,6 @@ export const DataContext = ({ children }) => {
 	);
 
 	const [image, setImage] = useState(null);
-
-	//console.log({ invoiceData });
 
 	// Save invoice data to local storage
 	useEffect(() => {
@@ -88,18 +86,20 @@ export const DataContext = ({ children }) => {
 		);
 	}, [pharmacyRenewalData]);
 
-	// Save relicensure data to local storage
+	// Save pharmacy renewal status to local storage
 	useEffect(() => {
-		const data = window.localStorage.getItem('relicensureData');
-		if (data !== null) setRelicensureData(JSON.parse(data));
+		const data = window.localStorage.getItem('pharmacyRenewalStatus');
+		if (data !== null) setPharmacyRenewalStatus(JSON.parse(data));
 	}, []);
 
 	useEffect(() => {
 		window.localStorage.setItem(
-			'relicensureData',
-			JSON.stringify(relicensureData)
+			'pharmacyRenewalStatus',
+			JSON.stringify(pharmacyRenewalStatus)
 		);
-	}, [relicensureData]);
+	}, [pharmacyRenewalStatus]);
+
+	// Reduce uploaded receipt size and convert to Base64
 
 	const resizeFile = (file) =>
 		new Promise((resolve) => {
@@ -118,22 +118,10 @@ export const DataContext = ({ children }) => {
 		});
 
 	const onImageChange = async (e) => {
-		/*	
-		const fileUploaded = e.target.files[0];
-
-		let reader = new FileReader();
-		reader.readAsDataURL(fileUploaded);
-
-		reader.onload = (e) => {
-			setImage(e.target.result);
-		};
-	*/
-
 		try {
 			const file = e.target.files[0];
 			const image = await resizeFile(file);
 
-			//console.log(onlyBase64String);
 			setImage(image);
 		} catch (err) {
 			console.log(err);
@@ -149,10 +137,10 @@ export const DataContext = ({ children }) => {
 			value={{
 				pharmacyData,
 				setPharmacyData,
-				relicensureData,
-				setRelicensureData,
 				pharmacyRenewalData,
 				setPharmacyRenewalData,
+				pharmacyRenewalStatus,
+				setPharmacyRenewalStatus,
 				invoiceData,
 				setInvoiceData,
 				pharmacistData,

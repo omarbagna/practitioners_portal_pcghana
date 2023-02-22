@@ -13,8 +13,7 @@ const InvoiceModal = ({ epharmacyInvoice = true }) => {
 	const navigate = useNavigate();
 	const { submissionSuccess, setSubmissionSuccess, setShowInvoice } =
 		useStateContext();
-	const { setPharmacyRenewalData, setPharmacyData, setRelicensureData } =
-		useDataContext();
+	const { setPharmacyRenewalData, setPharmacyData } = useDataContext();
 
 	const goToInvoices = () => {
 		setShowInvoice(true);
@@ -22,7 +21,6 @@ const InvoiceModal = ({ epharmacyInvoice = true }) => {
 		navigate('/', { replace: true });
 		setPharmacyRenewalData(null);
 		setPharmacyData(null);
-		setRelicensureData(null);
 	};
 
 	const goToDashboard = () => {
@@ -30,7 +28,6 @@ const InvoiceModal = ({ epharmacyInvoice = true }) => {
 		navigate('/', { replace: true });
 		setPharmacyRenewalData(null);
 		setPharmacyData(null);
-		setRelicensureData(null);
 	};
 
 	return (
@@ -101,25 +98,6 @@ const InvoiceModal = ({ epharmacyInvoice = true }) => {
 								/>
 							</div>
 						)}
-						<div className="w-fit h-fit flex flex-col gap-5 justify-center items-center text-white bg-gradient-to-b from-green-500 to-green-800  rounded-2xl p-3  lg:py-10 lg:px-5">
-							<Typography
-								variant="paragraph"
-								className="font-medium text-xl text-center capitalize">
-								<strong>Application submitted successfully</strong>
-							</Typography>
-							<Typography
-								variant="paragraph"
-								className="font-normal text-xl text-center capitalize">
-								Click the button below to download your invoice
-							</Typography>
-							<ButtonComponent
-								color="blue"
-								width
-								type="button"
-								onClick={goToDashboard}
-								title="view invoice"
-							/>
-						</div>
 					</motion.div>
 				</motion.div>
 			)}

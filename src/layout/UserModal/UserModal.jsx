@@ -8,8 +8,7 @@ import { Avatar } from '@mui/material';
 import { AnimatePresence, motion } from 'framer-motion';
 import React, { useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
-import { AiFillEye, AiFillEyeInvisible } from 'react-icons/ai';
-//import { BiArrowBack } from 'react-icons/bi';
+import { FaRegUser, FaSignOutAlt } from 'react-icons/fa';
 import { ButtonComponent, DefaultInput } from '../../components';
 import { useAuthContext } from '../../context/AuthContext';
 import { useStateContext } from '../../context/StateContext';
@@ -21,16 +20,12 @@ const UserModal = () => {
 	const [openLogout, setOpenLogout] = useState(false);
 	const [openProfile, setOpenProfile] = useState(false);
 	const [size, setSize] = useState('xl');
-	const [isVisible, setIsVisible] = useState(false);
 
 	const { handleSubmit, control } = useForm({
 		mode: 'all',
 		reValidateMode: 'onChange',
 		defaultValues: {
 			email: user?.email,
-			currentPassword: '',
-			newPassword: '',
-			repeatNewPassword: '',
 		},
 	});
 
@@ -49,10 +44,6 @@ const UserModal = () => {
 		setOpenProfile(!openProfile);
 	};
 
-	const visibility = () => {
-		setIsVisible(!isVisible);
-	};
-
 	return (
 		<AnimatePresence mode="wait">
 			{viewUserModal && (
@@ -62,55 +53,45 @@ const UserModal = () => {
 						animate={{ opacity: 1 }}
 						exit={{ opacity: 0 }}
 						onClick={() => setViewUserModal(false)}
-						className="fixed z-40 flex justify-end items-start pr-3 pt-16 md:pr-5 lg:pr-16 xl:pr-20 top-0 w-full overflow-hidden h-full bg-black/50 backdrop-blur-sm">
+						className="fixed z-40 flex justify-end items-start pr-3 pt-24 md:pr-5 lg:pr-16 xl:pr-20 top-0 w-full overflow-hidden h-full bg-black/20 backdrop-blur-sm">
 						<motion.div
 							onClick={(e) => e.stopPropagation()}
 							initial={{ y: -200 }}
 							animate={{ y: 0 }}
 							exit={{ y: -200 }}
 							transition={{ duration: 0.5, type: 'tween' }}
-							//style={{ color: currentColor.code }}
-							className="w-fit h-fit flex flex-col gap-3 justify-center lg:justify-start items-center text-white bg-gradient-to-b from-blue-600 to-[#0404FF]  rounded-b-2xl backdrop-blur-sm p-3  lg:py-10 lg:px-5">
-							{/*
-							<div className="flex w-full gap-5 justify-between items-center lg:px-1 mb-3 lg:mb-6">
-								<div className="flex justify-start items-center gap-5">
-									<span
-										onClick={() => setViewProfile(false)}
-										className="cursor-pointer transition-all duration-150 ease-in-out hover:scale-105 text-base lg:text-2xl rounded-md bg-black/30 p-1">
-										<BiArrowBack />
-									</span>
-								</div>
-								<Typography
-									variant="h3"
-									className="capitalize text-lg lg:text-xl pb-1">
-									User Profile
-								</Typography>
-							</div>
-
-							*/}
-
-							<div className="hidden lg:block cursor-pointer p-3 rounded-xl transition-all duration-150 ease-in hover:bg-white/30 hover:shadow-lg">
+							className="w-fit h-fit flex flex-col gap-5 justify-center lg:justify-start items-center text-blue-600 bg-gradient-to-b from-blue-gray-50 to-white shadow-xl rounded-2xl backdrop-blur-sm p-3  lg:py-5 lg:px-5">
+							<div className="hidden lg:flex cursor-pointer p-4 rounded-lg transition-all duration-150 ease-in-out hover:bg-blue-600 hover:text-white hover:shadow-lg justify-center items-center gap-3">
+								<FaRegUser className="shrink-0 text-xl" />
 								<Typography
 									variant="paragraph"
 									className="font-medium text-lg text-center capitalize"
 									onClick={() => handleOpenProfile('xs')}>
-									<strong>my profile</strong>
+									my profile
 								</Typography>
 							</div>
 
-							<div className="block lg:hidden cursor-pointer p-2 rounded-xl transition-all duration-150 ease-in hover:bg-white/30">
+							<div className="flex lg:hidden cursor-pointer p-3 rounded-lg transition-all duration-150 ease-in hover:bg-blue-600 hover:text-white hover:shadow-lg justify-center items-center gap-3">
+								<FaRegUser className="shrink-0 text-lg" />
 								<Typography
 									variant="paragraph"
 									className="font-medium text-base text-center capitalize"
 									onClick={() => handleOpenProfile('xl')}>
-									<strong>my profile</strong>
+									my profile
 								</Typography>
 							</div>
+
+							<div className="w-full h-[2px] rounded-full bg-blue-gray-200" />
 
 							<div className="hidden lg:block">
 								<ButtonComponent
 									color="red"
-									title="logout"
+									title={
+										<>
+											<FaSignOutAlt className="shrink-0 text-xl" />
+											logout
+										</>
+									}
 									onClick={() => handleOpenLogout('xs')}
 								/>
 							</div>
@@ -118,7 +99,12 @@ const UserModal = () => {
 							<div className="block lg:hidden">
 								<ButtonComponent
 									color="red"
-									title="logout"
+									title={
+										<>
+											<FaSignOutAlt className="shrink-0 text-lg" />
+											logout
+										</>
+									}
 									onClick={() => handleOpenLogout('xl')}
 								/>
 							</div>
@@ -130,7 +116,7 @@ const UserModal = () => {
 						handler={handleOpenProfile}
 						size={size}
 						className="overflow-y-auto">
-						<DialogHeader className="bg-gradient-to-b from-[#0404FF] to-[#121B67]">
+						<DialogHeader className="bg-blue-600">
 							<div className="grid place-items-center w-full h-full">
 								<Typography
 									variant="h3"
@@ -185,102 +171,8 @@ const UserModal = () => {
 											name="email"
 											label="Email"
 											type="email"
-											//value={user?.email}
-											//disabled
-											required
-										/>
-									)}
-								/>
-
-								<Typography
-									variant="h3"
-									color="black"
-									className="capitalize font-medium text-base">
-									change password
-								</Typography>
-								<Controller
-									control={control}
-									name="currentPassword"
-									rules={{
-										required: 'Please enter current password',
-									}}
-									render={({
-										field: { ref, ...field },
-										fieldState: { error, invalid },
-									}) => (
-										<DefaultInput
-											{...field}
-											ref={ref}
-											//error={invalid || loginError}
-											helpertext={invalid ? error.message : null}
-											name="currentPassword"
-											label="Current Password"
-											type={isVisible ? 'text' : 'password'}
-											icon={
-												isVisible ? (
-													<AiFillEyeInvisible onClick={visibility} />
-												) : (
-													<AiFillEye onClick={visibility} />
-												)
-											}
-											required
-										/>
-									)}
-								/>
-								<Controller
-									control={control}
-									name="newPassword"
-									rules={{
-										required: 'Please enter new password',
-									}}
-									render={({
-										field: { ref, ...field },
-										fieldState: { error, invalid },
-									}) => (
-										<DefaultInput
-											{...field}
-											ref={ref}
-											//error={invalid || loginError}
-											helpertext={invalid ? error.message : null}
-											name="newPassword"
-											label="New Password"
-											type={isVisible ? 'text' : 'password'}
-											icon={
-												isVisible ? (
-													<AiFillEyeInvisible onClick={visibility} />
-												) : (
-													<AiFillEye onClick={visibility} />
-												)
-											}
-											required
-										/>
-									)}
-								/>
-								<Controller
-									control={control}
-									name="repeatNewPassword"
-									rules={{
-										required: 'Please enter repeat new password',
-									}}
-									render={({
-										field: { ref, ...field },
-										fieldState: { error, invalid },
-									}) => (
-										<DefaultInput
-											{...field}
-											ref={ref}
-											//error={invalid || loginError}
-											helpertext={invalid ? error.message : null}
-											name="repeatNewPassword"
-											label="Repeat New Password"
-											type={isVisible ? 'text' : 'password'}
-											icon={
-												isVisible ? (
-													<AiFillEyeInvisible onClick={visibility} />
-												) : (
-													<AiFillEye onClick={visibility} />
-												)
-											}
+											labelProps={{ style: { color: '#000' } }}
+											disabled
 											required
 										/>
 									)}
@@ -288,14 +180,13 @@ const UserModal = () => {
 
 								<div className="flex w-full justify-center items-center gap-5">
 									<ButtonComponent
-										title="cancel"
+										title="close"
 										reset
 										onClick={() => {
 											handleOpenProfile(size);
 											setViewUserModal(false);
 										}}
 									/>
-									<ButtonComponent type="submit" title="update" />
 								</div>
 							</form>
 						</DialogBody>

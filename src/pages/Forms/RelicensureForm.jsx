@@ -15,7 +15,9 @@ import { useNavigate } from 'react-router-dom';
 import {
 	countries,
 	regions,
-	//employmentDataFields, supportStaffFields
+	relicensurePersonalDataInputs,
+	institutionOptions,
+	employerOptions,
 } from './data';
 import { useQuery } from 'react-query';
 import { axiosPrivate } from '../../api/axios';
@@ -27,11 +29,7 @@ import { useStateContext } from '../../context/StateContext';
 
 const RelicensureForm = () => {
 	const { user, logout } = useAuthContext();
-	const {
-		setRelicensureData,
-		cpdData,
-		//, invoiceData, setInvoiceData
-	} = useDataContext();
+	const { cpdData, pharmacistData } = useDataContext();
 	const { setSubmissionSuccess, setRelicensureProcessing } = useStateContext();
 	const navigate = useNavigate();
 
@@ -92,23 +90,35 @@ const RelicensureForm = () => {
 		reValidateMode: 'onChange',
 		defaultValues: {
 			registration_number:
-				user?.registration_number === null ? '' : user?.registration_number,
-			person_title: user?.title === null ? '' : user?.title,
-			person_surname: user?.last_name === null ? '' : user?.last_name,
-			person_first_name: user?.first_name === null ? '' : user?.first_name,
-			person_othernames: user?.middle_name === null ? '' : user?.middle_name,
-			person_nationality: user?.nationality === null ? '' : user?.nationality,
+				pharmacistData?.registration_number === null
+					? ''
+					: pharmacistData?.registration_number,
+			person_title: pharmacistData?.title === null ? '' : pharmacistData?.title,
+			person_surname:
+				pharmacistData?.last_name === null ? '' : pharmacistData?.last_name,
+			person_first_name:
+				pharmacistData?.first_name === null ? '' : pharmacistData?.first_name,
+			person_othernames:
+				pharmacistData?.middle_name === null ? '' : pharmacistData?.middle_name,
+			person_nationality:
+				pharmacistData?.nationality === null ? '' : pharmacistData?.nationality,
 			person_postal_address:
-				user?.postal_address === null ? '' : user?.postal_address,
+				pharmacistData?.postal_address === null
+					? ''
+					: pharmacistData?.postal_address,
 			person_town:
-				user?.residential_city === null ? '' : user?.residential_city,
+				pharmacistData?.residential_city === null
+					? ''
+					: pharmacistData?.residential_city,
 			residential_region:
-				user?.residential_region === null || user?.residential_region === ''
+				pharmacistData?.residential_region === null ||
+				pharmacistData?.residential_region === ''
 					? null
-					: user?.residential_region,
-			person_mobile_number: user?.phone === null ? '' : user?.phone,
+					: pharmacistData?.residential_region,
+			person_mobile_number:
+				pharmacistData?.phone === null ? '' : pharmacistData?.phone,
 			person_landline: '',
-			person_email: user?.email === null ? '' : user?.email,
+			person_email: pharmacistData?.email === null ? '' : pharmacistData?.email,
 		},
 	});
 
@@ -123,7 +133,7 @@ const RelicensureForm = () => {
 		);
 	};
 
-	const { data, isLoading, isFetching } = useQuery(
+	const { data, isLoading } = useQuery(
 		'pharmacist_details',
 		fetchPharmacistDetails
 	);
@@ -135,16 +145,32 @@ const RelicensureForm = () => {
 				logout();
 			}
 		}
-	}, [data, logout]);
+		if (pharmacistData?.is_in_application === '1') {
+			toast.error(
+				'A relicensure application has already been received and is processing'
+			);
+			navigate('/', { replace: true });
+		} else if (pharmacistData?.is_provisional !== 'no') {
+			toast.error('Cannot renew a provisional license');
+			navigate('/', { replace: true });
+		} else if (pharmacistData?.is_superintendent === '1') {
+			toast.error(
+				'You are already a superintendant for another pharmacy and cannot fill this form'
+			);
+			navigate('/', { replace: true });
+		} else {
+			return;
+		}
+	}, [navigate, data, logout, pharmacistData]);
 
 	//console.log(pharmacyData);
 	const formData = new FormData();
 
 	const handleFormSubmit = async (data) => {
+		console.log(data);
 		setIsSubmitting(true);
 		let finalFormData = {};
 		//console.log({ data });
-		setRelicensureData(data);
 
 		finalFormData = {
 			method: 'SAVE_PHARMACIST_LICENSE_DATA',
@@ -206,7 +232,7 @@ const RelicensureForm = () => {
 
 				try {
 					const privateResponse = await axios.post(
-						'https://goldenministersfellowship.org/pcghana-api/',
+						'https://pcportal-api.rxhealthbeta.com/',
 						JSON.stringify(finalFormData),
 						{
 							headers: { 'Content-Type': 'application/json' },
@@ -251,79 +277,6 @@ const RelicensureForm = () => {
 			setIsSubmitting(false);
 		}
 
-		/**
-		try {
-			const privateResponse = await axios.post(
-				'https://goldenministersfellowship.org/pcghana-api/',
-				JSON.stringify(finalFormData),
-				{
-					headers: { 'Content-Type': 'application/json' },
-					withCredentials: true,
-				}
-			);
-			responseData = privateResponse.data;
-			console.log(responseData);
-
-			if (responseData?.resp_code === '000') {
-				try {
-					const response = await axiosPrivate.post(
-						'api/saveRetentionApplication',
-						formData,
-						{
-							headers: {
-								Token: user?.token,
-								Userid: user?.id,
-								Type: user?.type,
-								'Content-Type': 'multipart/form-data',
-							},
-						}
-					);
-
-					console.log(response);
-
-					if (response?.data?.status === '0') {
-						//setIsSubmitting(false);
-						console.log('Application submission failed (pc part)');
-					} else if (response?.data?.status === '-1') {
-						//setIsSubmitting(false);
-						console.log(response?.data);
-						//toast.error(response?.data?.message);
-					} else if (response?.data?.status === '1') {
-						console.log('Initial submission successful (pc part)');
-
-						//setIsSubmitting(false);
-						//toast.success('Application Submitted Successful');
-
-						//navigate('/', { replace: true });
-					}
-				} catch (err) {
-					let errMessage;
-					if (err.response?.status === 400) {
-						errMessage = 'Server Error';
-						console.log(errMessage);
-					}
-
-					//setIsSubmitting(false);
-				}
-				toast.success('Application submission successful');
-
-				setIsSubmitting(false);
-				setSubmissionSuccess(true);
-				setRelicensureProcessing(true);
-			} else {
-				console.log(privateResponse?.data?.resp_msg);
-				toast.error(privateResponse?.data?.resp_msg);
-				setIsSubmitting(false);
-			}
-		} catch (error) {
-			let errorMessage;
-			if (error.response?.status === 400) {
-				errorMessage = 'Server Error';
-				console.log(errorMessage);
-				setIsSubmitting(false);
-			}
-		}
- */
 		setIsSubmitting(false);
 	};
 
@@ -361,7 +314,7 @@ const RelicensureForm = () => {
 			<div className="w-full h-full flex flex-col justify-start items-center gap-10 mt-10">
 				<FormTitle title="Pharmacist Relicensure Application" />
 
-				{isLoading || isFetching || isSubmitting ? (
+				{isLoading || isSubmitting ? (
 					<div className="w-full h-full bg-gradient-to-b from-[#0404FF] to-blue-600 rounded-xl shadow-blue-400/30 shadow-lg flex justify-center items-center">
 						<SkeletonLoad />
 					</div>
@@ -402,276 +355,48 @@ const RelicensureForm = () => {
 									/>
 								</div>
 
-								<Controller
-									control={control}
-									name="registration_number"
-									/*rules={{
-											required: 'Please enter registration number to Login',
-										}} */
-									render={({
-										field: { ref, ...field },
-										fieldState: { error, invalid },
-									}) => (
-										<DefaultInput
-											{...field}
-											ref={ref}
-											error={invalid}
-											helpertext={invalid ? error.message : null}
-											name="registration_number"
-											label="Registration Number"
-											type="text"
-											disabled
-											labelProps={{ style: { color: '#000' } }}
-											required
-										/>
-									)}
-								/>
-
-								<Controller
-									control={control}
-									name="person_title"
-									/*rules={{
-											required: 'Please enter registration number to Login',
-										}} */
-									render={({
-										field: { ref, ...field },
-										fieldState: { error, invalid },
-									}) => (
-										<DefaultInput
-											{...field}
-											ref={ref}
-											error={invalid}
-											helpertext={invalid ? error.message : null}
-											name="person_title"
-											label="Title"
-											type="text"
-											disabled
-											labelProps={{ style: { color: '#000' } }}
-											required
-										/>
-									)}
-								/>
-								<Controller
-									control={control}
-									name="person_surname"
-									render={({
-										field: { ref, ...field },
-										fieldState: { error, invalid },
-									}) => (
-										<DefaultInput
-											{...field}
-											ref={ref}
-											error={invalid}
-											helpertext={invalid ? error.message : null}
-											name="person_surname"
-											label="Surname"
-											type="text"
-											disabled
-											labelProps={{ style: { color: '#000' } }}
-											required
-										/>
-									)}
-								/>
-								<Controller
-									control={control}
-									name="person_first_name"
-									render={({
-										field: { ref, ...field },
-										fieldState: { error, invalid },
-									}) => (
-										<DefaultInput
-											{...field}
-											ref={ref}
-											error={invalid}
-											helpertext={invalid ? error.message : null}
-											name="person_first_name"
-											label="First Name"
-											type="text"
-											disabled
-											labelProps={{ style: { color: '#000' } }}
-											required
-										/>
-									)}
-								/>
-								<Controller
-									control={control}
-									name="person_othernames"
-									render={({
-										field: { ref, ...field },
-										fieldState: { error, invalid },
-									}) => (
-										<DefaultInput
-											{...field}
-											ref={ref}
-											error={invalid}
-											helpertext={invalid ? error.message : null}
-											name="person_othernames"
-											label="Othernames"
-											type="text"
-											disabled
-											labelProps={{ style: { color: '#000' } }}
-										/>
-									)}
-								/>
-								<Controller
-									control={control}
-									name="person_nationality"
-									render={({
-										field: { ref, ...field },
-										fieldState: { error, invalid },
-									}) => (
-										<DefaultInput
-											{...field}
-											ref={ref}
-											error={invalid}
-											helpertext={invalid ? error.message : null}
-											name="person_nationality"
-											label="Nationality"
-											type="text"
-											disabled
-											labelProps={{ style: { color: '#000' } }}
-										/>
-									)}
-								/>
-								<Controller
-									control={control}
-									name="person_postal_address"
-									render={({
-										field: { ref, ...field },
-										fieldState: { error, invalid },
-									}) => (
-										<DefaultInput
-											{...field}
-											ref={ref}
-											error={invalid}
-											helpertext={invalid ? error.message : null}
-											name="person_postal_address"
-											label="Postal Address"
-											type="text"
-											//disabled={editPersonalData}
-											labelProps={{ style: { color: '#000' } }}
-											required
-										/>
-									)}
-								/>
-								<Controller
-									control={control}
-									name="person_town"
-									render={({
-										field: { ref, ...field },
-										fieldState: { error, invalid },
-									}) => (
-										<DefaultInput
-											{...field}
-											ref={ref}
-											error={invalid}
-											helpertext={invalid ? error.message : null}
-											name="person_town"
-											label="Town"
-											type="text"
-											disabled
-											labelProps={{ style: { color: '#000' } }}
-										/>
-									)}
-								/>
-								<Controller
-									control={control}
-									name="person_mobile_number"
-									rules={{
-										pattern: {
-											value: /^(0|233|\+233)[\d]{9}$/gi,
-											message: 'Please enter a valid mobile number',
-										},
-									}}
-									render={({
-										field: { ref, ...field },
-										fieldState: { error, invalid },
-									}) => (
-										<DefaultInput
-											{...field}
-											ref={ref}
-											error={invalid}
-											helpertext={invalid ? error.message : null}
-											name="person_mobile_number"
-											label="Mobile Number"
-											type="tel"
-											//disabled={editPersonalData}
-											labelProps={{ style: { color: '#000' } }}
-											required
-										/>
-									)}
-								/>
-								<Controller
-									control={control}
-									name="person_landline"
-									render={({
-										field: { ref, ...field },
-										fieldState: { error, invalid },
-									}) => (
-										<DefaultInput
-											{...field}
-											ref={ref}
-											error={invalid}
-											helpertext={invalid ? error.message : null}
-											name="person_landline"
-											label="Landline"
-											type="tel"
-											disabled
-											labelProps={{ style: { color: '#000' } }}
-										/>
-									)}
-								/>
-								<Controller
-									control={control}
-									name="person_email"
-									rules={{
-										pattern: {
-											value: /^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/gi,
-											message: 'Please enter a valid email address',
-										},
-										required: 'Please enter email address',
-									}}
-									render={({
-										field: { ref, ...field },
-										fieldState: { error, invalid },
-									}) => (
-										<DefaultInput
-											{...field}
-											ref={ref}
-											error={invalid}
-											helpertext={invalid ? error.message : null}
-											name="person_email"
-											label="Email"
-											type="email"
-											//disabled={editPersonalData}
-											labelProps={{ style: { color: '#000' } }}
-											required
-										/>
-									)}
-								/>
-								<Controller
-									control={control}
-									name="residential_region"
-									rules={{
-										required: 'Please specify region',
-									}}
-									required
-									render={({
-										field: { ref, ...field },
-										fieldState: { error, invalid },
-									}) => (
-										<SelectInput
-											{...field}
-											ref={ref}
-											error={invalid}
-											helpertext={invalid ? error.message : null}
-											name="residential_region"
-											label="Region"
-											required
-											options={regions}
-										/>
-									)}
-								/>
+								{relicensurePersonalDataInputs.map((inputProps) => (
+									<Controller
+										control={control}
+										key={inputProps.name}
+										name={inputProps.name}
+										rules={inputProps.rules}
+										render={({
+											field: { ref, ...field },
+											fieldState: { error, invalid },
+										}) => {
+											if (inputProps.inputType === 'text-input') {
+												return (
+													<DefaultInput
+														{...field}
+														ref={ref}
+														error={invalid}
+														helpertext={invalid ? error.message : null}
+														name={inputProps.name}
+														label={inputProps.label}
+														type={inputProps.type}
+														disabled={inputProps.disabled}
+														labelProps={inputProps.labelProps}
+														required={inputProps.required}
+													/>
+												);
+											} else if (inputProps.inputType === 'select-input') {
+												return (
+													<SelectInput
+														{...field}
+														ref={ref}
+														error={invalid}
+														helpertext={invalid ? error.message : null}
+														name={inputProps.name}
+														label={inputProps.label}
+														required={inputProps.required}
+														options={inputProps.options}
+													/>
+												);
+											}
+										}}
+									/>
+								))}
 							</div>
 						</FormSection>
 
@@ -722,36 +447,7 @@ const RelicensureForm = () => {
 																	name={`employment_data[${inputField}].institution_type`}
 																	label="Institution Type"
 																	required
-																	options={[
-																		{
-																			name: 'academia',
-																			value: 'academia',
-																		},
-																		{
-																			name: 'administration',
-																			value: 'administration',
-																		},
-																		{
-																			name: 'community',
-																			value: 'community',
-																		},
-																		{
-																			name: 'hospital',
-																			value: 'hospital',
-																		},
-																		{
-																			name: 'industry',
-																			value: 'industry',
-																		},
-																		{
-																			name: 'regulatory',
-																			value: 'regulatory',
-																		},
-																		{
-																			name: 'other',
-																			value: 'other',
-																		},
-																	]}
+																	options={institutionOptions}
 																/>
 															)}
 														/>
@@ -771,20 +467,7 @@ const RelicensureForm = () => {
 																	name={`employment_data[${inputField}].employer_type`}
 																	label="Employer Type"
 																	required
-																	options={[
-																		{
-																			name: 'government/quasi government',
-																			value: 'government',
-																		},
-																		{
-																			name: 'private',
-																			value: 'private',
-																		},
-																		{
-																			name: 'self',
-																			value: 'self',
-																		},
-																	]}
+																	options={employerOptions}
 																/>
 															)}
 														/>

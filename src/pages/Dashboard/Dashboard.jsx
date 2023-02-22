@@ -10,10 +10,11 @@ import { useQuery } from 'react-query';
 import { axiosPrivate } from '../../api/axios';
 import {
 	CPDWidget,
-	ElectronicPharmacyWidget,
+	DigitalizationWidget,
 	ErrorWidget,
 	InternshipManagerWidget,
 	PharmacyRenewalWidget,
+	ViewInvoiceWidget,
 	PharmacySuperintendingWidget,
 	RelicensureWidget,
 	WelcomeBanner,
@@ -32,6 +33,7 @@ const Dashboard = () => {
 	const [loadingPharmacyStatus, setLoadingPharmacyStatus] = useState(false);
 	const [pharmacyStatus, setPharmacyStatus] = useState(null);
 	const {
+		setPharmacyRenewalStatus,
 		setInvoiceData,
 		pharmacistData,
 		setPharmacistData,
@@ -69,6 +71,30 @@ const Dashboard = () => {
 		fetchPharmacistCPDScore
 	);
 
+	const fetchPharmacistPSGHStanding = () => {
+		const registrationNumber = user?.registration_number.split(' ');
+		const psgh_number = registrationNumber[1];
+		return axios.get(
+			`https://psgh.societymanager.org/api/PSGH-FC-GHHDEGGSDFFGDDFG/GS/members/${psgh_number}`
+		);
+	};
+
+	const psgh_standing = useQuery('psgh_standing', fetchPharmacistPSGHStanding);
+
+	useEffect(() => {
+		if (data && psgh_standing?.data) {
+			if (data?.data?.status === '0') {
+				toast.error('Session timed out, please login again to continue');
+				logout();
+			} else if (
+				data?.data?.status === '1' &&
+				psgh_standing?.data?.data?.error === false
+			) {
+				console.log(psgh_standing?.data?.data);
+			}
+		}
+	}, [data, logout, psgh_standing]);
+
 	useEffect(() => {
 		if (data && pharmacist_cpd_score?.data) {
 			if (
@@ -94,7 +120,7 @@ const Dashboard = () => {
 			setLoadingInvoice(true);
 			try {
 				const response = await axios.post(
-					'https://goldenministersfellowship.org/pcghana-api/',
+					'https://pcportal-api.rxhealthbeta.com/',
 					JSON.stringify({
 						method: 'GET_PC_INVOICES',
 						api_key: '42353d5c33b45b0a8246b9bf0cd46820e516e3e4',
@@ -125,7 +151,7 @@ const Dashboard = () => {
 			setLoadingPharmacistStatus(true);
 			try {
 				const response = await axios.post(
-					'https://goldenministersfellowship.org/pcghana-api/',
+					'https://pcportal-api.rxhealthbeta.com/',
 					JSON.stringify({
 						method: 'GET_APPLICATION_STATUS',
 						api_key: '42353d5c33b45b0a8246b9bf0cd46820e516e3e4',
@@ -162,7 +188,7 @@ const Dashboard = () => {
 			setLoadingPharmacistStatus(true);
 			try {
 				const response = await axios.post(
-					'https://goldenministersfellowship.org/pcghana-api/',
+					'https://pcportal-api.rxhealthbeta.com/',
 					JSON.stringify({
 						method: 'GET_APPLICATION_STATUS',
 						api_key: '42353d5c33b45b0a8246b9bf0cd46820e516e3e4',
@@ -179,6 +205,7 @@ const Dashboard = () => {
 				if (response.data !== null) {
 					//console.log(response.data);
 					setPharmacyStatus(response.data);
+					setPharmacyRenewalStatus(response.data);
 					setLoadingPharmacyStatus(false);
 				} else {
 					setLoadingPharmacyStatus(false);
@@ -198,12 +225,12 @@ const Dashboard = () => {
 		getInvoices();
 		getPharmacistApplicationStatus();
 		getPharmacyApplicationStatus();
-	}, [user, setInvoiceData, setLoadingInvoice]);
+	}, [user, setInvoiceData, setLoadingInvoice, setPharmacyRenewalStatus]);
 
 	return (
 		<div className="w-full h-full flex flex-col justify-start items-center gap-10">
 			<WelcomeBanner
-				title={user?.title}
+				title={user?.title?.toLowerCase()}
 				firstName={user?.first_name.toLowerCase()}
 				type={user?.type}
 				registrationNumber={user?.registration_number}
@@ -233,10 +260,7 @@ const Dashboard = () => {
 					  isError ? (
 						<ErrorWidget />
 					) : (
-						<RelicensureWidget
-							pharmacistStanding={pharmacistData}
-							//pharmacistRenewalStatus={pharmacistStatus}
-						/>
+						<RelicensureWidget pharmacistStanding={pharmacistData} />
 					)}
 				</div>
 
@@ -261,11 +285,14 @@ const Dashboard = () => {
 					) : data?.data?.status === '0' && pharmacistData === null ? (
 						<ErrorWidget />
 					) : (
-						<ElectronicPharmacyWidget
+						<DigitalizationWidget
 							pharmacistStanding={pharmacistData}
-							//pharmacyRenewalStatus={pharmacyStatus}
+							pharmacyRenewalStatus={pharmacyStatus}
 						/>
 					)}
+				</div>
+				<div className="w-full col-span-2">
+					<ViewInvoiceWidget />
 				</div>
 				<div className="w-full col-span-2">
 					<InternshipManagerWidget />

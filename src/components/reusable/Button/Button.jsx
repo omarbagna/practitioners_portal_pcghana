@@ -19,6 +19,7 @@ const ButtonComponent = ({
 			variant={reset ? 'outlined' : text ? 'text' : 'gradient'}
 			size="md"
 			color={reset ? 'red' : color ? color : 'blue'}
+			className="flex justify-center items-center gap-4"
 			onClick={onClick}>
 			{title}
 		</Button>

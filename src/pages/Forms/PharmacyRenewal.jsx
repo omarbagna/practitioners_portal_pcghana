@@ -59,6 +59,21 @@ const PharmacyRenewal = () => {
 		} else if (pharmacistData?.in_good_standing?.toLowerCase() !== 'approved') {
 			toast.error('You cannot access this page. You are not in good standing.');
 			navigate('/', { replace: true });
+		} else if (pharmacistData?.is_in_application === '1') {
+			toast.error(
+				'A relicensure application has been received and is processing'
+			);
+			navigate('/', { replace: true });
+		} else if (pharmacistData?.is_provisional !== 'no') {
+			toast.error('Cannot renew a provisional license');
+			navigate('/', { replace: true });
+		} else if (pharmacistData?.is_superintendent === '1') {
+			toast.error(
+				'You are already a superintendant for another pharmacy and cannot fill this form'
+			);
+			navigate('/', { replace: true });
+		} else {
+			return;
 		}
 	}, [pharmacistData, navigate]);
 
@@ -173,7 +188,7 @@ const PharmacyRenewal = () => {
 		}
 	};
 
-	const { data, isLoading, isFetching, refetch } = useQuery(
+	const { data, isLoading, refetch } = useQuery(
 		'pharmacy_details',
 		async () => await fetchPharmacyDetails(searchParams),
 		{
@@ -210,6 +225,8 @@ const PharmacyRenewal = () => {
 					pharmacyData?.house_number === null ? '' : pharmacyData?.house_number,
 				gps:
 					pharmacyData?.ghana_post_code === null
+						? ''
+						: pharmacyData?.ghana_post_code === '--'
 						? ''
 						: pharmacyData?.ghana_post_code,
 				phone: pharmacyData?.phone === null ? '' : pharmacyData?.phone,
@@ -272,7 +289,12 @@ const PharmacyRenewal = () => {
 					pharmacyRenewalData?.location === null
 						? ''
 						: pharmacyRenewalData?.location,
-				gps: pharmacyRenewalData?.gps === null ? '' : pharmacyRenewalData?.gps,
+				gps:
+					pharmacyRenewalData?.gps === null
+						? ''
+						: pharmacyRenewalData?.gps === '--'
+						? ''
+						: pharmacyRenewalData?.gps,
 				phone:
 					pharmacyRenewalData?.phone === null ? '' : pharmacyRenewalData?.phone,
 				email:
@@ -658,9 +680,9 @@ const PharmacyRenewal = () => {
 								<Controller
 									control={control}
 									name="gps"
-									/*rules={{
-											required: 'Please enter license number to Login',
-										}} */
+									rules={{
+										required: 'Please enter a valid Ghana Post address',
+									}}
 									render={({
 										field: { ref, ...field },
 										fieldState: { error, invalid },
@@ -673,7 +695,7 @@ const PharmacyRenewal = () => {
 											name="gps"
 											label="Ghana Post Digital Address"
 											type="text"
-											disabled
+											disabled={editFacilityData}
 											labelProps={{ style: { color: '#000' } }}
 											required
 										/>
@@ -687,8 +709,9 @@ const PharmacyRenewal = () => {
 									rules={{
 										pattern: {
 											value: /^(0|233|\+233)[\d]{9}$/gi,
-											message: 'Please enter a valid Phone Number',
+											message: 'Please enter a valid phone number',
 										},
+										required: 'Please enter phone number',
 									}}
 									render={({
 										field: { ref, ...field },
@@ -1630,7 +1653,7 @@ const PharmacyRenewal = () => {
 						<ButtonComponent type="submit" title="continue" />
 					</div>
 				</form>
-			) : isLoading || isFetching ? (
+			) : isLoading ? (
 				<div className="w-full h-full bg-gradient-to-b from-[#0404FF] to-blue-600 rounded-xl shadow-blue-400/30 shadow-lg flex justify-center items-center">
 					<SkeletonLoad />
 				</div>

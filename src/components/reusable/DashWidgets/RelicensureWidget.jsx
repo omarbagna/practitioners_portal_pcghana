@@ -6,24 +6,11 @@ import ButtonComponent from '../Button/Button';
 import { Link, useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import BackgroundIcon from './BackgroundIcon';
-//import { useStateContext } from '../../../context/StateContext';
 
-const RelicensureWidget = ({ pharmacistStanding, pharmacistRenewalStatus }) => {
-	//const { relicensureProcessing } = useStateContext();
-
+const RelicensureWidget = ({ pharmacistStanding }) => {
 	const [isGood, setIsGood] = useState(false);
 
 	const navigate = useNavigate();
-
-	/*
-	useEffect(() => {
-		if (pharmacistRenewalStatus?.renewal_status === 'approved') {
-			setIsGood(true);
-		} else if (pharmacistRenewalStatus?.renewal_status === null) {
-			setIsGood(false);
-		}
-	}, [pharmacistRenewalStatus]);
-*/
 
 	useEffect(() => {
 		if (pharmacistStanding?.in_good_standing?.toLowerCase() === 'approved') {
@@ -63,9 +50,8 @@ const RelicensureWidget = ({ pharmacistStanding, pharmacistRenewalStatus }) => {
 				className={`absolute z-10 bottom-0 left-0 w-full h-2 ${
 					isGood
 						? 'bg-green-400'
-						: pharmacistRenewalStatus?.renewal_status === 'pending_review' ||
-						  pharmacistStanding?.in_good_standing?.toLowerCase() ===
-								'pending payment'
+						: pharmacistStanding?.in_good_standing?.toLowerCase() ===
+						  'pending payment'
 						? 'bg-yellow-400'
 						: 'bg-red-400 animate-pulse'
 				}`}
@@ -88,8 +74,6 @@ const RelicensureWidget = ({ pharmacistStanding, pharmacistRenewalStatus }) => {
 
 				<div className="w-full flex flex-wrap justify-center items-center gap-3">
 					{!isGood ||
-					pharmacistRenewalStatus?.renewal_status === 'pending_review' ||
-					pharmacistRenewalStatus?.renewal_status === 'approved' ||
 					pharmacistStanding?.in_good_standing?.toLowerCase() ===
 						'pending payment' ||
 					pharmacistStanding?.in_good_standing?.toLowerCase() === 'approved' ? (
@@ -99,8 +83,6 @@ const RelicensureWidget = ({ pharmacistStanding, pharmacistRenewalStatus }) => {
 							title="apply"
 							color="green"
 							disabled={
-								pharmacistRenewalStatus?.renewal_status === 'pending_review' ||
-								pharmacistRenewalStatus?.renewal_status === 'approved' ||
 								pharmacistStanding?.in_good_standing?.toLowerCase() ===
 									'pending payment' ||
 								pharmacistStanding?.in_good_standing?.toLowerCase() ===
@@ -125,9 +107,8 @@ const RelicensureWidget = ({ pharmacistStanding, pharmacistRenewalStatus }) => {
 							</Typography>
 							<BsPatchCheckFill className="text-2xl text-green-400" />
 						</>
-					) : pharmacistRenewalStatus?.renewal_status === 'pending_review' ||
-					  pharmacistStanding?.in_good_standing?.toLowerCase() ===
-							'pending payment' ? (
+					) : pharmacistStanding?.in_good_standing?.toLowerCase() ===
+					  'pending payment' ? (
 						<>
 							<Typography
 								variant="paragraph"

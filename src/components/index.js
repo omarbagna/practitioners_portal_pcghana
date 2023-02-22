@@ -12,7 +12,8 @@ export { default as WelcomeBanner } from './reusable/WelcomeBanner/WelcomeBanner
 export { default as RelicensureWidget } from './reusable/DashWidgets/RelicensureWidget';
 export { default as CPDWidget } from './reusable/DashWidgets/CPDWidget';
 export { default as PharmacySuperintendingWidget } from './reusable/DashWidgets/PharmacySuperintendingWidget';
-export { default as ElectronicPharmacyWidget } from './reusable/DashWidgets/ElectronicPharmacyWidget';
+export { default as DigitalizationWidget } from './reusable/DashWidgets/DigitalizationWidget';
+export { default as ViewInvoiceWidget } from './reusable/DashWidgets/ViewInvoiceWidget';
 export { default as InternshipManagerWidget } from './reusable/DashWidgets/InternshipManagerWidget';
 export { default as PharmacyRenewalWidget } from './reusable/DashWidgets/PharmacyRenewalWidget';
 

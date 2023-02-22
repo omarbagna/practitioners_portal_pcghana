@@ -52,7 +52,7 @@ const InvoiceModal = () => {
 		} else {
 			try {
 				const privateResponse = await axios.post(
-					'https://goldenministersfellowship.org/pcghana-api/',
+					'https://pcportal-api.rxhealthbeta.com/',
 					JSON.stringify(uploadData),
 					{
 						headers: { 'Content-Type': 'application/json' },
@@ -98,7 +98,7 @@ const InvoiceModal = () => {
 
 		try {
 			const privateResponse = await axios.post(
-				'https://goldenministersfellowship.org/pcghana-api/',
+				'https://pcportal-api.rxhealthbeta.com/',
 				JSON.stringify(requestOnlinePayment),
 				{
 					headers: { 'Content-Type': 'application/json' },

@@ -108,7 +108,7 @@ const Login = () => {
 
 	return (
 		<div className="w-screen h-screen flex flex-row-reverse justify-center items-center overflow-hidden">
-			<div className="hidden relative lg:w-full h-full lg:flex justify-center items-center overflow-hidden">
+			<div className="hidden relative lg:w-1/2 xl:w-3/5 h-full lg:flex justify-center items-center overflow-hidden">
 				<div className="absolute top-0 left-0 z-10 w-full h-full flex justify-end items-center bg-gradient-to-tl from-black">
 					<div className="h-fit pr-10 flex justify-end items-center gap-3">
 						<Typography
@@ -130,10 +130,10 @@ const Login = () => {
 					className="object-cover object-left w-full h-full z-0"
 				/>
 			</div>
-			<div className="w-full lg:1/2 xl:w-3/5 h-full flex flex-col justify-center items-center overflow-y-auto pt-32">
-				<div className="w-full h-full flex justify-center items-center px-3 md:px-5 lg:px-16 xl:px-20">
-					<Card className="w-full h-fit bg-white shadow-none">
-						<CardBody className="flex flex-col gap-4 justify-start items-center">
+			<div className="w-full lg:w-1/2 xl:w-2/5 h-full flex flex-col justify-center items-center lg:items-start">
+				<div className="w-full h-full flex justify-center items-center">
+					<Card className="w-full h-full overflow-y-auto bg-white shadow-none  px-3 md:px-5 lg:px-10">
+						<CardBody className="my-auto mx-auto flex flex-col gap-4 justify-center items-center">
 							<div className="w-full flex justify-center lg:justify-start items-center gap-3 mb-6">
 								<img
 									alt="logo"
@@ -143,7 +143,7 @@ const Login = () => {
 								<Typography
 									variant="h3"
 									className="font-light text-gray-800 text-left text-4xl">
-									Practitioners' <br /> Portal
+									Practitioners' <br className="hidden lg:block" /> Portal
 								</Typography>
 							</div>
 							<div className="w-full flex flex-col gap-3 justify-center items-center p-3 rounded-md bg-[#CCE5FF] mb-6">
