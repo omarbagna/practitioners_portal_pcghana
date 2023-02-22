@@ -18,11 +18,13 @@ import {
 	PharmacySuperintendingWidget,
 	RelicensureWidget,
 	WelcomeBanner,
+	ButtonComponent,
 } from '../../components';
 import { useAuthContext } from '../../context/AuthContext';
 import { useDataContext } from '../../context/DataContext';
 import { useStateContext } from '../../context/StateContext';
 import { InvoiceModal, SkeletonLoad, ViewInvoiceButton } from '../../layout';
+import { Typography } from '@mui/material';
 
 const Dashboard = () => {
 	const currentYear = format(new Date(), 'yyyy');
@@ -32,6 +34,7 @@ const Dashboard = () => {
 	//const [pharmacistStatus, setPharmacistStatus] = useState(null);
 	const [loadingPharmacyStatus, setLoadingPharmacyStatus] = useState(false);
 	const [pharmacyStatus, setPharmacyStatus] = useState(null);
+	const [psghStatus, setPsghStatus] = useState(null);
 	const {
 		setPharmacyRenewalStatus,
 		setInvoiceData,
@@ -102,9 +105,14 @@ const Dashboard = () => {
 				psgh_standing?.data?.data?.error === false
 			) {
 				console.log(psgh_standing?.data?.data);
+				setPsghStatus(psgh_standing?.data?.data);
 			}
 		}
 	}, [data, logout, psgh_standing]);
+
+	const goToPSGH = () => {
+		window.open('https://psgh.societymanager.org/clients/login', '_blank');
+	};
 
 	useEffect(() => {
 		if (data && pharmacist_cpd_score?.data) {
@@ -247,68 +255,95 @@ const Dashboard = () => {
 				registrationNumber={user?.registration_number}
 			/>
 
-			<InvoiceModal />
-
-			<ViewInvoiceButton />
-
-			<div className="w-full grid grid-cols-1 md:grid-cols-4 xl:grid-cols-6 place-items-center gap-5">
-				<div className="w-full col-span-2">
-					{isLoading ? (
-						<SkeletonLoad />
-					) : (pharmacist_cpd_score?.data?.data?.status === '0' &&
-							cpdData === null) ||
-					  pharmacist_cpd_score.isError ? (
-						<ErrorWidget />
-					) : (
-						<CPDWidget cpdDATA={cpdData} year={currentYear - 1} />
-					)}
-				</div>
-
-				<div className="w-full col-span-2 ">
-					{isLoading || loadingPharmacistStatus ? (
-						<SkeletonLoad />
-					) : (data?.data?.status === '0' && pharmacistData === null) ||
-					  isError ? (
-						<ErrorWidget />
-					) : (
-						<RelicensureWidget pharmacistStanding={pharmacistData} />
-					)}
-				</div>
-
-				<div className="w-full col-span-2">
-					{isLoading || loadingPharmacyStatus ? (
-						<SkeletonLoad />
-					) : data?.data?.status === '0' && pharmacistData === null ? (
-						<ErrorWidget />
-					) : (
-						<PharmacyRenewalWidget
-							pharmacistStanding={pharmacistData}
-							pharmacyRenewalStatus={pharmacyStatus}
+			{psgh_standing.isLoading || psgh_standing.isFetching ? (
+				<SkeletonLoad />
+			) : psghStatus !== null && psghStatus?.status === false ? (
+				<div className="w-full h-full flex justify-center items-center">
+					<div className="transition-all duration-150 ease-in-out w-fit h-fit flex flex-col justify-center items-center gap-5 rounded-md overflow-hidden p-4 bg-red-300 shadow-md shadow-red-400/20 hover:shadow-lg hover:shadow-red-400/50">
+						<Typography variant="h3" color="white" className="text-center">
+							You are not in good standing with the Pharmaceutical Society of
+							Ghana (PSGH)
+						</Typography>
+						<Typography
+							variant="paragraph"
+							color="white"
+							className="text-center">
+							Click the button below to resolve status with PSGH
+						</Typography>
+						<ButtonComponent
+							onClick={goToPSGH}
+							width
+							title="go to psgh"
+							color="green"
 						/>
-					)}
+					</div>
 				</div>
-				<div className="w-full col-span-2">
-					<PharmacySuperintendingWidget />
+			) : (
+				<div className="w-full h-full flex flex-col justify-start items-center gap-10">
+					<InvoiceModal />
+
+					<ViewInvoiceButton />
+
+					<div className="w-full grid grid-cols-1 md:grid-cols-4 xl:grid-cols-6 place-items-center gap-5">
+						<div className="w-full col-span-2">
+							{isLoading ? (
+								<SkeletonLoad />
+							) : (pharmacist_cpd_score?.data?.data?.status === '0' &&
+									cpdData === null) ||
+							  pharmacist_cpd_score.isError ? (
+								<ErrorWidget />
+							) : (
+								<CPDWidget cpdDATA={cpdData} year={currentYear - 1} />
+							)}
+						</div>
+
+						<div className="w-full col-span-2 ">
+							{isLoading || loadingPharmacistStatus ? (
+								<SkeletonLoad />
+							) : (data?.data?.status === '0' && pharmacistData === null) ||
+							  isError ? (
+								<ErrorWidget />
+							) : (
+								<RelicensureWidget pharmacistStanding={pharmacistData} />
+							)}
+						</div>
+
+						<div className="w-full col-span-2">
+							{isLoading || loadingPharmacyStatus ? (
+								<SkeletonLoad />
+							) : data?.data?.status === '0' && pharmacistData === null ? (
+								<ErrorWidget />
+							) : (
+								<PharmacyRenewalWidget
+									pharmacistStanding={pharmacistData}
+									pharmacyRenewalStatus={pharmacyStatus}
+								/>
+							)}
+						</div>
+						<div className="w-full col-span-2">
+							<PharmacySuperintendingWidget />
+						</div>
+						<div className="w-full col-span-2">
+							{isLoading || loadingPharmacyStatus ? (
+								<SkeletonLoad />
+							) : data?.data?.status === '0' && pharmacistData === null ? (
+								<ErrorWidget />
+							) : (
+								<DigitalizationWidget
+									pharmacistStanding={pharmacistData}
+									pharmacyRenewalStatus={pharmacyStatus}
+								/>
+							)}
+						</div>
+						<div className="w-full col-span-2">
+							<ViewInvoiceWidget />
+						</div>
+						<div className="w-full col-span-2">
+							<InternshipManagerWidget />
+						</div>
+					</div>
 				</div>
-				<div className="w-full col-span-2">
-					{isLoading || loadingPharmacyStatus ? (
-						<SkeletonLoad />
-					) : data?.data?.status === '0' && pharmacistData === null ? (
-						<ErrorWidget />
-					) : (
-						<DigitalizationWidget
-							pharmacistStanding={pharmacistData}
-							pharmacyRenewalStatus={pharmacyStatus}
-						/>
-					)}
-				</div>
-				<div className="w-full col-span-2">
-					<ViewInvoiceWidget />
-				</div>
-				<div className="w-full col-span-2">
-					<InternshipManagerWidget />
-				</div>
-			</div>
+			)}
 		</div>
 	);
 };
