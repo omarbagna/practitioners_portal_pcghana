@@ -259,22 +259,25 @@ const Dashboard = () => {
 				<SkeletonLoad />
 			) : psghStatus !== null && psghStatus?.status === false ? (
 				<div className="w-full h-full flex justify-center items-center">
-					<div className="transition-all duration-150 ease-in-out w-fit h-fit flex flex-col justify-center items-center gap-5 rounded-md overflow-hidden p-4 bg-red-300 shadow-md shadow-red-400/20 hover:shadow-lg hover:shadow-red-400/50">
-						<Typography variant="h3" color="white" className="text-center">
+					<div className="transition-all duration-150 ease-in-out w-fit h-fit flex flex-col justify-center items-center gap-5 rounded-md overflow-hidden p-5 bg-red-400 shadow-md shadow-red-400/20 hover:shadow-lg hover:shadow-red-400/50">
+						<Typography
+							variant="h3"
+							color="white text-xl md:text-2xl lg:text-3xl"
+							className="text-center">
 							You are not in good standing with the Pharmaceutical Society of
 							Ghana (PSGH)
 						</Typography>
 						<Typography
 							variant="paragraph"
 							color="white"
-							className="text-center">
+							className="text-center text-lg">
 							Click the button below to resolve status with PSGH
 						</Typography>
 						<ButtonComponent
 							onClick={goToPSGH}
 							width
 							title="go to psgh"
-							color="green"
+							color="cyan"
 						/>
 					</div>
 				</div>
