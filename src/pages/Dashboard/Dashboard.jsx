@@ -258,6 +258,30 @@ const Dashboard = () => {
 			{psgh_standing.isLoading || psgh_standing.isFetching ? (
 				<SkeletonLoad />
 			) : psghStatus !== null && psghStatus?.status === false ? (
+				<div className="w-full h-full flex justify-center items-center">
+					<div className="transition-all duration-150 ease-in-out w-fit h-fit flex flex-col justify-center items-center gap-5 rounded-md overflow-hidden p-5 bg-red-400 shadow-md shadow-red-400/20 hover:shadow-lg hover:shadow-red-400/50">
+						<Typography
+							variant="h3"
+							color="black"
+							className="text-center text-xl md:text-2xl lg:text-3xl">
+							You are not in good standing with the Pharmaceutical Society of
+							Ghana (PSGH)
+						</Typography>
+						<Typography
+							variant="paragraph"
+							color="white"
+							className="text-center text-lg">
+							Click the button below to resolve status with PSGH
+						</Typography>
+						<ButtonComponent
+							onClick={goToPSGH}
+							width
+							title="go to psgh"
+							color="cyan"
+						/>
+					</div>
+				</div>
+			) : (
 				<div className="w-full h-full flex flex-col justify-start items-center gap-10">
 					<InvoiceModal />
 
@@ -320,30 +344,6 @@ const Dashboard = () => {
 						<div className="w-full col-span-2">
 							<InternshipManagerWidget />
 						</div>
-					</div>
-				</div>
-			) : (
-				<div className="w-full h-full flex justify-center items-center">
-					<div className="transition-all duration-150 ease-in-out w-fit h-fit flex flex-col justify-center items-center gap-5 rounded-md overflow-hidden p-5 bg-red-400 shadow-md shadow-red-400/20 hover:shadow-lg hover:shadow-red-400/50">
-						<Typography
-							variant="h3"
-							color="black"
-							className="text-center text-xl md:text-2xl lg:text-3xl">
-							You are not in good standing with the Pharmaceutical Society of
-							Ghana (PSGH)
-						</Typography>
-						<Typography
-							variant="paragraph"
-							color="white"
-							className="text-center text-lg">
-							Click the button below to resolve status with PSGH
-						</Typography>
-						<ButtonComponent
-							onClick={goToPSGH}
-							width
-							title="go to psgh"
-							color="cyan"
-						/>
 					</div>
 				</div>
 			)}
