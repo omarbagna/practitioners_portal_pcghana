@@ -44,7 +44,7 @@ import {
 	technicalProficiencyInputs,
 } from './data';
 import { useStateContext } from '../../context/StateContext';
-import { axiosPrivate } from '../../api/axios';
+//import { axiosPrivate } from '../../api/axios';
 
 const EPharmacyForm = () => {
 	const { user } = useAuthContext();
@@ -246,6 +246,7 @@ const EPharmacyForm = () => {
 			);
 
 			if (privateResponse.data?.resp_code === '000') {
+				/*
 				try {
 					const response = await axiosPrivate.post(
 						'api/saverenewal',
@@ -303,7 +304,7 @@ const EPharmacyForm = () => {
 						console.log(errMessage);
 					}
 				}
-
+*/
 				toast.success('Application Submitted Successful');
 
 				setIsSubmitting(false);
