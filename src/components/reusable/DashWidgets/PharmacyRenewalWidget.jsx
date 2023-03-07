@@ -10,6 +10,7 @@ import BackgroundIcon from './BackgroundIcon';
 const PharmacyRenewalWidget = ({
 	pharmacistStanding,
 	pharmacyRenewalStatus,
+	isSuperintendentLinks,
 }) => {
 	const [isGood, setIsGood] = useState(true);
 
@@ -56,6 +57,10 @@ const PharmacyRenewalWidget = ({
 		}
 	};
 
+	const openLink = (link) => {
+		window.open(link, '_blank');
+	};
+
 	return (
 		<div className="group relative transition-all duration-150 ease-in rounded-lg w-full h-72 p-4 bg-blue-600 shadow-blue-500/50 shadow-lg hover:shadow-blue-500/50 hover:shadow-xl overflow-hidden">
 			<BackgroundIcon icon={<MdOutlineLocalPharmacy />} />
@@ -79,7 +84,7 @@ const PharmacyRenewalWidget = ({
 					</Typography>
 				</div>
 
-				<div className="w-full flex justify-center items-center gap-5">
+				<div className="w-full flex flex-col justify-center items-center gap-5">
 					<ButtonComponent
 						onClick={openForm}
 						width
@@ -96,6 +101,18 @@ const PharmacyRenewalWidget = ({
 						title="apply"
 						color="green"
 					/>
+
+					{isSuperintendentLinks !== null
+						? isSuperintendentLinks.map(({ url, label }, index) => (
+								<ButtonComponent
+									key={index}
+									onClick={() => openLink(url)}
+									width
+									title={label}
+									color={index === 0 ? 'cyan' : index === 1 && 'purple'}
+								/>
+						  ))
+						: null}
 				</div>
 
 				<div className="w-full flex justify-end items-center gap-2">

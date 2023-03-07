@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { Avatar, Typography } from '@mui/material';
-import { Controller, useForm } from 'react-hook-form';
+import { Controller, useFieldArray, useForm } from 'react-hook-form';
 import {
 	ButtonComponent,
 	DefaultInput,
@@ -40,11 +40,6 @@ const PharmacyRenewal = () => {
 	const currentYear = format(new Date(), 'yyyy');
 
 	//const [file, setFile] = useState(null);
-
-	const [supportStaffComponentCount, setSupportStaffComponentCount] =
-		useState(1);
-	const [supportStaffComponentVisible, setSupportStaffComponentVisible] =
-		useState([1]);
 
 	const hiddenApplicantImageInput = useRef(null);
 
@@ -154,7 +149,30 @@ const PharmacyRenewal = () => {
 			person_mobile_number: user?.phone === null ? '' : user?.phone,
 			person_landline: '',
 			person_email: user?.email === null ? '' : user?.email,
+			support_staff: [
+				{
+					first_name: '',
+					last_name: '',
+					sex: '',
+					registration_number: '',
+					phone_number: '',
+					email: '',
+					type: '',
+					pt_pin_number: '',
+					pt_year_registration: '',
+					mca_education_certificate: '',
+					mca_year_obtained: '',
+					mca_certificate_upload: '',
+					years_of_practice: '',
+				},
+			],
 		},
+	});
+
+	const { fields, append, remove } = useFieldArray({
+		control,
+		name: 'support_staff',
+		rules: { minLength: 1 },
 	});
 
 	const fetchPharmacyDetails = (searchValue) => {
@@ -254,6 +272,23 @@ const PharmacyRenewal = () => {
 				person_mobile_number: user?.phone === null ? '' : user?.phone,
 				person_landline: '',
 				person_email: user?.email === null ? '' : user?.email,
+				support_staff: [
+					{
+						first_name: '',
+						last_name: '',
+						sex: '',
+						registration_number: '',
+						phone_number: '',
+						email: '',
+						type: '',
+						pt_pin_number: '',
+						pt_year_registration: '',
+						mca_education_certificate: '',
+						mca_year_obtained: '',
+						mca_certificate_upload: '',
+						years_of_practice: '',
+					},
+				],
 			});
 
 			setFoundPharmacy(true);
@@ -365,6 +400,23 @@ const PharmacyRenewal = () => {
 					pharmacyRenewalData?.person_email === null
 						? ''
 						: pharmacyRenewalData?.person_email,
+				support_staff: [
+					{
+						first_name: '',
+						last_name: '',
+						sex: '',
+						registration_number: '',
+						phone_number: '',
+						email: '',
+						type: '',
+						pt_pin_number: '',
+						pt_year_registration: '',
+						mca_education_certificate: '',
+						mca_year_obtained: '',
+						mca_certificate_upload: '',
+						years_of_practice: '',
+					},
+				],
 			});
 
 			setFoundPharmacy(true);
@@ -398,24 +450,6 @@ const PharmacyRenewal = () => {
 
 	const onError = (errors) => {
 		toast.error('Please fill all required fields');
-	};
-
-	const addSupportStaffComponent = () => {
-		setSupportStaffComponentCount((prev) => prev + 1);
-		setSupportStaffComponentVisible([
-			...supportStaffComponentVisible,
-			supportStaffComponentCount + 1,
-		]);
-	};
-
-	const removeSupportStaffComponent = (item) => {
-		setSupportStaffComponentCount((prev) => prev - 1);
-		const index = supportStaffComponentVisible.indexOf(item);
-		if (index > -1) {
-			supportStaffComponentVisible.splice(index, 1);
-		}
-
-		setSupportStaffComponentVisible(supportStaffComponentVisible);
 	};
 
 	const handleOpen = () => setOpen(!open);
@@ -676,13 +710,16 @@ const PharmacyRenewal = () => {
 									)}
 								/>
 							</div>
+							{/**
 							<div className="col-span-6 lg:col-span-4 w-full">
 								<Controller
 									control={control}
 									name="gps"
+									/*
 									rules={{
 										required: 'Please enter a valid Ghana Post address',
 									}}
+									
 									render={({
 										field: { ref, ...field },
 										fieldState: { error, invalid },
@@ -697,12 +734,13 @@ const PharmacyRenewal = () => {
 											type="text"
 											disabled={editFacilityData}
 											labelProps={{ style: { color: '#000' } }}
-											required
+											//required
 										/>
 									)}
 								/>
 							</div>
-							<div className="col-span-3 lg:col-span-4 w-full">
+						*/}
+							<div className="col-span-3 lg:col-span-6 w-full">
 								<Controller
 									control={control}
 									name="phone"
@@ -732,7 +770,7 @@ const PharmacyRenewal = () => {
 									)}
 								/>
 							</div>
-							<div className="col-span-3 lg:col-span-4 w-full">
+							<div className="col-span-3 lg:col-span-6 w-full">
 								<Controller
 									control={control}
 									name="email"
@@ -1199,6 +1237,7 @@ const PharmacyRenewal = () => {
 						</div>
 					</FormSection>
 
+					{/**
 					<FormSection sectionName="support staff (add up to a maximum 20 people)">
 						{supportStaffComponentCount !== 0
 							? [
@@ -1641,6 +1680,427 @@ const PharmacyRenewal = () => {
 								<ButtonComponent
 									type="button"
 									onClick={addSupportStaffComponent}
+									title="add staff"
+									color="cyan"
+								/>
+							</div>
+						) : null}
+					</FormSection>
+ */}
+					<FormSection sectionName="support staff (add up to a maximum 20 people)">
+						{fields.map((inputField, index) => (
+							<div
+								key={inputField.id}
+								className="relative w-full h-full flex gap-2 justify-end items-center rounded-md shadow-lg bg-gray-50 p-4 overflow-hidden">
+								<div className="flex flex-col justify-center items-start md:grid place-items-center md:grid-cols-6 gap-5 mr-4 lg:mr-8 lg:gap-8 w-full">
+									<div className="w-full col-span-2">
+										<Controller
+											control={control}
+											name={`support_staff[${index}].first_name`}
+											render={({
+												field: { ref, ...field },
+												fieldState: { error, invalid },
+											}) => (
+												<DefaultInput
+													{...field}
+													ref={ref}
+													error={invalid}
+													helpertext={invalid ? error.message : null}
+													name={`support_staff[${index}].first_name`}
+													label="First Name"
+													type="text"
+													//disabled
+													required
+												/>
+											)}
+										/>
+									</div>
+
+									<div className="w-full col-span-2">
+										<Controller
+											control={control}
+											name={`support_staff[${index}].last_name`}
+											render={({
+												field: { ref, ...field },
+												fieldState: { error, invalid },
+											}) => (
+												<DefaultInput
+													{...field}
+													ref={ref}
+													error={invalid}
+													helpertext={invalid ? error.message : null}
+													name={`support_staff[${index}].last_name`}
+													label="Last Name"
+													type="text"
+													//disabled
+													required
+												/>
+											)}
+										/>
+									</div>
+
+									<div className="w-full col-span-2">
+										<Controller
+											control={control}
+											name={`support_staff[${index}].sex`}
+											rules={{
+												required: 'Please select an option',
+											}}
+											render={({
+												field: { ref, ...field },
+												fieldState: { error, invalid },
+											}) => (
+												<SelectInput
+													{...field}
+													ref={ref}
+													error={invalid}
+													helpertext={invalid ? error.message : null}
+													name={`support_staff[${index}].sex`}
+													label="Sex *"
+													required
+													options={[
+														{
+															name: 'male',
+															value: 'male',
+														},
+														{
+															name: 'female',
+															value: 'female',
+														},
+													]}
+												/>
+											)}
+										/>
+									</div>
+
+									<div className="w-full col-span-2">
+										<Controller
+											control={control}
+											name={`support_staff[${index}].registration_number`}
+											render={({
+												field: { ref, ...field },
+												fieldState: { error, invalid },
+											}) => (
+												<DefaultInput
+													{...field}
+													ref={ref}
+													error={invalid}
+													helpertext={invalid ? error.message : null}
+													name={`support_staff[${index}].registration_number`}
+													label="Registration Number"
+													type="text"
+													//disabled
+													required
+												/>
+											)}
+										/>
+									</div>
+
+									<div className="w-full col-span-2">
+										<Controller
+											control={control}
+											name={`support_staff[${index}].phone_number`}
+											render={({
+												field: { ref, ...field },
+												fieldState: { error, invalid },
+											}) => (
+												<DefaultInput
+													{...field}
+													ref={ref}
+													error={invalid}
+													helpertext={invalid ? error.message : null}
+													name={`support_staff[${index}].phone_number`}
+													label="Phone Number"
+													type="tel"
+													//disabled
+													required
+												/>
+											)}
+										/>
+									</div>
+
+									<div className="w-full col-span-2">
+										<Controller
+											control={control}
+											name={`support_staff[${index}].email`}
+											rules={{
+												pattern: {
+													value:
+														/^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/gi,
+													message: 'Please enter a valid email address',
+												},
+												required: 'Please enter email address',
+											}}
+											render={({
+												field: { ref, ...field },
+												fieldState: { error, invalid },
+											}) => (
+												<DefaultInput
+													{...field}
+													ref={ref}
+													error={invalid}
+													helpertext={invalid ? error.message : null}
+													name={`support_staff[${index}].email`}
+													label="Email"
+													type="email"
+													//disabled
+													required
+												/>
+											)}
+										/>
+									</div>
+
+									<div className="w-full col-span-2">
+										<Controller
+											control={control}
+											name={`support_staff[${index}].type`}
+											rules={{
+												required: 'Please select an option',
+											}}
+											render={({
+												field: { ref, ...field },
+												fieldState: { error, invalid },
+											}) => (
+												<SelectInput
+													{...field}
+													ref={ref}
+													error={invalid}
+													helpertext={invalid ? error.message : null}
+													name={`support_staff[${index}].type`}
+													label="Practitioner Type *"
+													required
+													options={[
+														{
+															name: 'pharmacy technician',
+															value: 'pt',
+														},
+														{
+															name: 'MCA',
+															value: 'mca',
+														},
+													]}
+												/>
+											)}
+										/>
+									</div>
+
+									<div className="w-full col-span-4">
+										<Controller
+											control={control}
+											name={`support_staff[${index}].pt_pin_number`}
+											render={({
+												field: { ref, ...field },
+												fieldState: { error, invalid },
+											}) => (
+												<DefaultInput
+													{...field}
+													ref={ref}
+													error={invalid}
+													helpertext={invalid ? error.message : null}
+													name={`support_staff[${index}].pt_pin_number`}
+													label="Pin Number (Pharmacy Tech Only)"
+													type="text"
+													disabled={
+														watch(`${`support_staff[${index}].type`}`) === 'pt'
+															? false
+															: true
+													}
+													required={
+														watch(`${`support_staff[${index}].type`}`) === 'pt'
+															? true
+															: false
+													}
+												/>
+											)}
+										/>
+									</div>
+
+									<div className="w-full col-span-3">
+										<Controller
+											control={control}
+											name={`support_staff[${index}].pt_year_registration`}
+											render={({
+												field: { ref, ...field },
+												fieldState: { error, invalid },
+											}) => (
+												<DefaultInput
+													{...field}
+													ref={ref}
+													error={invalid}
+													helpertext={invalid ? error.message : null}
+													name={`support_staff[${index}].pt_year_registration`}
+													label="Year of Registration (Pharmacy Tech Only)"
+													type="number"
+													placeholder="YYYY"
+													min="1900"
+													max={currentYear}
+													disabled={
+														watch(`${`support_staff[${index}].type`}`) === 'pt'
+															? false
+															: true
+													}
+													required={
+														watch(`${`support_staff[${index}].type`}`) === 'pt'
+															? true
+															: false
+													}
+												/>
+											)}
+										/>
+									</div>
+
+									<div className="w-full col-span-3">
+										<Controller
+											control={control}
+											name={`support_staff[${index}].mca_education_certificate`}
+											render={({
+												field: { ref, ...field },
+												fieldState: { error, invalid },
+											}) => (
+												<DefaultInput
+													{...field}
+													ref={ref}
+													error={invalid}
+													helpertext={invalid ? error.message : null}
+													name={`support_staff[${index}].mca_education_certificate`}
+													label="Highest Educational Certificate (MCAs Only)"
+													type="text"
+													disabled={
+														watch(`${`support_staff[${index}].type`}`) === 'mca'
+															? false
+															: true
+													}
+													required={
+														watch(`${`support_staff[${index}].type`}`) === 'mca'
+															? true
+															: false
+													}
+												/>
+											)}
+										/>
+									</div>
+
+									<div className="w-full col-span-2">
+										<Controller
+											control={control}
+											name={`support_staff[${index}].mca_year_obtained`}
+											render={({
+												field: { ref, ...field },
+												fieldState: { error, invalid },
+											}) => (
+												<DefaultInput
+													{...field}
+													ref={ref}
+													error={invalid}
+													helpertext={invalid ? error.message : null}
+													name={`support_staff[${index}].mca_year_obtained`}
+													label="Year Obtained (MCAs Only)"
+													type="text"
+													disabled={
+														watch(`${`support_staff[${index}].type`}`) === 'mca'
+															? false
+															: true
+													}
+													required={
+														watch(`${`support_staff[${index}].type`}`) === 'mca'
+															? true
+															: false
+													}
+												/>
+											)}
+										/>
+									</div>
+
+									<div className="w-full col-span-2">
+										<Controller
+											control={control}
+											name={`support_staff[${index}].mca_certificate_upload`}
+											render={({
+												field: { ref, ...field },
+												fieldState: { error, invalid },
+											}) => (
+												<DefaultInput
+													{...field}
+													ref={ref}
+													error={invalid}
+													helpertext={invalid ? error.message : null}
+													name={`support_staff[${index}].mca_certificate_upload`}
+													label="Upload Certificate (MCAs Only)"
+													type="file"
+													accept="application/pdf"
+													disabled={
+														watch(`${`support_staff[${index}].type`}`) === 'mca'
+															? false
+															: true
+													}
+													required={
+														watch(`${`support_staff[${index}].type`}`) === 'mca'
+															? true
+															: false
+													}
+												/>
+											)}
+										/>
+									</div>
+
+									<div className="w-full col-span-2">
+										<Controller
+											control={control}
+											name={`support_staff[${index}].years_of_practice`}
+											render={({
+												field: { ref, ...field },
+												fieldState: { error, invalid },
+											}) => (
+												<DefaultInput
+													{...field}
+													ref={ref}
+													error={invalid}
+													helpertext={invalid ? error.message : null}
+													name={`support_staff[${index}].years_of_practice`}
+													label="Years of Practice"
+													type="number"
+													required
+												/>
+											)}
+										/>
+									</div>
+								</div>
+								{watch('support_staff')?.length !== 1 ? (
+									<div
+										onClick={() => remove(index)}
+										className="group absolute top-0 right-0 flex justify-center items-center transition-all duration-150 ease-in w-5 lg:w-6  md:hover:w-8 h-full bg-red-400 hover:shadow-lg hover:shadow-red-400/50 hover:bg-red-500 cursor-pointer">
+										<Typography
+											variant="paragraph"
+											color="white"
+											className="transition-all duration-150 ease-in tracking-widest group-hover:tracking-normal text-center text-sm uppercase rotate-90">
+											remove
+										</Typography>
+									</div>
+								) : null}
+							</div>
+						))}
+
+						{watch('support_staff')?.length !== 10 ? (
+							<div className="w-full flex justify-end items-start">
+								<ButtonComponent
+									type="button"
+									onClick={() =>
+										append({
+											first_name: '',
+											last_name: '',
+											sex: '',
+											registration_number: '',
+											phone_number: '',
+											email: '',
+											type: '',
+											pt_pin_number: '',
+											pt_year_registration: '',
+											mca_education_certificate: '',
+											mca_year_obtained: '',
+											mca_certificate_upload: '',
+											years_of_practice: '',
+										})
+									}
 									title="add staff"
 									color="cyan"
 								/>

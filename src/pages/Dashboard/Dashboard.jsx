@@ -93,7 +93,27 @@ const Dashboard = () => {
 
 	const psgh_standing = useQuery('psgh_standing', fetchPharmacistPSGHStanding);
 
-	console.log(psgh_standing?.data);
+	// Get Pharmacist Superintendent Details
+	const fetchPharmacistSuperintendentDetails = () => {
+		return axiosPrivate.get(
+			`api/isSuperintendent?r=${user?.registration_number}&Year=${currentYear}`,
+			{
+				headers: { Token: user?.token, Userid: user?.id, Type: user?.type },
+			}
+		);
+	};
+
+	const pharmacist_superintendent_data = useQuery(
+		'pharmacist_superintendent_data',
+		fetchPharmacistSuperintendentDetails
+	);
+
+	//console.log(pharmacist_superintendent_data?.data?.data?.data?.links);
+
+	const SUP_LINKS =
+		pharmacist_superintendent_data?.data?.data?.data?.links?.length > 0
+			? pharmacist_superintendent_data?.data?.data?.data?.links
+			: null;
 
 	useEffect(() => {
 		if (data && psgh_standing?.data) {
@@ -320,6 +340,7 @@ const Dashboard = () => {
 								<PharmacyRenewalWidget
 									pharmacistStanding={pharmacistData}
 									pharmacyRenewalStatus={pharmacyStatus}
+									isSuperintendentLinks={SUP_LINKS}
 								/>
 							)}
 						</div>

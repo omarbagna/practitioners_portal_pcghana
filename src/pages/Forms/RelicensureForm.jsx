@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { Avatar, Typography } from '@mui/material';
-import { Controller, useForm } from 'react-hook-form';
+import { Controller, useForm, useFieldArray } from 'react-hook-form';
 import {
 	ButtonComponent,
 	DefaultInput,
@@ -39,11 +39,6 @@ const RelicensureForm = () => {
 
 	//const [file, setFile] = useState(null);
 
-	const [employmentDataComponentCount, setEmploymentDataComponentCount] =
-		useState(0);
-	const [employmentDataComponentVisible, setEmploymentDataComponentVisible] =
-		useState([]);
-
 	const hiddenApplicantImageInput = useRef(null);
 	//const formData = new FormData();
 
@@ -80,12 +75,7 @@ const RelicensureForm = () => {
 		//fileUploaded && setImage(URL.createObjectURL(fileUploaded));
 	};
 
-	const {
-		handleSubmit,
-		control,
-		//watch,
-		reset,
-	} = useForm({
+	const { handleSubmit, control, watch, reset } = useForm({
 		mode: 'all',
 		reValidateMode: 'onChange',
 		defaultValues: {
@@ -119,7 +109,25 @@ const RelicensureForm = () => {
 				pharmacistData?.phone === null ? '' : pharmacistData?.phone,
 			person_landline: '',
 			person_email: pharmacistData?.email === null ? '' : pharmacistData?.email,
+			employment_data: [
+				{
+					institution_name: '',
+					institution_type: '',
+					employer_type: '',
+					position: '',
+					region: '',
+					country: '',
+					start_date: '',
+					end_date: '',
+				},
+			],
 		},
+	});
+
+	const { fields, append, remove } = useFieldArray({
+		control,
+		name: 'employment_data',
+		rules: { maxLength: 3 },
 	});
 
 	//console.log(user);
@@ -284,24 +292,6 @@ const RelicensureForm = () => {
 		toast.error('Please fill all required fields');
 	};
 
-	const addEmploymentDataComponent = () => {
-		setEmploymentDataComponentCount((prev) => prev + 1);
-		setEmploymentDataComponentVisible([
-			...employmentDataComponentVisible,
-			employmentDataComponentCount + 1,
-		]);
-	};
-
-	const removeEmploymentDataComponent = (item) => {
-		setEmploymentDataComponentCount((prev) => prev - 1);
-		const index = employmentDataComponentVisible.indexOf(item);
-		if (index > -1) {
-			employmentDataComponentVisible.splice(index, 1);
-		}
-
-		setEmploymentDataComponentVisible(employmentDataComponentVisible);
-	};
-
 	const handleOpen = () => setOpen(!open);
 	const handleReset = () => {
 		setApplicantImage(null);
@@ -401,208 +391,209 @@ const RelicensureForm = () => {
 						</FormSection>
 
 						<FormSection sectionName="employment data (add up to a maximum of 3 most recent)">
-							{employmentDataComponentCount !== 0
-								? [0, 1, 2].map((inputField) => {
-										if (
-											employmentDataComponentVisible.includes(inputField + 1)
-										) {
-											return (
-												<div
-													key={inputField}
-													className="relative w-full h-full flex gap-2 justify-end items-center rounded-md shadow-lg bg-gray-50 p-4">
-													<div className="flex flex-col justify-center items-start md:grid place-items-center md:grid-cols-3 gap-5 mr-4 lg:mr-8 lg:gap-8 w-full">
-														<Controller
-															control={control}
-															name={`employment_data[${inputField}].institution_name`}
-															defaultValue=""
-															render={({
-																field: { ref, ...field },
-																fieldState: { error, invalid },
-															}) => (
-																<DefaultInput
-																	{...field}
-																	ref={ref}
-																	error={invalid}
-																	helpertext={invalid ? error.message : null}
-																	name={`employment_data[${inputField}].institution_name`}
-																	label="Institution Name"
-																	type="text"
-																	required
-																/>
-															)}
-														/>
-														<Controller
-															control={control}
-															name={`employment_data[${inputField}].institution_type`}
-															defaultValue=""
-															render={({
-																field: { ref, ...field },
-																fieldState: { error, invalid },
-															}) => (
-																<SelectInput
-																	{...field}
-																	ref={ref}
-																	error={invalid}
-																	helpertext={invalid ? error.message : null}
-																	name={`employment_data[${inputField}].institution_type`}
-																	label="Institution Type"
-																	required
-																	options={institutionOptions}
-																/>
-															)}
-														/>
-														<Controller
-															control={control}
-															name={`employment_data[${inputField}].employer_type`}
-															defaultValue=""
-															render={({
-																field: { ref, ...field },
-																fieldState: { error, invalid },
-															}) => (
-																<SelectInput
-																	{...field}
-																	ref={ref}
-																	error={invalid}
-																	helpertext={invalid ? error.message : null}
-																	name={`employment_data[${inputField}].employer_type`}
-																	label="Employer Type"
-																	required
-																	options={employerOptions}
-																/>
-															)}
-														/>
-														<Controller
-															control={control}
-															name={`employment_data[${inputField}].position`}
-															defaultValue=""
-															render={({
-																field: { ref, ...field },
-																fieldState: { error, invalid },
-															}) => (
-																<DefaultInput
-																	{...field}
-																	ref={ref}
-																	error={invalid}
-																	helpertext={invalid ? error.message : null}
-																	name={`employment_data[${inputField}].position`}
-																	label="Postion"
-																	type="text"
-																	//disabled
-																	labelProps={{ style: { color: '#000' } }}
-																	required
-																/>
-															)}
-														/>
-														<Controller
-															control={control}
-															name={`employment_data[${inputField}].region`}
-															defaultValue=""
-															render={({
-																field: { ref, ...field },
-																fieldState: { error, invalid },
-															}) => (
-																<SelectInput
-																	{...field}
-																	ref={ref}
-																	error={invalid}
-																	helpertext={invalid ? error.message : null}
-																	name={`employment_data[${inputField}].region`}
-																	label="Region"
-																	required
-																	options={regions}
-																/>
-															)}
-														/>
-														<Controller
-															control={control}
-															name={`employment_data[${inputField}].country`}
-															defaultValue=""
-															render={({
-																field: { ref, ...field },
-																fieldState: { error, invalid },
-															}) => (
-																<SelectInput
-																	{...field}
-																	ref={ref}
-																	error={invalid}
-																	helpertext={invalid ? error.message : null}
-																	name={`employment_data[${inputField}].country`}
-																	label="Country"
-																	required
-																	options={countries}
-																/>
-															)}
-														/>
-														<div className="col-span-3 w-full flex flex-wrap md:flex-nowrap justify-center items-center gap-5">
-															<Controller
-																control={control}
-																name={`employment_data[${inputField}].start_date`}
-																defaultValue=""
-																render={({
-																	field: { ref, ...field },
-																	fieldState: { error, invalid },
-																}) => (
-																	<DefaultInput
-																		{...field}
-																		ref={ref}
-																		error={invalid}
-																		helpertext={invalid ? error.message : null}
-																		name={`employment_data[${inputField}].start_date`}
-																		label="Start Date"
-																		type="date"
-																		//disabled
-																		labelProps={{ style: { color: '#000' } }}
-																		required
-																	/>
-																)}
-															/>
-															<Controller
-																control={control}
-																name={`employment_data[${inputField}].end_date`}
-																defaultValue=""
-																render={({
-																	field: { ref, ...field },
-																	fieldState: { error, invalid },
-																}) => (
-																	<DefaultInput
-																		{...field}
-																		ref={ref}
-																		error={invalid}
-																		helpertext={invalid ? error.message : null}
-																		name={`employment_data[${inputField}].end_date`}
-																		label="End Date"
-																		type="date"
-																		//disabled
-																		labelProps={{ style: { color: '#000' } }}
-																	/>
-																)}
-															/>
-														</div>
-													</div>
+							{fields.map((inputField, index) => (
+								<div
+									key={inputField.id}
+									className="relative w-full h-full flex gap-2 justify-end items-center rounded-md shadow-lg bg-gray-50 p-4">
+									<div className="flex flex-col justify-center items-start md:grid place-items-center md:grid-cols-3 gap-5 mr-4 lg:mr-8 lg:gap-8 w-full">
+										<Controller
+											control={control}
+											name={`employment_data[${index}].institution_name`}
+											defaultValue=""
+											render={({
+												field: { ref, ...field },
+												fieldState: { error, invalid },
+											}) => (
+												<DefaultInput
+													{...field}
+													ref={ref}
+													error={invalid}
+													helpertext={invalid ? error.message : null}
+													name={`employment_data[${index}].institution_name`}
+													label="Institution Name"
+													type="text"
+													required
+												/>
+											)}
+										/>
+										<Controller
+											control={control}
+											name={`employment_data[${index}].institution_type`}
+											defaultValue=""
+											render={({
+												field: { ref, ...field },
+												fieldState: { error, invalid },
+											}) => (
+												<SelectInput
+													{...field}
+													ref={ref}
+													error={invalid}
+													helpertext={invalid ? error.message : null}
+													name={`employment_data[${index}].institution_type`}
+													label="Institution Type"
+													required
+													options={institutionOptions}
+												/>
+											)}
+										/>
+										<Controller
+											control={control}
+											name={`employment_data[${index}].employer_type`}
+											defaultValue=""
+											render={({
+												field: { ref, ...field },
+												fieldState: { error, invalid },
+											}) => (
+												<SelectInput
+													{...field}
+													ref={ref}
+													error={invalid}
+													helpertext={invalid ? error.message : null}
+													name={`employment_data[${index}].employer_type`}
+													label="Employer Type"
+													required
+													options={employerOptions}
+												/>
+											)}
+										/>
+										<Controller
+											control={control}
+											name={`employment_data[${index}].position`}
+											defaultValue=""
+											render={({
+												field: { ref, ...field },
+												fieldState: { error, invalid },
+											}) => (
+												<DefaultInput
+													{...field}
+													ref={ref}
+													error={invalid}
+													helpertext={invalid ? error.message : null}
+													name={`employment_data[${index}].position`}
+													label="Postion"
+													type="text"
+													//disabled
+													labelProps={{ style: { color: '#000' } }}
+													required
+												/>
+											)}
+										/>
+										<Controller
+											control={control}
+											name={`employment_data[${index}].region`}
+											defaultValue=""
+											render={({
+												field: { ref, ...field },
+												fieldState: { error, invalid },
+											}) => (
+												<SelectInput
+													{...field}
+													ref={ref}
+													error={invalid}
+													helpertext={invalid ? error.message : null}
+													name={`employment_data[${index}].region`}
+													label="Region"
+													required
+													options={regions}
+												/>
+											)}
+										/>
+										<Controller
+											control={control}
+											name={`employment_data[${index}].country`}
+											defaultValue=""
+											render={({
+												field: { ref, ...field },
+												fieldState: { error, invalid },
+											}) => (
+												<SelectInput
+													{...field}
+													ref={ref}
+													error={invalid}
+													helpertext={invalid ? error.message : null}
+													name={`employment_data[${index}].country`}
+													label="Country"
+													required
+													options={countries}
+												/>
+											)}
+										/>
+										<div className="col-span-3 w-full flex flex-wrap md:flex-nowrap justify-center items-center gap-5">
+											<Controller
+												control={control}
+												name={`employment_data[${index}].start_date`}
+												defaultValue=""
+												render={({
+													field: { ref, ...field },
+													fieldState: { error, invalid },
+												}) => (
+													<DefaultInput
+														{...field}
+														ref={ref}
+														error={invalid}
+														helpertext={invalid ? error.message : null}
+														name={`employment_data[${index}].start_date`}
+														label="Start Date"
+														type="date"
+														//disabled
+														labelProps={{ style: { color: '#000' } }}
+														required
+													/>
+												)}
+											/>
+											<Controller
+												control={control}
+												name={`employment_data[${index}].end_date`}
+												defaultValue=""
+												render={({
+													field: { ref, ...field },
+													fieldState: { error, invalid },
+												}) => (
+													<DefaultInput
+														{...field}
+														ref={ref}
+														error={invalid}
+														helpertext={invalid ? error.message : null}
+														name={`employment_data[${index}].end_date`}
+														label="End Date"
+														type="date"
+														//disabled
+														labelProps={{ style: { color: '#000' } }}
+													/>
+												)}
+											/>
+										</div>
+									</div>
 
-													<div
-														onClick={() =>
-															removeEmploymentDataComponent(inputField + 1)
-														}
-														className="group absolute top-0 right-0 flex justify-center items-center transition-all duration-150 ease-in rounded-r-md w-5 lg:w-6  md:hover:w-8 h-full bg-red-400 hover:shadow-lg hover:shadow-red-400/50 hover:bg-red-500 cursor-pointer">
-														<Typography
-															variant="paragraph"
-															color="white"
-															className="transition-all duration-150 ease-in tracking-widest group-hover:tracking-normal text-center text-sm uppercase rotate-90">
-															remove
-														</Typography>
-													</div>
-												</div>
-											);
-										} else return null;
-								  })
-								: null}
+									<div
+										onClick={() => remove(index)}
+										className="group absolute top-0 right-0 flex justify-center items-center transition-all duration-150 ease-in rounded-r-md w-5 lg:w-6  md:hover:w-8 h-full bg-red-400 hover:shadow-lg hover:shadow-red-400/50 hover:bg-red-500 cursor-pointer">
+										<Typography
+											variant="paragraph"
+											color="white"
+											className="transition-all duration-150 ease-in tracking-widest group-hover:tracking-normal text-center text-sm uppercase rotate-90">
+											remove
+										</Typography>
+									</div>
+								</div>
+							))}
 
-							{employmentDataComponentCount !== 3 ? (
+							{watch('employment_data')?.length !== 3 ? (
 								<div className="w-full flex justify-end items-start">
 									<ButtonComponent
 										type="button"
-										onClick={addEmploymentDataComponent}
+										onClick={() =>
+											append({
+												institution_name: '',
+												institution_type: '',
+												employer_type: '',
+												position: '',
+												region: '',
+												country: '',
+												start_date: '',
+												end_date: '',
+											})
+										}
 										title="add new"
 										color="cyan"
 									/>

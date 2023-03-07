@@ -13,7 +13,7 @@ const WelcomeBanner = ({ title, firstName, type, registrationNumber }) => {
 		<div className="w-full flex flex-col justify-center lg:items-left xl:items-center pt-2 lg:pt-5 gap-3">
 			<Typography
 				variant="paragraph"
-				className="text-sm text-[#8C8CFF] font-light hidden lg:block">
+				className="text-sm text-[#8C8CFF] font-semibold hidden lg:block">
 				{currentDate}
 			</Typography>
 			<div className="w-full flex justify-between items-center">
